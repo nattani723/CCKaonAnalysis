@@ -22,10 +22,17 @@ struct Event {
 	double Weight=1.0;
 
         // Flags applying to the entire event
-        Bool_t EventIsSignal = false;
-        Bool_t EventHasHyperon = false;
-        Bool_t EventHasNeutronScatter = false;
-        Bool_t EventIsSignalSigmaZero = false;
+  Bool_t EventIsSignal = false;
+  Bool_t EventIsSignal_NuMuP = false;
+  Bool_t EventIsSignal_PiPPi0 = false;
+  Bool_t EventHasKaonPScatter = false;
+  Bool_t EventHasHyperon = false;
+  Bool_t EventHasKaon = false;
+  Bool_t EventHasKaonP = false;
+  Bool_t EventHasKaonP_NuMuP = false;
+  Bool_t EventHasKaonP_PiPPi0 = false;
+  Bool_t EventHasKaonM = false;
+  Bool_t EventHasKaon0 = false;
 
         // Flags for each MCTruth
         vector<string> Mode;
@@ -34,65 +41,73 @@ struct Event {
         Int_t NMCTruthsInTPC;
         vector<bool> InActiveTPC;
         vector<bool> IsHyperon;
-        vector<bool> IsLambda;
-        vector<bool> IsLambdaCharged;
-        vector<bool> IsSigmaZero;
-        vector<bool> IsSigmaZeroCharged;
-        vector<bool> IsAssociatedHyperon;
-        vector<bool> IsSignal;
-        vector<bool> IsSignalSigmaZero;
-        Bool_t GoodReco;
-                
+  vector<bool> IsKaon;
+  vector<bool> IsKaonP;
+  vector<bool> IsKaonP_NuMuP;
+  vector<bool> IsKaonP_PiPPi0;
+  vector<bool> IsKaonP_2PiPPiM;
+  vector<bool> IsKaonP_ENuE;
+  vector<bool> IsKaonP_2PiNPiP;
+  vector<bool> IsKaonP_Others;
+  vector<bool> IsKaonM;
+  vector<bool> IsKaon0;
+  vector<bool> IsAssociatedKaonP;
+  vector<bool> IsSignal;
+  vector<bool> IsSignal_NuMuP;
+  vector<bool> IsSignal_PiPPi0;
+  Bool_t GoodReco;
+  Bool_t GoodPrimaryReco;
+  Bool_t GoodRecoAsShower;
+
         vector<TVector3> TruePrimaryVertex;
 
 	//true variables
 	std::vector<SimParticle> Neutrino;
 	std::vector<SimParticle> Lepton;
-	std::vector<SimParticle> Hyperon;
-	std::vector<SimParticle> PrimaryNucleon;
-	std::vector<SimParticle> PrimaryPion;
-	std::vector<SimParticle> PrimaryKaon;
-	std::vector<SimParticle> Decay;
-	std::vector<SimParticle> SigmaZeroDecayLambda;
-	std::vector<SimParticle> SigmaZeroDecayPhoton;
-	std::vector<SimParticle> KaonDecay;
+	std::vector<SimParticle> PrimaryHyperon;
+  std::vector<SimParticle> PrimaryNucleon;
+  std::vector<SimParticle> PrimaryPion;
+  std::vector<SimParticle> PrimaryKaon;
+  std::vector<SimParticle> PrimaryKaonP;
+  std::vector<SimParticle> PrimaryNucleus;
+  std::vector<SimParticle> HyperonDecay;
+  std::vector<SimParticle> KaonPDecay;
+  std::vector<SimParticle> KaonPDecay_NuMuP;
+  std::vector<SimParticle> KaonPDecay_PiPPi0;
+  std::vector<SimParticle> KaonMDecay;
+  std::vector<SimParticle> Kaon0Decay;
+  std::vector<SimParticle> NeutralKaonDecayK0SL;
 
         vector<TVector3> DecayVertex;
 
 	TVector3 RecoPrimaryVertex;
+  Bool_t PassNuCCInclusiveFilter;
+	Int_t NPrimaryDaughters;
 	Int_t NPrimaryTrackDaughters;
 	Int_t NPrimaryShowerDaughters;
+  Int_t NOtherTracks;
+  Int_t NOtherRebuiltTracks;
+  Int_t NOtherShowers;
 
 	std::vector<RecoParticle> TracklikePrimaryDaughters;
 	std::vector<RecoParticle> ShowerlikePrimaryDaughters;
+  std::vector<RecoParticle> TrackOthers;
+  std::vector<RecoParticle> TrackRebuiltOthers;
+  std::vector<RecoParticle> ShowerOthers;
 
 	int TrueMuonIndex;
-	int TrueDecayProtonIndex;
+	int TrueKaonIndex;
+	int TrueDecayMuonIndex;
 	int TrueDecayPionIndex;
 
 	// Muon, proton and pion candidates
 	RecoParticle MuonCandidate;
-	RecoParticle DecayProtonCandidate;
+	RecoParticle KaonCandidate;
+	RecoParticle DecayMuonCandidate;
 	RecoParticle DecayPionCandidate;
 
 	Float_t SelectorBDTScore;
 	Float_t AnalysisBDTScore;
-
-        vector<vector<int>> ConnSeedIndexes_Plane0;
-        vector<vector<int>> ConnOutputIndexes_Plane0;
-        vector<vector<int>> ConnOutputSizes_Plane0;
-        vector<vector<int>> ConnSeedChannels_Plane0;
-        vector<vector<int>> ConnSeedTicks_Plane0;
-        vector<vector<int>> ConnSeedIndexes_Plane1;
-        vector<vector<int>> ConnOutputIndexes_Plane1;
-        vector<vector<int>> ConnOutputSizes_Plane1;
-        vector<vector<int>> ConnSeedChannels_Plane1;
-        vector<vector<int>> ConnSeedTicks_Plane1;
-        vector<vector<int>> ConnSeedIndexes_Plane2;
-        vector<vector<int>> ConnOutputIndexes_Plane2;
-        vector<vector<int>> ConnOutputSizes_Plane2;
-        vector<vector<int>> ConnSeedChannels_Plane2;
-        vector<vector<int>> ConnSeedTicks_Plane2;
     
         vector<string> SysDials;
         vector<vector<vector<double>>> SysWeights;
