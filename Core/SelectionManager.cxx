@@ -189,7 +189,7 @@ void SelectionManager::SetSignal(Event &e){
       IsSignal_NuMuP_tmp = false;
       IsSignal_PiPPi0_tmp = false;
 
-      e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr)); 
+      e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume_MCC9(e.TruePrimaryVertex.at(i_tr)); 
 
       if(e.IsSignal.at(i_tr) || e.IsSignal_NuMuP.at(i_tr) || e.IsSignal_PiPPi0.at(i_tr) ){
 
@@ -351,7 +351,7 @@ void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
 
 bool SelectionManager::FiducialVolumeCut(const Event &e){
 
-   bool passed = a_FiducialVolume.InFiducialVolume(e.RecoPrimaryVertex);
+   bool passed = a_FiducialVolume.InFiducialVolume_MCC9(e.RecoPrimaryVertex);
 
    UpdateCut(e,passed,"FV");
 
@@ -360,9 +360,24 @@ bool SelectionManager::FiducialVolumeCut(const Event &e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Apply the fiducial volume cut for daughter track
+
+bool SelectionManager::DaughterFiducialVolumeCut(const Event &e, RecoParticle& DaughterTrackParticle){
+
+  TVector3 DaughterTrackEnd;
+  DaughterTrackEnd.SetXYZ(DaughterTrackParticle.TrackEndX, DaughterTrackParticle.TrackEndY, DaughterTrackParticle.TrackEndZ);
+   bool passed = a_FiducialVolume.InFiducialVolume_5cm(DaughterTrackEnd);
+
+   UpdateCut(e,passed,"DaughterFV");
+
+   return passed;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 // Apply the three track cut
 
-bool SelectionManager::DaughterTrackCut(const Event &e){
+bool SelectionManager::DaughterTrackCut(const Event &e, RecoParticle& DaughterTrackParticle){
 
   RecoParticle PrimaryTrack;
   RecoParticle DaughterTrack;
@@ -388,7 +403,10 @@ bool SelectionManager::DaughterTrackCut(const Event &e){
        DaughterStart.SetXYZ(PrimaryTrack.TrackStartX, PrimaryTrack.TrackStartY, PrimaryTrack.TrackStartZ);
 
        PrimaryDaughterDistance = PrimaryEnd - DaughterStart;
-       if( PrimaryDaughterDistance.Mag() < 10) NDaughterTrack++;
+       if( PrimaryDaughterDistance.Mag() < 10){
+	 NDaughterTrack++;
+	 DaughterTrackParticle = DaughterTrack;
+       }
 
      }
 
@@ -427,47 +445,15 @@ bool SelectionManager::ChooseMuonCandidate(Event &e){
 
 // Apply the secondary track length cut
 
-bool SelectionManager::DaughterTrackLengthCut(const Event &e){
+bool SelectionManager::DaughterTrackLengthCut(const Event &e, RecoParticle& DaughterTrackParticle){
 
-   bool passed = a_TrackLengthCutManager.ApplyCut(e.TracklikePrimaryDaughters);
+   bool passed = DaughterTrackParticle.TrackLength > 20.f;
 
-   UpdateCut(e,passed,"SubleadingTracks");
+   UpdateCut(e,passed,"DaughterTrackLength");
 
    return passed;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-// Select proton and pion tracks. If cheat is selected uses truth information instead of BDT 
-
-bool SelectionManager::ChooseProtonPionCandidates(Event &e,bool cheat){
-
-   std::pair<int,int> candidates;
-
-   if(cheat) candidates = a_SelectorBDTManager.NominateTracksCheat(e);
-   else candidates = a_SelectorBDTManager.NominateTracks(e);
-
-   bool passed = candidates.first != -1 && candidates.second != -1;
-
-   if(!passed){
-      UpdateCut(e,passed,"DecaySelector");
-      return false;
-   }
-
-   e.DecayProtonCandidate = e.TracklikePrimaryDaughters.at(candidates.first);
-   e.DecayPionCandidate = e.TracklikePrimaryDaughters.at(candidates.second);
-
-   // Erase from track vector
-   std::vector<RecoParticle> TracklikePrimaryDaughters_tmp;
-
-   for(size_t i=0;i<e.TracklikePrimaryDaughters.size();i++)
-      if(i != candidates.first && i != candidates.second) TracklikePrimaryDaughters_tmp.push_back(e.TracklikePrimaryDaughters.at(i));
-
-   e.TracklikePrimaryDaughters = TracklikePrimaryDaughters_tmp;
-
-   UpdateCut(e,passed,"DecaySelector");
-   return true;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -477,7 +463,7 @@ bool SelectionManager::AnalysisBDTCut(Event &e){
 
    bool passed = a_AnalysisBDTManager.CalculateScore(e) > TheParams.p_AnalysisBDT_Cut; 
 
-   UpdateCut(e,passed,"DecayAnalysis");
+   UpdateCut(e,passed,"BDT");
 
    return passed;
 }
