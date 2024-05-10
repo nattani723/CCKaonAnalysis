@@ -36,16 +36,27 @@ void EventAssembler::SetFile(string infilename,string sampletype){
 
    t_in->SetBranchStatus("Neutrino",1);
    t_in->SetBranchStatus("Lepton",1);
-   t_in->SetBranchStatus("Hyperon",1);
-   t_in->SetBranchStatus("Decay",1);
+   t_in->SetBranchStatus("PrimaryHyperon",1);
    t_in->SetBranchStatus("PrimaryNucleon",1);
    t_in->SetBranchStatus("PrimaryPion",1);
    t_in->SetBranchStatus("PrimaryKaon",1);
-   t_in->SetBranchStatus("SigmaZeroDecayLambda",1);
-   t_in->SetBranchStatus("SigmaZeroDecayPhoton",1);
-   t_in->SetBranchStatus("KaonDecay",1);
+   t_in->SetBranchStatus("PrimaryKaonP",1);
+   t_in->SetBranchStatus("PrimaryNucleus",1);
+   t_in->SetBranchStatus("HyperonDecay",1);
+   t_in->SetBranchStatus("KaonPDecay",1);
+   t_in->SetBranchStatus("KaonPDecay_NuMuP",1);
+   t_in->SetBranchStatus("KaonPDecay_PiPPi0",1);
+   t_in->SetBranchStatus("KaonMDecay",1);
+   t_in->SetBranchStatus("Kaon0Decay",1);
+   t_in->SetBranchStatus("KaonPDecay",1);
+   t_in->SetBranchStatus("NeutralKaonDecayK0SL",1);
+
    t_in->SetBranchStatus("TracklikePrimaryDaughters",1);
    t_in->SetBranchStatus("ShowerlikePrimaryDaughters",1);
+   t_in->SetBranchStatus("TrackOthers",1);
+   t_in->SetBranchStatus("TrackRebuiltOthers",1);
+   t_in->SetBranchStatus("ShowerOthers",1);
+
    t_in->SetBranchStatus("IsData",1);
    t_in->SetBranchStatus("EventID",1);
    t_in->SetBranchStatus("run",1);
@@ -58,44 +69,61 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("NMCTruthsInTPC",1);
    t_in->SetBranchStatus("InActiveTPC",1);
    t_in->SetBranchStatus("IsHyperon",1);
-   t_in->SetBranchStatus("IsLambda",1);
-   t_in->SetBranchStatus("IsLambdaCharged",1);
-   t_in->SetBranchStatus("IsSigmaZero",1);
-   t_in->SetBranchStatus("IsSigmaZeroCharged",1);
-   t_in->SetBranchStatus("IsAssociatedHyperon",1);
+   t_in->SetBranchStatus("IsKaon",1);
+   t_in->SetBranchStatus("IsKaonP",1);
+   t_in->SetBranchStatus("IsKaonP_NuMuP",1);
+   t_in->SetBranchStatus("IsKaonP_PiPPi0",1);
+   t_in->SetBranchStatus("IsKaonP_2PiPPiM",1);
+   t_in->SetBranchStatus("IsKaonP_ENuE",1);
+   t_in->SetBranchStatus("IsKaonP_2PiNPiP",1);
+   t_in->SetBranchStatus("IsKaonP_Others",1);
+   t_in->SetBranchStatus("IsKaonM",1);
+   t_in->SetBranchStatus("IsKaon0",1);
+   t_in->SetBranchStatus("IsAssociatedKaonP",1);
    t_in->SetBranchStatus("IsSignal",1);
-   t_in->SetBranchStatus("IsSignalSigmaZero",1);
+   t_in->SetBranchStatus("IsSignal_NuMuP",1);
+   t_in->SetBranchStatus("IsSignal_PiPPi0",1);
    t_in->SetBranchStatus("GoodReco",1);
-   t_in->SetBranchStatus("EventHasNeutronScatter",1);
+   t_in->SetBranchStatus("GoodPrimaryReco",1);
+   t_in->SetBranchStatus("GoodRecoAsShower",1);
+
+   t_in->SetBranchStatus("EventHasKaonPScatter",1);
    t_in->SetBranchStatus("EventHasHyperon",1);
+   t_in->SetBranchStatus("EventHasKaon",1);
+   t_in->SetBranchStatus("EventHasKaonP",1);
+   t_in->SetBranchStatus("EventHasKaonP_NuMuP",1);
+   t_in->SetBranchStatus("EventHasKaonP_PiPPi0",1);
+   t_in->SetBranchStatus("EventHasKaonM",1);
+   t_in->SetBranchStatus("EventHasKaon0",1);
+
    t_in->SetBranchStatus("TruePrimaryVertex_X",1);
    t_in->SetBranchStatus("TruePrimaryVertex_Y",1);
    t_in->SetBranchStatus("TruePrimaryVertex_Z",1);
    t_in->SetBranchStatus("DecayVertex_X",1);
    t_in->SetBranchStatus("DecayVertex_Y",1);
    t_in->SetBranchStatus("DecayVertex_Z",1);
+
    t_in->SetBranchStatus("RecoPrimaryVertex",1);
+   t_in->SetBranchStatus("PassNuCCInclusiveFilter",1);
+   t_in->SetBranchStatus("NPrimaryDaughters",1);
    t_in->SetBranchStatus("NPrimaryTrackDaughters",1);
    t_in->SetBranchStatus("NPrimaryShowerDaughters",1);
-   t_in->SetBranchStatus("ConnSeedIndexes_Plane0",1);
-   t_in->SetBranchStatus("ConnOutputIndexes_Plane0",1);
-   t_in->SetBranchStatus("ConnOutputSizes_Plane0",1);
-   t_in->SetBranchStatus("ConnSeedChannels_Plane0",1);
-   t_in->SetBranchStatus("ConnSeedTicks_Plane0",1);
-   t_in->SetBranchStatus("ConnSeedIndexes_Plane1",1);
-   t_in->SetBranchStatus("ConnOutputIndexes_Plane1",1);
-   t_in->SetBranchStatus("ConnOutputSizes_Plane1",1);
-   t_in->SetBranchStatus("ConnSeedChannels_Plane1",1);
-   t_in->SetBranchStatus("ConnSeedTicks_Plane1",1);
-   t_in->SetBranchStatus("ConnSeedIndexes_Plane2",1);
-   t_in->SetBranchStatus("ConnOutputIndexes_Plane2",1);
-   t_in->SetBranchStatus("ConnOutputSizes_Plane2",1);
-   t_in->SetBranchStatus("ConnSeedChannels_Plane2",1);
-   t_in->SetBranchStatus("ConnSeedTicks_Plane2",1);
+   t_in->SetBranchStatus("NOtherTracks",1);
+   t_in->SetBranchStatus("NOtherRebuiltTracks",1);
+   t_in->SetBranchStatus("NOtherShowers",1);
+
+
+
+   t_in->SetBranchStatus("",1);
+   t_in->SetBranchStatus("",1);
+   t_in->SetBranchStatus("",1);
+   t_in->SetBranchStatus("",1);
+
    if(LoadWeights){
    t_in->SetBranchStatus("SysDials",1);
    t_in->SetBranchStatus("SysWeights",1);
    }
+
    t_in->SetBranchAddress("IsData", &IsData);
    t_in->SetBranchAddress("EventID", &EventID);
    t_in->SetBranchAddress("run", &run);
@@ -106,59 +134,75 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("CCNC", &CCNC);
    t_in->SetBranchAddress("NMCTruths", &NMCTruths);
    t_in->SetBranchAddress("NMCTruthsInTPC", &NMCTruthsInTPC);
+
    t_in->SetBranchAddress("InActiveTPC", &InActiveTPC);
    t_in->SetBranchAddress("IsHyperon", &IsHyperon);
-   t_in->SetBranchAddress("IsLambda", &IsLambda);
-   t_in->SetBranchAddress("IsLambdaCharged", &IsLambdaCharged);
-   t_in->SetBranchAddress("IsSigmaZero", &IsSigmaZero);
-   t_in->SetBranchAddress("IsSigmaZeroCharged", &IsSigmaZeroCharged);
-   t_in->SetBranchAddress("IsAssociatedHyperon", &IsAssociatedHyperon);
+   t_in->SetBranchAddress("IsKaon", &IsKaon);
+   t_in->SetBranchAddress("IsKaonP", &IsKaonP);
+   t_in->SetBranchAddress("IsKaonP_NuMuP", &IsKaonP_NuMuP);
+   t_in->SetBranchAddress("IsKaonP_PiPPi0", &IsKaonP_PiPPi0);
+   t_in->SetBranchAddress("IsKaonP_2PiPPiM", &IsKaonP_2PiPPiM);
+   t_in->SetBranchAddress("IsKaonP_ENuE", &IsKaonP_ENuE);
+   t_in->SetBranchAddress("IsKaonP_2PiNPiP", &IsKaonP_2PiNPiP);
+   t_in->SetBranchAddress("IsKaonP_Others", &IsKaonP_Others);
+   t_in->SetBranchAddress("IsKaonM", &IsKaonM);
+   t_in->SetBranchAddress("IsKaon0", &IsKaon0);
+   t_in->SetBranchAddress("IsAssociatedKaon", &IsAssociatedKaon);
    t_in->SetBranchAddress("IsSignal", &IsSignal);
-   t_in->SetBranchAddress("IsSignalSigmaZero", &IsSignalSigmaZero);
+   t_in->SetBranchAddress("IsSignal_NuMuP", &IsSignal_NuMuP);
+   t_in->SetBranchAddress("IsSignal_PiPPi0", &IsSignal_PiPPi0);
    t_in->SetBranchAddress("GoodReco", &GoodReco);
-   t_in->SetBranchAddress("EventHasNeutronScatter", &EventHasNeutronScatter);
+   t_in->SetBranchAddress("GoodRecoPrimaryReco", &GoodRecoPrimaryReco);
+   t_in->SetBranchAddress("GoodRecoRecoAsShower", &GoodRecoRecoAsShower);
+
+   t_in->SetBranchAddress("EventHasKaonScatter", &EventHasKaonScatter);
    t_in->SetBranchAddress("EventHasHyperon", &EventHasHyperon);
+   t_in->SetBranchAddress("EventHasKaon", &EventHasKaon);
+   t_in->SetBranchAddress("EventHasKaonP", &EventHasKaonP);
+   t_in->SetBranchAddress("EventHasKaonP_NuMuP", &EventHasKaonP_NuMuP);
+   t_in->SetBranchAddress("EventHasKaonP_PiPPi0", &EventHasKaonP_PiPPi0);
+   t_in->SetBranchAddress("EventHasKaonM", &EventHasKaonM);
+   t_in->SetBranchAddress("EventHasKaon0", &EventHasKaon0);
+
+   t_in->SetBranchAddress("Neutrino",&Neutrino);
+   t_in->SetBranchAddress("Lepton",&Lepton);
+   t_in->SetBranchAddress("PrimaryHyperon",&PrimaryHyperon);
+   t_in->SetBranchAddress("PrimaryNucleon",&PrimaryNucleon);
+   t_in->SetBranchAddress("PrimaryPion",&PrimaryPion);
+   t_in->SetBranchAddress("PrimaryKaon",&PrimaryKaon);
+   t_in->SetBranchAddress("PrimaryKaonP",&PrimaryKaonP);
+   t_in->SetBranchAddress("PrimaryNucleus",&PrimaryNucleus);
+   t_in->SetBranchAddress("HyperonDecay",&HyperonDecay);
+   t_in->SetBranchAddress("KaonPDecay",&KaonPDecay);
+   t_in->SetBranchAddress("KaonPDecay_NuMuP",&KaonPDecay_NuMuP);
+   t_in->SetBranchAddress("KaonPDecay_PiPPi0",&KaonPDecay_PiPPi0);
+   t_in->SetBranchAddress("KaonMDecay",&KaonMDecay);
+   t_in->SetBranchAddress("Kaon0Decay",&Kaon0Decay);
+   t_in->SetBranchAddress("NeutralKaonDecayK0SL",&NeutralKaonDecayK0SL);
 
    t_in->SetBranchAddress("TruePrimaryVertex_X", &TruePrimaryVertex_X);
    t_in->SetBranchAddress("TruePrimaryVertex_Y", &TruePrimaryVertex_Y);
    t_in->SetBranchAddress("TruePrimaryVertex_Z", &TruePrimaryVertex_Z);
-
-   t_in->SetBranchAddress("Neutrino",&Neutrino);
-   t_in->SetBranchAddress("Lepton",&Lepton);
-   t_in->SetBranchAddress("Hyperon",&Hyperon);
-   t_in->SetBranchAddress("Decay",&Decay);
-   t_in->SetBranchAddress("PrimaryNucleon",&PrimaryNucleon);
-   t_in->SetBranchAddress("PrimaryPion",&PrimaryPion);
-   t_in->SetBranchAddress("PrimaryKaon",&PrimaryKaon);
-   t_in->SetBranchAddress("SigmaZeroDecayLambda",&SigmaZeroDecayLambda);
-   t_in->SetBranchAddress("SigmaZeroDecayPhoton",&SigmaZeroDecayPhoton);
-   t_in->SetBranchAddress("KaonDecay",&KaonDecay);
 
    t_in->SetBranchAddress("DecayVertex_X", &DecayVertex_X);
    t_in->SetBranchAddress("DecayVertex_Y", &DecayVertex_Y);
    t_in->SetBranchAddress("DecayVertex_Z", &DecayVertex_Z);
 
    t_in->SetBranchAddress("RecoPrimaryVertex", &RecoPrimaryVertex);
+   t_in->SetBranchAddress("PassNuCCInclusiveFilter",&PassNuCCInclusiveFilter);
+   t_in->SetBranchAddress("NPrimaryDaughters",&NPrimaryDaughters);
    t_in->SetBranchAddress("NPrimaryTrackDaughters", &NPrimaryTrackDaughters);
    t_in->SetBranchAddress("NPrimaryShowerDaughters", &NPrimaryShowerDaughters);
+   t_in->SetBranchAddress("NOtherTracks",&NOtherTracks);
+   t_in->SetBranchAddress("NOtherRebuiltTracks",&NOtherRebuiltTracks);
+   t_in->SetBranchAddress("NOtherShowers",&NOtherShowers);
+
    t_in->SetBranchAddress("TracklikePrimaryDaughters",&TracklikePrimaryDaughters);
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters",&ShowerlikePrimaryDaughters);
-               
-   t_in->SetBranchAddress("ConnSeedIndexes_Plane0", &ConnSeedIndexes_Plane0);
-   t_in->SetBranchAddress("ConnOutputIndexes_Plane0", &ConnOutputIndexes_Plane0);
-   t_in->SetBranchAddress("ConnOutputSizes_Plane0", &ConnOutputSizes_Plane0);
-   t_in->SetBranchAddress("ConnSeedChannels_Plane0", &ConnSeedChannels_Plane0);
-   t_in->SetBranchAddress("ConnSeedTicks_Plane0", &ConnSeedTicks_Plane0);
-   t_in->SetBranchAddress("ConnSeedIndexes_Plane1", &ConnSeedIndexes_Plane1);
-   t_in->SetBranchAddress("ConnOutputIndexes_Plane1", &ConnOutputIndexes_Plane1);
-   t_in->SetBranchAddress("ConnOutputSizes_Plane1", &ConnOutputSizes_Plane1);
-   t_in->SetBranchAddress("ConnSeedChannels_Plane1", &ConnSeedChannels_Plane1);
-   t_in->SetBranchAddress("ConnSeedTicks_Plane1", &ConnSeedTicks_Plane1);
-   t_in->SetBranchAddress("ConnSeedIndexes_Plane2", &ConnSeedIndexes_Plane2);
-   t_in->SetBranchAddress("ConnOutputIndexes_Plane2", &ConnOutputIndexes_Plane2);
-   t_in->SetBranchAddress("ConnOutputSizes_Plane2", &ConnOutputSizes_Plane2);
-   t_in->SetBranchAddress("ConnSeedChannels_Plane2", &ConnSeedChannels_Plane2);
-   t_in->SetBranchAddress("ConnSeedTicks_Plane2", &ConnSeedTicks_Plane2);
+   t_in->SetBranchAddress("TrackOthers",&TrackOthers);
+   t_in->SetBranchAddress("TrackRebuiltOthers",&TrackRebuiltOthers);
+   t_in->SetBranchAddress("ShowerOthers",&ShowerOthers);
+
    if(LoadWeights){
    t_in->SetBranchAddress("SysDials", &SysDials);
    t_in->SetBranchAddress("SysWeights", &SysWeights);
