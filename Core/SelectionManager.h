@@ -32,7 +32,6 @@
 #include "AnalysisBDTManager.h"
 #include "PlottingFunctions.h"
 #include "EventListFilter.h"
-#include "CTTest.h"
 #include "SystematicsHeader.h"
 #include "EventType.h"
 
@@ -81,7 +80,7 @@ class SelectionManager {
       double POT;
 
       // List of allowed sample types
-      const std::vector<std::string> SampleTypes = { "Hyperon" , "Background" , "Dirt" , "EXT" , "Data" };
+      const std::vector<std::string> SampleTypes = { "AssociatedKaon" , "SingleKaon", "Background" , "Dirt" , "EXT" , "Data" };
 
       // Parameters of current sample being processed
       double thisSampleWeight;
@@ -101,9 +100,6 @@ class SelectionManager {
       AnalysisBDTManager a_AnalysisBDTManager;
       EventListFilter a_EventListFilter;
       SecondaryVertexFitter a_SecondaryVertexFitter;
-      CTTest a_CTTest_Plane0;
-      CTTest a_CTTest_Plane1;
-      CTTest a_CTTest_Plane2;
 
       // Misc settings/methods //
    private:
@@ -119,7 +115,8 @@ class SelectionManager {
    private:
 
       // Cut Data Management //
-      const std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" };
+      //const std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" };
+      const std::vector<std::string> CutTypes = { "FV" , "MuonID" , "DaughterTrack" , "DaughterFV" , "DaughterTrackLength" , "BDT" };
       void DeclareCuts();
       std::vector<Cut> Cuts;
       void UpdateCut(const Event &e,bool Passed,std::string CutName);
@@ -134,16 +131,12 @@ class SelectionManager {
    public:
 
       bool FiducialVolumeCut(const Event &e);
-      bool TrackCut(const Event &e);
-      bool ShowerCut(const Event &e);
       bool ChooseMuonCandidate(Event &e);
-      bool TrackLengthCut(const Event &e);
-      bool ChooseProtonPionCandidates(Event &e, bool cheat=false);
+      bool DaughterTrackCut(const Event &e);
+      bool DaughterFiducialVolumeCut(const Event &e);
+      bool DaughterTrackLengthCut(const Event &e);
       bool AnalysisBDTCut(Event &e);
       bool EventListCut(const Event &e);
-      bool ConnectednessTest(const Event &e, int nplanes=1);
-      bool WCut(const Event &e);
-      bool AngleCut(const Event &e);
 
       // Histogram Functions //
 

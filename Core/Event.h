@@ -89,8 +89,8 @@ struct Event {
   Int_t NOtherRebuiltTracks;
   Int_t NOtherShowers;
 
-	std::vector<RecoParticle> TracklikePrimaryDaughters;
-	std::vector<RecoParticle> ShowerlikePrimaryDaughters;
+	std::vector<RecoParticle> TrackPrimaryDaughters;
+	std::vector<RecoParticle> ShowerPrimaryDaughters;
   std::vector<RecoParticle> TrackOthers;
   std::vector<RecoParticle> TrackRebuiltOthers;
   std::vector<RecoParticle> ShowerOthers;

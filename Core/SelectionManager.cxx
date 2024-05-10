@@ -16,10 +16,7 @@ SelectionManager::SelectionManager() :
    a_SelectorBDTManager("Test") ,
    a_AnalysisBDTManager("Test") ,
    a_EventListFilter() ,
-   a_SecondaryVertexFitter(5) , 
-   a_CTTest_Plane0(0) ,
-   a_CTTest_Plane1(1) ,
-   a_CTTest_Plane2(2) 
+   a_SecondaryVertexFitter(5)
 {
    std::cout << "Calling default constructor for SelectionManager" << std::endl;
    DeclareCuts();
@@ -47,10 +44,7 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    a_SelectorBDTManager("Test") , 
    a_AnalysisBDTManager("Test") ,
    a_EventListFilter() ,
-   a_SecondaryVertexFitter(p.p_VertexPull) , 
-   a_CTTest_Plane0(0) ,
-   a_CTTest_Plane1(1) ,
-   a_CTTest_Plane2(2) 
+   a_SecondaryVertexFitter(p.p_VertexPull)
 {
    std::cout << "Building SelectionManager" << std::endl;
 
@@ -132,10 +126,10 @@ void SelectionManager::AddEvent(Event &e){
 
    // Sample Orthogonality
 
-   if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
-   if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
-   if(thisSampleType != "Hyperon" &&  e.EventHasHyperon){ e.Weight = 0.0; return; }
-   if(thisSampleType == "Hyperon" &&  !e.EventHasHyperon){ e.Weight = 0.0; return; }
+  if(thisSampleType != "AssocKaon"  &&   e.EventHasKaonP){ e.Weight = 0.0; return; }
+  if(thisSampleType == "AssocKaon"  &&  !e.EventHasKaonP){ e.Weight = 0.0; return; }
+  if(thisSampleType != "SingleKaon" &&   e.EventHasKaonP){ e.Weight = 0.0; return; }
+  if(thisSampleType == "SingleKaon" &&  !e.EventHasKaonP){ e.Weight = 0.0; return; }
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
@@ -179,60 +173,87 @@ void SelectionManager::SetSignal(Event &e){
 
 
    e.EventIsSignal = false;
-   e.EventIsSignalSigmaZero = false;
+   e.EventIsSignal_NuMuP = false;
+   e.EventIsSignal_PiPPi0 = false;
    e.GoodReco = false;
+   e.GoodPrimaryReco = false;
+   e.GoodecoAsShower = false;
 
    std::vector<bool> IsSignal_tmp = e.IsSignal;
-   std::vector<bool> IsSignalSigmaZero_tmp = e.IsSignalSigmaZero;
+   std::vector<bool> IsSignal_NuMuP_tmp = e.IsSignal_NuMuP;
+   std::vector<bool> IsSignal_PiPPi0_tmp = e.IsSignal_PiPPi0;
 
    for(size_t i_tr=0;i_tr<e.NMCTruths;i_tr++){
 
       IsSignal_tmp.at(i_tr) = false;
-      IsSignalSigmaZero_tmp.at(i_tr) = false;
+      IsSignal_NuMuP_tmp = false;
+      IsSignal_PiPPi0_tmp = false;
 
       e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr)); 
 
-      if(e.IsSignal.at(i_tr) || e.IsSignalSigmaZero.at(i_tr)){
+      if(e.IsSignal.at(i_tr) || e.IsSignal_NuMuP.at(i_tr) || e.IsSignal_PiPPi0.at(i_tr) ){
 
-         bool found_proton=false,found_pion=false;
+	//bool found_proton=false, found_pion=false;
+	bool found_pion, found_muon;
 
-         for(size_t i_d=0;i_d<e.Decay.size();i_d++){
+         for(size_t i_d=0;i_d<e.KaonPDecay.size();i_d++){
 
-            if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == 2212 && e.Decay.at(i_d).ModMomentum > 0.3) 
-               found_proton = true;
+	   if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -13 && e.Decay.at(i_d).ModMomentum > 0.0) 
+	     found_muon = true;
 
-            if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum > 0.1) 
-               found_pion = true;
-         }                   
+	   if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == 211 && e.Decay.at(i_d).ModMomentum > 0.1)
+	     found_pion = true;
 
-         IsSignal_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal.at(i_tr);
-         IsSignalSigmaZero_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsSignalSigmaZero.at(i_tr);
+         }
+
+	 IsSignal_tmp.at(i_tr) = (found_muon || found_pion) && e.InActiveTPC.at(i_tr) && e.IsSignal.at(i_tr);
+	 IsSignal_NuMuP_tmp.at(i_tr) = found_muon && e.InActiveTPC.at(i_tr) && e.IsSignal_NuMuP.at(i_tr);
+	 IsSignal_PiPPi0_tmp.at(i_tr) = found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal_PiPPi0.at(i_tr);
+
       }
    }
 
    e.IsSignal = IsSignal_tmp;
-   e.IsSignalSigmaZero = IsSignalSigmaZero_tmp;
+   e.IsSignal_NuMuP = IsSignal_NuMuP_tmp;
+   e.IsSignal_PiPPi0 = IsSignal_PiPPi0_tmp;
 
    e.EventIsSignal = std::find(e.IsSignal.begin(),e.IsSignal.end(), true) != e.IsSignal.end();
-   e.EventIsSignalSigmaZero = std::find(e.IsSignalSigmaZero.begin(),e.IsSignalSigmaZero.end(), true) != e.IsSignalSigmaZero.end();
+   e.EventIsSignal_NuMuP = std::find(e.IsSignal_NuMuP.begin(),e.IsSignal_NuMuP.end(), true) != e.IsSignal_NuMuP.end();
+   e.EventIsSignal_PiPPi0 = std::find(e.IsSignal_PiPPi0.begin(),e.IsSignal_PiPPi0.end(), true) != e.IsSignal_PiPPi0.end();
+
 
    // Search the list of reco'd tracks for the proton and pion
-   bool found_proton=false,found_pion=false;
+   bool found_kaon=false, found_muon=false, found_decay_muon=false, found_decay_pion=false;
 
    if(!e.EventIsSignal) return;
 
-   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
-      if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){ 
-         found_proton = true; 
-         e.TrueDecayProtonIndex = i_tr; 
+   for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
+
+      if(e.TrackPrimaryDaughters.at(i_tr).HasTruth && e.TrackPrimaryDaughters.at(i_tr).TrackTruePDG == 321 && e.TrackPrimaryDaughters.at(i_tr).TrackTrueOrigin == 1){ 
+         found_kaon = true; 
+         e.TrueKaonIndex = i_tr; 
       }
-      if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){
-         found_pion = true;
+
+      if(e.TrackPrimaryDaughters.at(i_tr).HasTruth && e.TrackPrimaryDaughters.at(i_tr).TrackTruePDG == 13 && e.TrackPrimaryDaughters.at(i_tr).TrackTrueOrigin == 1){ 
+         found_muon = true; 
+         e.TrueMuonIndex = i_tr; 
+      }
+
+      if(e.TrackPrimaryDaughters.at(i_tr).HasTruth && e.TrackPrimaryDaughters.at(i_tr).TrackTruePDG == -13 && e.TrackPrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){ 
+         found_decay_muon = true; 
+         e.TrueDecayMuonIndex = i_tr; 
+      }
+
+      if(e.TrackPrimaryDaughters.at(i_tr).HasTruth && e.TrackPrimaryDaughters.at(i_tr).TrackTruePDG == 211 && e.TrackPrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){
+         found_decay_pion = true;
          e.TrueDecayPionIndex = i_tr; 
       }
+
    }
 
-   e.GoodReco = e.EventIsSignal && found_proton && found_pion; 
+   e.GoodReco = e.EventIsSignal && found_kaon && ( found_decay_proton || found_decay_pion );
+   e.GoodPrimaryReco = e.EventIsSignal && found_kaon;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,24 +362,41 @@ bool SelectionManager::FiducialVolumeCut(const Event &e){
 
 // Apply the three track cut
 
-bool SelectionManager::TrackCut(const Event &e){
+bool SelectionManager::DaughterTrackCut(const Event &e){
 
-   bool passed = e.NPrimaryTrackDaughters > 2; 
+  RecoParticle PrimaryTrack;
+  RecoParticle DaughterTrack;
 
-   UpdateCut(e,passed,"Tracks");
+  TVector3 PrimaryEnd;
+  TVector3 DaughterStart;
+  TVector3 PrimaryDaughterDistance;
 
-   return passed;
-}
+  int NDaughterTrack=0;
 
-///////////////////////////////////////////////////////////////////////////////////////////////
+   for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
 
-// Apply the zero shower cut
+     PrimaryEnd.clear();
+     PrimaryTrack = e.TrackPrimaryDaughters.at(i_tr);
+     PrimaryEnd.SetXYZ(TPrimaryTrack.TrackEndX, PrimaryTrack.TrackEndY, PrimaryTrack.TrackEndZ);
 
-bool SelectionManager::ShowerCut(const Event &e){
+     for(size_t i_tr_dau=0;i_tr_dau<e.TrackPrimaryDaughters.size();i_tr_dau++){
 
-   bool passed = e.NPrimaryShowerDaughters < 1; 
+       if(i_tr == i_tr_dau) continue;
 
-   UpdateCut(e,passed,"Showers");
+       DaughterStart.clear();
+       DaughterTrack = e.TrackPrimaryDaughters.at(i_tr_dau);
+       DaughterStart.SetXYZ(PrimaryTrack.TrackStartX, PrimaryTrack.TrackStartY, PrimaryTrack.TrackStartZ);
+
+       PrimaryDaughterDistance = PrimaryEnd - DaughterStart;
+       if( PrimaryDaughterDistance.Mag() < 10) NDaughterTrack++;
+
+     }
+
+   }
+
+   bool passed = NDaughterTrack > 0; 
+
+   UpdateCut(e,passed,"DaughterTrack");
 
    return passed;
 }
@@ -389,7 +427,7 @@ bool SelectionManager::ChooseMuonCandidate(Event &e){
 
 // Apply the secondary track length cut
 
-bool SelectionManager::TrackLengthCut(const Event &e){
+bool SelectionManager::DaughterTrackLengthCut(const Event &e){
 
    bool passed = a_TrackLengthCutManager.ApplyCut(e.TracklikePrimaryDaughters);
 
@@ -459,61 +497,6 @@ bool SelectionManager::EventListCut(const Event &e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-// Apply the connectedness test
-
-bool SelectionManager::ConnectednessTest(const Event &e, int nplanes){
-
-   int muon_index = e.MuonCandidate.Index;
-   int proton_index = e.DecayProtonCandidate.Index;
-   int pion_index = e.DecayPionCandidate.Index;
-
-   a_CTTest_Plane0.LoadInfo(e.ConnSeedIndexes_Plane0,e.ConnOutputIndexes_Plane0,e.ConnOutputSizes_Plane0,e.ConnSeedChannels_Plane0);
-   a_CTTest_Plane1.LoadInfo(e.ConnSeedIndexes_Plane1,e.ConnOutputIndexes_Plane1,e.ConnOutputSizes_Plane1,e.ConnSeedChannels_Plane1);
-   a_CTTest_Plane2.LoadInfo(e.ConnSeedIndexes_Plane2,e.ConnOutputIndexes_Plane2,e.ConnOutputSizes_Plane2,e.ConnSeedChannels_Plane2);
-
-   int npassed = 0;
-   if(a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index)) npassed++;
-   if(a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index)) npassed++;
-   if(a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index)) npassed++;
-
-   bool passed = npassed >= nplanes; 
-
-   UpdateCut(e,passed,"Connectedness");
-
-   return passed;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-// Apply the invariant mass cut
-
-bool SelectionManager::WCut(const Event &e){
-
-   double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate); 
-   bool passed = W > TheParams.p_W_Min && W < TheParams.p_W_Max;
-   UpdateCut(e,passed,"InvariantMass");
-   return passed;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-// Apply the angle cut
-
-bool SelectionManager::AngleCut(const Event &e){
-
-   SecondaryVertex V = a_SecondaryVertexFitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
-   TVector3 GapVector = V.Vertex - e.RecoPrimaryVertex;
-   double Reco_DecayLength = (V.Vertex - e.RecoPrimaryVertex).Mag();
-   TLorentzVector Lambda4Momentum = ProtonPion4Momentum(e.DecayProtonCandidate,e.DecayPionCandidate);
-   TVector3 LambdaDirection(Lambda4Momentum.X(),Lambda4Momentum.Y(),Lambda4Momentum.Z());
-   double alpha = (180/3.1415)*LambdaDirection.Angle(GapVector);
-
-   bool passed = alpha < TheParams.p_Alpha_Cut;
-   UpdateCut(e,passed,"AlphaAngle");
-   return passed;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Setup histograms, vector with bin boundaries and string containing axis titles (same format
 // as Root TH1 titles).
