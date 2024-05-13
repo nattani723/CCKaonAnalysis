@@ -101,9 +101,12 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
    thisSampleType = Type;
 
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
+     thisSampleGenerator = kGENIE; // we do not use NuWro for this analysis
+     /*
       if (thisSampleName.find("GENIE") != std::string::npos) thisSampleGenerator = kGENIE;
       else if (thisSampleName.find("NuWro") != std::string::npos) thisSampleGenerator = kNuWro;      
       else thisSampleGenerator = -1;
+     */
    }
 
    if(Type == "Data") fHasData = true;
@@ -143,13 +146,24 @@ void SelectionManager::AddEvent(Event &e){
    if(thisSampleType != "Data") e.Weight *= thisSampleWeight;
 
    for(size_t i_c=0;i_c<Cuts.size();i_c++){
-      Cuts[i_c].fTotalEvents += e.Weight;    
+
+      Cuts[i_c].fTotalEvents += e.Weight;
+
       if(e.EventIsSignal) Cuts[i_c].fSignalEvents += e.Weight;
       if(e.GoodReco) Cuts[i_c].fGoodRecoEvents += e.Weight;
+      if(e.EventIsSignal_NuMuP) Cuts[i_c].fSignalEvents_NuMuP += e.Weight;
+      if(e.GoodReco_NuMuP) Cuts[i_c].fGoodRecoEvents_NuMuP += e.Weight;
+      if(e.EventIsSignal) Cuts[i_c].fSignalEvents_PiPPi0 += e.Weight;
+      if(e.GoodReco) Cuts[i_c].fGoodRecoEvents_PiPPi0 += e.Weight;
 
-      Cuts[i_c].fTotalEventsVar += e.Weight*e.Weight;    
+      Cuts[i_c].fTotalEventsVar += e.Weight*e.Weight;
       if(e.EventIsSignal) Cuts[i_c].fSignalEventsVar += e.Weight*e.Weight;
       if(e.GoodReco) Cuts[i_c].fGoodRecoEventsVar += e.Weight*e.Weight;
+      if(e.EventIsSignal_NuMuP) Cuts[i_c].fSignalEventsVar_NuMuP += e.Weight*e.Weight;
+      if(e.GoodReco_NuMuP) Cuts[i_c].fGoodRecoEventsVar_NuMuP += e.Weight*e.Weight;
+      if(e.EventIsSignal_PiPPi0) Cuts[i_c].fSignalEventsVar_PiPPi0 += e.Weight*e.Weight;
+      if(e.GoodReco_PiPPi0) Cuts[i_c].fGoodRecoEventsVar_PiPPi0 += e.Weight*e.Weight;
+
    }
 }
 
@@ -176,6 +190,8 @@ void SelectionManager::SetSignal(Event &e){
    e.EventIsSignal_NuMuP = false;
    e.EventIsSignal_PiPPi0 = false;
    e.GoodReco = false;
+   e.GoodReco_NuMuP = false;
+   e.GoodReco_PiPPi0 = false;
    e.GoodPrimaryReco = false;
    e.GoodecoAsShower = false;
 
@@ -251,7 +267,9 @@ void SelectionManager::SetSignal(Event &e){
 
    }
 
-   e.GoodReco = e.EventIsSignal && found_kaon && ( found_decay_proton || found_decay_pion );
+   e.GoodReco = e.EventIsSignal && found_kaon && ( found_decay_muon || found_decay_pion );
+   e.GoodReco_NuMuP = e.EventIsSignal && found_kaon && found_decay_muon;
+   e.GoodReco_PiPPi0 = e.EventIsSignal && found_kaon && found_decay_pion;
    e.GoodPrimaryReco = e.EventIsSignal && found_kaon;
 
 }
@@ -280,23 +298,41 @@ void SelectionManager::UpdateCut(const Event &e,bool Passed,std::string CutName)
       if(Cuts.at(i_c).fName == CutName){
 
          Cuts[i_c].fEventsIn += e.Weight;
+
          if(e.EventIsSignal) Cuts[i_c].fSignalEventsIn += e.Weight;
          if(e.GoodReco) Cuts[i_c].fGoodRecoEventsIn += e.Weight;
+         if(e.EventIsSignal_NuMuP) Cuts[i_c].fSignalEventsIn_NuMuP += e.Weight;
+         if(e.GoodReco_NuMuP) Cuts[i_c].fGoodRecoEventsIn_NuMuP += e.Weight;
+         if(e.EventIsSignal_PiPPi0) Cuts[i_c].fSignalEventsIn_PiPPi0 += e.Weight;
+         if(e.GoodReco_PiPPi0) Cuts[i_c].fGoodRecoEventsIn_PiPPi0 += e.Weight;
 
          Cuts[i_c].fEventsInVar += e.Weight*e.Weight;
          if(e.EventIsSignal) Cuts[i_c].fSignalEventsInVar += e.Weight*e.Weight;
          if(e.GoodReco) Cuts[i_c].fGoodRecoEventsInVar += e.Weight*e.Weight;
+         if(e.EventIsSignal_NuMuP) Cuts[i_c].fSignalEventsInVar_NuMuP += e.Weight*e.Weight;
+         if(e.GoodReco_NuMuP) Cuts[i_c].fGoodRecoEventsInVar_NuMuP += e.Weight*e.Weight;
+         if(e.EventIsSignal_PiPPi0) Cuts[i_c].fSignalEventsInVar_PiPPi0 += e.Weight*e.Weight;
+         if(e.GoodReco_PiPPi0) Cuts[i_c].fGoodRecoEventsInVar_PiPPi0 += e.Weight*e.Weight;
 
          if(Passed){
 
             Cuts[i_c].fEventsOut += e.Weight;
             if(e.EventIsSignal) Cuts[i_c].fSignalEventsOut += e.Weight;
             if(e.GoodReco) Cuts[i_c].fGoodRecoEventsOut += e.Weight;
+            if(e.EventIsSignal_NuMuP) Cuts[i_c].fSignalEventsOut_NuMuP += e.Weight;
+            if(e.GoodReco_NuMuP) Cuts[i_c].fGoodRecoEventsOut_NuMuP += e.Weight;
+            if(e.EventIsSignal) Cuts[i_c].fSignalEventsOut += e.Weight;
+            if(e.GoodReco) Cuts[i_c].fGoodRecoEventsOut += e.Weight;
 
             Cuts[i_c].fEventsOutVar += e.Weight*e.Weight;
             if(e.EventIsSignal) Cuts[i_c].fSignalEventsOutVar += e.Weight*e.Weight;
             if(e.GoodReco) Cuts[i_c].fGoodRecoEventsOutVar += e.Weight*e.Weight;
-         }       
+            if(e.EventIsSignal_NuMuP) Cuts[i_c].fSignalEventsOutVar_NuMuP += e.Weight*e.Weight;
+            if(e.GoodReco_NuMuP) Cuts[i_c].fGoodRecoEventsOutVar_NuMuP += e.Weight*e.Weight;
+            if(e.EventIsSignal_PiPPi0) Cuts[i_c].fSignalEventsOutVar_PiPPi0 += e.Weight*e.Weight;
+            if(e.GoodReco_PiPPi0) Cuts[i_c].fGoodRecoEventsOutVar_PiPPi0 += e.Weight*e.Weight;
+ 
+        }       
       }
    }
 }

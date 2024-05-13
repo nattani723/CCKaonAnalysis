@@ -14,7 +14,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       double POT = 1.0e21; // POT to scale samples to
 
       BuildTunes();
-      SelectionParameters P = P_FHC_Tune_325_NoBDT;
+      SelectionParameters P = P_FHC_K_NOBDT_TEST;
 
       std::string label = "test";
 
@@ -22,7 +22,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
+      //M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
       //M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
 
       double Signal = 0.0;
@@ -31,7 +31,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       double Sel_BG = 0.0;
 
       E.SetFile("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
-      M.AddSample("Hyperon","Hyperon",E.GetPOT());
+      //if Data, EXT, Dirt, specify its typename as the second variable in SetFile
+      M.AddSample("AssocKaon","AssocKaon",E.GetPOT());
 
       // Event Loop
       for(int i=0;i<E.GetNEvents();i++){
@@ -47,14 +48,14 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          else BG += e.Weight;
 
          if(!M.FiducialVolumeCut(e)) continue;
-         if(!M.TrackCut(e)) continue;
-         if(!M.ShowerCut(e)) continue;
-         if(!M.ChooseMuonCandidate(e)) continue;
-         if(!M.ChooseProtonPionCandidates(e)) continue;
+         //if(!M.TrackCut(e)) continue;
+         //if(!M.ShowerCut(e)) continue;
+         //if(!M.ChooseMuonCandidate(e)) continue;
+         //if(!M.ChooseProtonPionCandidates(e)) continue;
          //if(!M.AnalysisBDTCut(e)) continue;       
-         if(!M.ConnectednessTest(e)) continue;           
-         if(!M.WCut(e)) continue;
-         if(!M.AngleCut(e)) continue;
+         //if(!M.ConnectednessTest(e)) continue;           
+         //if(!M.WCut(e)) continue;
+         //if(!M.AngleCut(e)) continue;
 
          if(e.EventIsSignal) Sel_Signal += e.Weight;
          else Sel_BG += e.Weight;

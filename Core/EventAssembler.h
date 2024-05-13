@@ -82,6 +82,8 @@ class EventAssembler {
       vector<bool>* IsSignal_PiPPi0=0;
 
       Bool_t GoodReco;
+      Bool_t GoodReco_NuMuP;
+      Bool_t GoodReco_PiPPi0;
       Bool_t GoodPrimaryReco;
       Bool_t GoodRecoAsShower;
       Bool_t EventHasKaonPScatter;

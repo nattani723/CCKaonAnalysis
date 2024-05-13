@@ -218,6 +218,29 @@ P_RHC_Tune_397_NoBDT.p_W_Max = 1.14;
 P_RHC_Tune_397_NoBDT.p_Alpha_Cut = 14;
 P_RHC_Tune_397_NoBDT.HasBeenSetup = true;
 
+
+//test for runnning selection on my K
+
+ P_FHC_K_NOBDT_TEST.Name = "FHC Kaon No BDT";
+ P_FHC_K_NOBDT_TEST.p_RunPeriod = 1;
+ /*
+ P_FHC_K_NOBDT_TEST.p_FV = ;
+ P_FHC_K_NOBDT_TEST.p_Padding = ;
+ P_FHC_K_NOBDT_TEST.p_Minimum_MIP_Length = ;
+ P_FHC_K_NOBDT_TEST.p_SecondaryTrackLengthCut = ;
+ P_FHC_K_NOBDT_TEST.p_TertiaryTrackLengthCut = ;
+ P_FHC_K_NOBDT_TEST.p_Max_Displacement = ;
+ P_FHC_K_NOBDT_TEST.p_PID_Cut = ;
+ P_FHC_K_NOBDT_TEST.p_Proton_PID_Cut = ;
+ P_FHC_K_NOBDT_TEST.p_Pion_PID_Cut = ;
+ P_FHC_K_NOBDT_TEST.p_Separation_Cut = ;
+ P_FHC_K_NOBDT_TEST.p_SelectorBDT_WeightsDir = ;
+ P_FHC_K_NOBDT_TEST.p_AnalysisBDT_WeightsDir = ;
+ P_FHC_K_NOBDT_TEST.p_AnalysisBDT_Cut = ;
+ */
+ P_FHC_K_NOBDT_TEST.p_BeamMode = kFHC;
+ P_FHC_K_NOBDT_TEST.HasBeenSetup = true;
+
 }
 
 #endif
