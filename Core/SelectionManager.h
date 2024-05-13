@@ -117,7 +117,7 @@ class SelectionManager {
 
       // Cut Data Management //
       //const std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" };
-      const std::vector<std::string> CutTypes = { "FV" , "MuonID" , "DaughterTrack" , "DaughterFV" , "DaughterTrackLength" , "BDT" };
+      const std::vector<std::string> CutTypes = { "FV" , "NuCCInclusiveFilter" , "DaughterTrack" , "DaughterFV" , "DaughterTrackLength" , "BDT" };
       void DeclareCuts();
       std::vector<Cut> Cuts;
       void UpdateCut(const Event &e,bool Passed,std::string CutName);
@@ -132,6 +132,7 @@ class SelectionManager {
    public:
 
       bool FiducialVolumeCut(const Event &e);
+      bool NuCCInclusiveFilter(const Event &e);
       bool ChooseMuonCandidate(Event &e);
       bool DaughterTrackCut(const Event &e, RecoParticle& DaughterTrackParticle);
       bool DaughterFiducialVolumeCut(const Event &e, RecoParticle& DaughterTrackParticle);
