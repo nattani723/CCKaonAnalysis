@@ -103,6 +103,54 @@ bool FiducialVolume::InFiducialVolume(TVector3 Position){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+bool FiducialVolume::InFiducialVolume_MCC9(TVector3 Position){
+
+   if(Position.X() > FVxmax || Position.X() < FVxmin) return false;
+
+   if(Position.Y() > FVymax || Position.Y() < FVymin) return false;
+
+   if(Position.Z() > FVzmax || Position.Z() < FVzmin) return false;
+
+   if(Position.Z() < deadzmax && Position.Z() > deadzmin) return false;
+
+   return true;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+bool FiducialVolume::InFiducialVolume_5cm(TVector3 Position){
+
+   if(Position.X() > FVxmax_5cm || Position.X() < FVxmin_5cm) return false;
+
+   if(Position.Y() > FVymax_5cm || Position.Y() < FVymin_5cm) return false;
+
+   if(Position.Z() > FVzmax_5cm || Position.Z() < FVzmin_5cm) return false;
+
+   if(Position.Z() < deadzmax && Position.Z() > deadzmin) return false;
+
+   return true;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+bool FiducialVolume::InFiducialVolume_CCInclusive(TVector3 Position){
+
+   if(Position.X() > FVxmax_CCInclusive || Position.X() < FVxmin_CCInclusive) return false;
+
+   if(Position.Y() > FVymax_CCInclusive || Position.Y() < FVymin_CCInclusive) return false;
+
+   if(Position.Z() > FVzmax_CCInclusive || Position.Z() < FVzmin_CCInclusive) return false;
+
+   if(Position.Z() < deadzmax && Position.Z() > deadzmin) return false;
+
+   return true;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 bool FiducialVolume::InFiducialVolume_OldFV(TVector3 Position){
 
    if(Position.X() > FV_v1_xmax || Position.X() < FV_v1_xmin) return false;

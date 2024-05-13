@@ -26,6 +26,27 @@ namespace FV {
 
       private:
 
+     const double FVxmin = 0.0;
+     const double FVxmax = 256.35;
+     const double FVymin = -115.53;
+     const double FVymax = 117.47;
+     const double FVzmin = 0.1;
+     const double FVzmax = 1036.9;
+
+     const double FVxmin_5cm = 5.0;
+     const double FVxmax_5cm = 251.35;
+     const double FVymin_5cm = -110.53;
+     const double FVymax_5cm = 112.47;
+     const double FVzmin_5cm = 5.1;
+     const double FVzmax_5cm = 1031.9;
+
+     const double FVxmin_CCInclusive = 0.0;
+     const double FVxmax_CCInclusive = 246.35;
+     const double FVymin_CCInclusive = -105.53;
+     const double FVymax_CCInclusive = 107.47;
+     const double FVzmin_CCInclusive = 10.1;
+     const double FVzmax_CCInclusive = 986.8;
+
          // MCC8 Inclusive FV
          const double FV_v1_xmin = 12.0;
          const double FV_v1_xmax = 256.35 - 12.0;
@@ -85,6 +106,9 @@ namespace FV {
          void SetupWirecellFV();
          int pnpoly(std::vector<double>& vertx, std::vector<double>& verty, double testx, double testy);
 
+	 bool InFiducialVolume_5cm(TVector3 Position);
+	 bool InFiducialVolume_MCC9(TVector3 Position);
+	 bool InFiducialVolume_CCInclusive(TVector3 Position);
          bool InFiducialVolume_OldFV(TVector3 Position);
          bool InFiducialVolume_WholeTPCPadded(TVector3 Position);
          bool InFiducialVolume_Wirecell(TVector3 Position);
