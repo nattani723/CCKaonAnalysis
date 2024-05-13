@@ -129,10 +129,8 @@ void SelectionManager::AddEvent(Event &e){
 
    // Sample Orthogonality
 
-  if(thisSampleType != "AssocKaon"  &&   e.EventHasKaonP){ e.Weight = 0.0; return; }
-  if(thisSampleType == "AssocKaon"  &&  !e.EventHasKaonP){ e.Weight = 0.0; return; }
-  if(thisSampleType != "SingleKaon" &&   e.EventHasKaonP){ e.Weight = 0.0; return; }
-  if(thisSampleType == "SingleKaon" &&  !e.EventHasKaonP){ e.Weight = 0.0; return; }
+  if( ( thisSampleType != "AssocKaon" && thisSampleType != "SingleKaon" )  &&   e.EventHasKaonP){ e.Weight = 0.0; return; }
+  if( ( thisSampleType == "AssocKaon" || thisSampleType == "SingleKaon" )  &&  !e.EventHasKaonP){ e.Weight = 0.0; return; }
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
@@ -201,6 +199,8 @@ void SelectionManager::SetSignal(Event &e){
 
    for(size_t i_tr=0;i_tr<e.NMCTruths;i_tr++){
 
+     std::cout << "e.IsSignal: "<< e.IsSignal.at(i_tr) << std::endl; 
+
       IsSignal_tmp.at(i_tr) = false;
       IsSignal_NuMuP_tmp.at(i_tr) = false;
       IsSignal_PiPPi0_tmp.at(i_tr) = false;
@@ -227,9 +227,13 @@ void SelectionManager::SetSignal(Event &e){
 	 IsSignal_PiPPi0_tmp.at(i_tr) = found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal_PiPPi0.at(i_tr);
 
       }
+   std::cout << "e.IsSignal after assessment: " << IsSignal_tmp.at(i_tr) << std::endl; 
+
    }
 
+
    e.IsSignal = IsSignal_tmp;
+
    e.IsSignal_NuMuP = IsSignal_NuMuP_tmp;
    e.IsSignal_PiPPi0 = IsSignal_PiPPi0_tmp;
 

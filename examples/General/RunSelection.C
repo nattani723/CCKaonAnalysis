@@ -48,8 +48,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
          Event e = E.GetEvent(i);
 
-         M.SetSignal(e);                
-
+         M.SetSignal(e);
          M.AddEvent(e);
 
          if(e.EventIsSignal) Signal += e.Weight;
