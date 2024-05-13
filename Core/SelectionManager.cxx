@@ -375,6 +375,19 @@ bool SelectionManager::DaughterFiducialVolumeCut(const Event &e, RecoParticle& D
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Apply NuCC Inclusive Filter
+
+bool SelectionManager::NuCCInclusiveFilter(const Event &e){
+
+	bool passed = e.PassNuCCInclusiveFilter;
+	
+	UpdateCut(e,passed,"NuCCInclusiveFilter");
+	
+	return passed;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 // Apply the three track cut
 
 bool SelectionManager::DaughterTrackCut(const Event &e, RecoParticle& DaughterTrackParticle){
