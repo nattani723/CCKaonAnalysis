@@ -30,7 +30,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       double Sel_Signal = 0.0;
       double Sel_BG = 0.0;
 
-      E.SetFile("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
+      //E.SetFile("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
+      E.SetFile("/exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root");
       //if Data, EXT, Dirt, specify its typename as the second variable in SetFile
       M.AddSample("AssocKaon","AssocKaon",E.GetPOT());
 
