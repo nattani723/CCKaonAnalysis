@@ -14,7 +14,7 @@ struct Cut {
    double fSignalEvents_NuMuP=0.;
    double fSignalEvents_PiPPi0=0.;
    double fGoodRecoEvents=0.;
-   double fGoodRecoEvents_NuMUP=0.;
+   double fGoodRecoEvents_NuMuP=0.;
    double fGoodRecoEvents_PiPPi0=0.;
 
    double fTotalEventsVar=0.;

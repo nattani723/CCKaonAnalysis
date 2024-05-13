@@ -97,6 +97,9 @@ namespace FV {
          FiducialVolume(int FV,double Padding);
 
          bool InFiducialVolume(TVector3 Position);
+	 bool InFiducialVolume_5cm(TVector3 Position);
+	 bool InFiducialVolume_MCC9(TVector3 Position);
+	 bool InFiducialVolume_CCInclusive(TVector3 Position);
 
       private:
 
@@ -106,9 +109,6 @@ namespace FV {
          void SetupWirecellFV();
          int pnpoly(std::vector<double>& vertx, std::vector<double>& verty, double testx, double testy);
 
-	 bool InFiducialVolume_5cm(TVector3 Position);
-	 bool InFiducialVolume_MCC9(TVector3 Position);
-	 bool InFiducialVolume_CCInclusive(TVector3 Position);
          bool InFiducialVolume_OldFV(TVector3 Position);
          bool InFiducialVolume_WholeTPCPadded(TVector3 Position);
          bool InFiducialVolume_Wirecell(TVector3 Position);

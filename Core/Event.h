@@ -71,6 +71,7 @@ struct Event {
   std::vector<SimParticle> PrimaryPion;
   std::vector<SimParticle> PrimaryKaon;
   std::vector<SimParticle> PrimaryKaonP;
+  std::vector<SimParticle> PrimaryKaonM;
   std::vector<SimParticle> PrimaryNucleus;
   std::vector<SimParticle> HyperonDecay;
   std::vector<SimParticle> KaonPDecay;
@@ -112,7 +113,8 @@ struct Event {
 	Float_t AnalysisBDTScore;
     
         vector<string> SysDials;
-        vector<vector<vector<double>>> SysWeights;
+        vector<vector<double>> SysWeights;
+  //vector<vector<vector<double>>> SysWeights;
 
         void Print(){ std::cout << run << "  " << subrun << "  " << event << std::endl; }
 

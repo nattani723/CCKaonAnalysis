@@ -103,19 +103,22 @@ void AnalysisBDTManager::FillTree(const Event &e){
 
 bool AnalysisBDTManager::SetVariables(const Event &e){
 
-   SecondaryVertex V = Fitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
+  //SecondaryVertex V = Fitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
+   SecondaryVertex V = Fitter.MakeVertex(e.DecayPionCandidate,e.DecayPionCandidate);
 
    // Reject if fit failed
    //if(!V.fitStatus) return false;
 
    TVector3 gap_vector = V.Vertex - e.RecoPrimaryVertex;
 
-   TLorentzVector lambda4momentum = ProtonPion4Momentum(e.DecayProtonCandidate,e.DecayPionCandidate);
+   //TLorentzVector lambda4momentum = ProtonPion4Momentum(e.DecayProtonCandidate,e.DecayPionCandidate);
+   TLorentzVector lambda4momentum = ProtonPion4Momentum(e.DecayPionCandidate,e.DecayPionCandidate);
    TVector3 lambdadirection(lambda4momentum.X(),lambda4momentum.Y(),lambda4momentum.Z());
 
    lambdadirection *= 1.0/lambdadirection.Mag();
 
-   v_w = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate);
+   //v_w = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate);
+   v_w = ProtonPionInvariantMass(e.DecayPionCandidate,e.DecayPionCandidate);
    v_gap = gap_vector.Mag();   
    v_bdt_score = e.SelectorBDTScore; 
    v_lambda_angle = (180/3.142)*lambdadirection.Angle(gap_vector);

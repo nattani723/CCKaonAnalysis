@@ -193,7 +193,7 @@ void SelectionManager::SetSignal(Event &e){
    e.GoodReco_NuMuP = false;
    e.GoodReco_PiPPi0 = false;
    e.GoodPrimaryReco = false;
-   e.GoodecoAsShower = false;
+   e.GoodRecoAsShower = false;
 
    std::vector<bool> IsSignal_tmp = e.IsSignal;
    std::vector<bool> IsSignal_NuMuP_tmp = e.IsSignal_NuMuP;
@@ -202,8 +202,8 @@ void SelectionManager::SetSignal(Event &e){
    for(size_t i_tr=0;i_tr<e.NMCTruths;i_tr++){
 
       IsSignal_tmp.at(i_tr) = false;
-      IsSignal_NuMuP_tmp = false;
-      IsSignal_PiPPi0_tmp = false;
+      IsSignal_NuMuP_tmp.at(i_tr) = false;
+      IsSignal_PiPPi0_tmp.at(i_tr) = false;
 
       e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume_MCC9(e.TruePrimaryVertex.at(i_tr)); 
 
@@ -214,10 +214,10 @@ void SelectionManager::SetSignal(Event &e){
 
          for(size_t i_d=0;i_d<e.KaonPDecay.size();i_d++){
 
-	   if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -13 && e.Decay.at(i_d).ModMomentum > 0.0) 
+	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == -13 && e.KaonPDecay.at(i_d).ModMomentum > 0.0) 
 	     found_muon = true;
 
-	   if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == 211 && e.Decay.at(i_d).ModMomentum > 0.1)
+	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == 211 && e.KaonPDecay.at(i_d).ModMomentum > 0.1)
 	     found_pion = true;
 
          }
@@ -439,15 +439,15 @@ bool SelectionManager::DaughterTrackCut(const Event &e, RecoParticle& DaughterTr
 
    for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
 
-     PrimaryEnd.clear();
+     PrimaryEnd.Clear();
      PrimaryTrack = e.TrackPrimaryDaughters.at(i_tr);
-     PrimaryEnd.SetXYZ(TPrimaryTrack.TrackEndX, PrimaryTrack.TrackEndY, PrimaryTrack.TrackEndZ);
+     PrimaryEnd.SetXYZ(PrimaryTrack.TrackEndX, PrimaryTrack.TrackEndY, PrimaryTrack.TrackEndZ);
 
      for(size_t i_tr_dau=0;i_tr_dau<e.TrackPrimaryDaughters.size();i_tr_dau++){
 
        if(i_tr == i_tr_dau) continue;
 
-       DaughterStart.clear();
+       DaughterStart.Clear();
        DaughterTrack = e.TrackPrimaryDaughters.at(i_tr_dau);
        DaughterStart.SetXYZ(PrimaryTrack.TrackStartX, PrimaryTrack.TrackStartY, PrimaryTrack.TrackStartZ);
 
@@ -474,16 +474,16 @@ bool SelectionManager::DaughterTrackCut(const Event &e, RecoParticle& DaughterTr
 
 bool SelectionManager::ChooseMuonCandidate(Event &e){
 
-   int i_muon = a_MuonID.SelectCandidate(e.TracklikePrimaryDaughters);
+   int i_muon = a_MuonID.SelectCandidate(e.TrackPrimaryDaughters);
 
    if(i_muon == -1){
       UpdateCut(e,false,"MuonID");
       return false;
    }
 
-   RecoParticle theMuonCandidate = e.TracklikePrimaryDaughters.at(i_muon);
+   RecoParticle theMuonCandidate = e.TrackPrimaryDaughters.at(i_muon);
    e.MuonCandidate = theMuonCandidate;
-   e.TracklikePrimaryDaughters.erase(e.TracklikePrimaryDaughters.begin()+i_muon);
+   e.TrackPrimaryDaughters.erase(e.TrackPrimaryDaughters.begin()+i_muon);
 
    UpdateCut(e,true,"MuonID");
 

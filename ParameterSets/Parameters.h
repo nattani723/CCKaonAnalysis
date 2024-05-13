@@ -20,6 +20,8 @@ SelectionParameters P_FHC_Tune_326;
 SelectionParameters P_FHC_Tune_325_NoBDT;
 SelectionParameters P_RHC_Tune_397_NoBDT;
 
+SelectionParameters P_FHC_K_NOBDT_TEST;
+
 void BuildTunes(){
 
 /////////////////////

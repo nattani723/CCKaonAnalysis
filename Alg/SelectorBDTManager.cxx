@@ -104,16 +104,17 @@ void SelectorBDTManager::FillTree(const Event &e){
    if( t_Signal == nullptr || t_Background == nullptr ){ std::cout << "Trees not setup, exiting" << std::endl; return; }
 
    // Sort through list of candiadate tracks
-   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
-      for(size_t j_tr=0;j_tr<e.TracklikePrimaryDaughters.size();j_tr++){
+   for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
+      for(size_t j_tr=0;j_tr<e.TrackPrimaryDaughters.size();j_tr++){
 
          if(i_tr == j_tr) continue;
 
          // Returns false if tracks fail PID/separation cuts     
-         if(!SetVariables(e.TracklikePrimaryDaughters.at(i_tr),e.TracklikePrimaryDaughters.at(j_tr))) continue;
+         if(!SetVariables(e.TrackPrimaryDaughters.at(i_tr),e.TrackPrimaryDaughters.at(j_tr))) continue;
 
          // If these tracks are the correct pair of decay tracks, fill signal tree 
-         if(e.GoodReco && e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex && e.TracklikePrimaryDaughters.at(j_tr).Index == e.TrueDecayPionIndex)
+         //if(e.GoodReco && e.TrackPrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex && e.TrackPrimaryDaughters.at(j_tr).Index == e.TrueDecayPionIndex)
+         if(e.GoodReco && e.TrackPrimaryDaughters.at(i_tr).Index == e.TrueDecayPionIndex && e.TrackPrimaryDaughters.at(j_tr).Index == e.TrueDecayPionIndex)
             t_Signal->Fill();         
          else t_Background->Fill();
 
@@ -220,13 +221,13 @@ std::pair<int,int> SelectorBDTManager::NominateTracks(Event &e){
    Float_t BDT_Best = -1e10;
 
    //sort through list of candiadate tracks
-   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
-      for(size_t j_tr=0;j_tr<e.TracklikePrimaryDaughters.size();j_tr++){
+   for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
+      for(size_t j_tr=0;j_tr<e.TrackPrimaryDaughters.size();j_tr++){
 
          if(i_tr == j_tr) continue;
 
          // Returns false if tracks fail PID/separation cuts     
-         if(!SetVariables(e.TracklikePrimaryDaughters.at(i_tr),e.TracklikePrimaryDaughters.at(j_tr))) continue;
+         if(!SetVariables(e.TrackPrimaryDaughters.at(i_tr),e.TrackPrimaryDaughters.at(j_tr))) continue;
 
          //calculate BDT Score
          //double BDT_Score = reader->EvaluateMVA("BDT method");
@@ -257,14 +258,15 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
    int i_proton_candidate=-1;
    int i_pion_candidate=-1;
 
-   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
-      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex) i_proton_candidate = i_tr;
-      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionIndex) i_pion_candidate = i_tr;
+   for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
+     //if(e.TrackPrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex) i_proton_candidate = i_tr;
+      if(e.TrackPrimaryDaughters.at(i_tr).Index == e.TrueDecayPionIndex) i_proton_candidate = i_tr;
+      if(e.TrackPrimaryDaughters.at(i_tr).Index == e.TrueDecayPionIndex) i_pion_candidate = i_tr;
    }
 
    if(i_proton_candidate == -1 || i_pion_candidate == -1) return {-1,-1};
 
-   //if(!SetVariables(e.TracklikePrimaryDaughters.at(i_proton_candidate),e.TracklikePrimaryDaughters.at(i_pion_candidate))) return {-1,-1};
+   //if(!SetVariables(e.TrackPrimaryDaughters.at(i_proton_candidate),e.TrackPrimaryDaughters.at(i_pion_candidate))) return {-1,-1};
 
    //e.SelectorBDTScore = reader->EvaluateMVA("BDT method"); 
    e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 

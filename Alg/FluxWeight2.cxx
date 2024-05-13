@@ -18,14 +18,54 @@ FluxWeighter::FluxWeighter(int mode){
 
    if(mode == kBNB) return;
 
+   /*
    if(fMode == kFHC){ fRunMode = "fhc"; fRunModeCaps = "FHC"; }
    else { fRunMode = "rhc"; fRunModeCaps = "RHC"; }
 
    if (fMode == kFHC)
-      f_flux = TFile::Open((FLUX_DIR + "output_uboone_fhc_run0_merged.root").c_str(), "READ");               
+      f_flux = TFile::Open((FLUX_DIR + "output_uboone_fhc_run0_merged.root").c_str(), "READ");
    else
       f_flux = TFile::Open((FLUX_DIR + "output_uboone_rhc_run0_merged.root").c_str(), "READ");               
+   */
 
+   std::string filePath;
+   if(fMode == kFHC) {
+     filePath = FLUX_DIR + "output_uboone_fhc_run0_merged.root";
+     fRunMode = "fhc";
+     fRunModeCaps = "FHC";
+   } else {
+     filePath = FLUX_DIR + "output_uboone_rhc_run0_merged.root";
+     fRunMode = "rhc";
+     fRunModeCaps = "RHC";
+   }
+   
+   // Only proceed if the file exists, otherwise skip all operations involving the file
+   if(!gSystem->AccessPathName(filePath.c_str())) {
+     f_flux = TFile::Open(filePath.c_str(), "READ");
+     if (f_flux && !f_flux->IsZombie()) {
+       // Process histograms only if the file is opened successfully
+       hist_ratio.resize(k_FLAV_MAX);
+       hist_ratio_uw.resize(k_FLAV_MAX);
+       hist_CV.resize(k_FLAV_MAX);
+
+       // Get the flux histograms
+       for (unsigned int f = 0; f < flav_str.size(); f++) {
+	 hist_ratio.at(f) = dynamic_cast<TH2D*>(f_flux->Get(Form("%s/Detsmear/%s_CV_AV_TPC_2D", flav_str.at(f).c_str(), flav_str.at(f).c_str())));
+	 hist_ratio_uw.at(f) = dynamic_cast<TH2D*>(f_flux->Get(Form("%s/Detsmear/%s_unweighted_AV_TPC_2D", flav_str.at(f).c_str(), flav_str.at(f).c_str())));
+	 if (hist_ratio.at(f) && hist_ratio_uw.at(f)) {
+	   hist_ratio.at(f)->SetDirectory(0);
+	   hist_ratio_uw.at(f)->SetDirectory(0);
+	   hist_ratio.at(f)->Divide(hist_ratio_uw.at(f));
+	 }
+       }
+     } else {
+       std::cerr << "Failed to open flux file or it is a zombie: " << filePath << std::endl;
+     }
+   } else {
+     std::cerr << "Skipping operations as flux file does not exist: " << filePath << std::endl;
+   }
+
+   /*
    hist_ratio.resize(k_FLAV_MAX);
    hist_ratio_uw.resize(k_FLAV_MAX);
    hist_CV.resize(k_FLAV_MAX);
@@ -41,6 +81,8 @@ FluxWeighter::FluxWeighter(int mode){
       // Take the ratio
       hist_ratio.at(f)->Divide(hist_ratio_uw.at(f));
    }
+   */
+   
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

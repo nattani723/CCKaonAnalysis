@@ -4,7 +4,7 @@
 #include "EventAssembler.h"
 
 EventAssembler::EventAssembler() :
-LoadWeights(true)
+LoadWeights(false)
 {
 
 }
@@ -23,13 +23,16 @@ void EventAssembler::SetFile(string infilename,string sampletype){
 
    SampleType = sampletype;
 
+   /*
    DataDir = getenv("DATA_DIR");         
 
    TString file = DataDir + TString("/") +  TString(infilename);
+   */
+   TString file = TString(infilename);//full path
 
    f_in = TFile::Open( file );
 
-   f_in->GetObject("ana/OutputTree",t_in);
+   f_in->GetObject("KaonNtuplesSimple/OutputTree",t_in);
    //f_in->GetObject("HyperonNTuples/OutputTree",t_in);
 
    nEvents = t_in->GetEntries();
@@ -41,6 +44,7 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("PrimaryPion",1);
    t_in->SetBranchStatus("PrimaryKaon",1);
    t_in->SetBranchStatus("PrimaryKaonP",1);
+   t_in->SetBranchStatus("PrimaryKaonM",1);
    t_in->SetBranchStatus("PrimaryNucleus",1);
    t_in->SetBranchStatus("HyperonDecay",1);
    t_in->SetBranchStatus("KaonPDecay",1);
@@ -143,17 +147,17 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("IsKaonP_Others", &IsKaonP_Others);
    t_in->SetBranchAddress("IsKaonM", &IsKaonM);
    t_in->SetBranchAddress("IsKaon0", &IsKaon0);
-   t_in->SetBranchAddress("IsAssociatedKaon", &IsAssociatedKaon);
+   t_in->SetBranchAddress("IsAssociatedKaonP", &IsAssociatedKaonP);
    t_in->SetBranchAddress("IsSignal", &IsSignal);
    t_in->SetBranchAddress("IsSignal_NuMuP", &IsSignal_NuMuP);
    t_in->SetBranchAddress("IsSignal_PiPPi0", &IsSignal_PiPPi0);
    t_in->SetBranchAddress("GoodReco", &GoodReco);
    t_in->SetBranchAddress("GoodReco_NuMuP", &GoodReco_NuMuP);
    t_in->SetBranchAddress("GoodReco_PiPPi0", &GoodReco_PiPPi0);
-   t_in->SetBranchAddress("GoodRecoPrimaryReco", &GoodRecoPrimaryReco);
-   t_in->SetBranchAddress("GoodRecoRecoAsShower", &GoodRecoRecoAsShower);
+   t_in->SetBranchAddress("GoodPrimaryReco", &GoodPrimaryReco);
+   t_in->SetBranchAddress("GoodRecoAsShower", &GoodRecoAsShower);
 
-   t_in->SetBranchAddress("EventHasKaonScatter", &EventHasKaonScatter);
+   t_in->SetBranchAddress("EventHasKaonPScatter", &EventHasKaonPScatter);
    t_in->SetBranchAddress("EventHasHyperon", &EventHasHyperon);
    t_in->SetBranchAddress("EventHasKaon", &EventHasKaon);
    t_in->SetBranchAddress("EventHasKaonP", &EventHasKaonP);
@@ -169,6 +173,7 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("PrimaryPion",&PrimaryPion);
    t_in->SetBranchAddress("PrimaryKaon",&PrimaryKaon);
    t_in->SetBranchAddress("PrimaryKaonP",&PrimaryKaonP);
+   t_in->SetBranchAddress("PrimaryKaonM",&PrimaryKaonM);
    t_in->SetBranchAddress("PrimaryNucleus",&PrimaryNucleus);
    t_in->SetBranchAddress("HyperonDecay",&HyperonDecay);
    t_in->SetBranchAddress("KaonPDecay",&KaonPDecay);
@@ -195,8 +200,8 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("NOtherRebuiltTracks",&NOtherRebuiltTracks);
    t_in->SetBranchAddress("NOtherShowers",&NOtherShowers);
 
-   t_in->SetBranchAddress("TracklikePrimaryDaughters",&TracklikePrimaryDaughters);
-   t_in->SetBranchAddress("ShowerlikePrimaryDaughters",&ShowerlikePrimaryDaughters);
+   t_in->SetBranchAddress("TrackPrimaryDaughters",&TrackPrimaryDaughters);
+   t_in->SetBranchAddress("ShowerPrimaryDaughters",&ShowerPrimaryDaughters);
    t_in->SetBranchAddress("TrackOthers",&TrackOthers);
    t_in->SetBranchAddress("TrackRebuiltOthers",&TrackRebuiltOthers);
    t_in->SetBranchAddress("ShowerOthers",&ShowerOthers);
@@ -207,7 +212,8 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    }
    // Get the metadata tree
 
-   f_in->GetObject("ana/MetaTree",t_meta);
+   //f_in->GetObject("ana/MetaTree",t_meta);
+   f_in->GetObject("KaonNtuplesSimple/MetaTree",t_meta);
    t_meta->SetBranchAddress("POT",&POT);
 }
 
@@ -291,7 +297,7 @@ Event EventAssembler::GetEvent(int i){
    e.GoodReco = GoodReco;
    e.GoodReco_NuMuP = GoodReco_NuMuP;
    e.GoodReco_PiPPi0 = GoodReco_PiPPi0;
-   e.EventHasKaonScatter = EventHasKaonScatter;
+   e.EventHasKaonPScatter = EventHasKaonPScatter;
    e.EventHasHyperon = EventHasHyperon;
    e.EventHasKaon = EventHasKaon;
    e.EventHasKaonP = EventHasKaonP;
