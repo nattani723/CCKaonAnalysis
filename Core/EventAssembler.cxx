@@ -84,6 +84,8 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("IsSignal_NuMuP",1);
    t_in->SetBranchStatus("IsSignal_PiPPi0",1);
    t_in->SetBranchStatus("GoodReco",1);
+   t_in->SetBranchStatus("GoodReco_NuMuP",1);
+   t_in->SetBranchStatus("GoodReco_PiPPi0",1);
    t_in->SetBranchStatus("GoodPrimaryReco",1);
    t_in->SetBranchStatus("GoodRecoAsShower",1);
 
@@ -112,12 +114,6 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("NOtherRebuiltTracks",1);
    t_in->SetBranchStatus("NOtherShowers",1);
 
-
-
-   t_in->SetBranchStatus("",1);
-   t_in->SetBranchStatus("",1);
-   t_in->SetBranchStatus("",1);
-   t_in->SetBranchStatus("",1);
 
    if(LoadWeights){
    t_in->SetBranchStatus("SysDials",1);
@@ -152,6 +148,8 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("IsSignal_NuMuP", &IsSignal_NuMuP);
    t_in->SetBranchAddress("IsSignal_PiPPi0", &IsSignal_PiPPi0);
    t_in->SetBranchAddress("GoodReco", &GoodReco);
+   t_in->SetBranchAddress("GoodReco_NuMuP", &GoodReco_NuMuP);
+   t_in->SetBranchAddress("GoodReco_PiPPi0", &GoodReco_PiPPi0);
    t_in->SetBranchAddress("GoodRecoPrimaryReco", &GoodRecoPrimaryReco);
    t_in->SetBranchAddress("GoodRecoRecoAsShower", &GoodRecoRecoAsShower);
 
@@ -274,17 +272,33 @@ Event EventAssembler::GetEvent(int i){
 
    e.CCNC = *CCNC;
    e.InActiveTPC = *InActiveTPC;
-   e.IsHyperon = *IsHyperon;
-   e.IsLambda = *IsLambda;
-   e.IsLambdaCharged = *IsLambdaCharged;
-   e.IsSigmaZero = *IsSigmaZero;
-   e.IsSigmaZeroCharged = *IsSigmaZeroCharged;
+   e.IsKaon = *IsKaon;
+   e.IsKaonP = *IsKaonP;
+   e.IsKaonP_NuMuP = *IsKaonP_NuMuP;
+   e.IsKaonP_PiPPi0 = *IsKaonP_PiPPi0;
+   e.IsKaonP_2PiPPiM = *IsKaonP_2PiPPiM;
+   e.IsKaonP_ENuE = *IsKaonP_ENuE;
+   e.IsKaonP_2PiNPiP = *IsKaonP_2PiNPiP;
+   e.IsKaonP_Others = *IsKaonP_Others;
+   e.IsKaonM = *IsKaonM;
+   e.IsKaon0 = *IsKaon0;
+   e.IsAssociatedKaonP = *IsAssociatedKaonP;
+
    e.IsSignal = *IsSignal;
-   e.IsSignalSigmaZero = *IsSignalSigmaZero;
-   e.IsAssociatedHyperon = *IsAssociatedHyperon;
+   e.IsSignal_NuMuP = *IsSignal_NuMuP;
+   e.IsSignal_PiPPi0 = *IsSignal_PiPPi0;
+
    e.GoodReco = GoodReco;
-   e.EventHasNeutronScatter = EventHasNeutronScatter;
+   e.GoodReco_NuMuP = GoodReco_NuMuP;
+   e.GoodReco_PiPPi0 = GoodReco_PiPPi0;
+   e.EventHasKaonScatter = EventHasKaonScatter;
    e.EventHasHyperon = EventHasHyperon;
+   e.EventHasKaon = EventHasKaon;
+   e.EventHasKaonP = EventHasKaonP;
+   e.EventHasKaonP_NuMuP = EventHasKaonP_NuMuP;
+   e.EventHasKaonP_PiPPi0 = EventHasKaonP_PiPPi0;
+   e.EventHasKaonM = EventHasKaonM;
+   e.EventHasKaon0 = EventHasKaon0;
 
    e.NMCTruths = NMCTruths;
    e.NMCTruthsInTPC = NMCTruthsInTPC;
@@ -296,14 +310,21 @@ Event EventAssembler::GetEvent(int i){
 
    e.Neutrino = *Neutrino;
    e.Lepton = *Lepton;
-   e.Hyperon = *Hyperon;
+   e.PrimaryHyperon = *PrimaryHyperon;
    e.PrimaryNucleon = *PrimaryNucleon;
    e.PrimaryPion = *PrimaryPion;
    e.PrimaryKaon = *PrimaryKaon;
-   e.Decay = *Decay;
-   e.SigmaZeroDecayLambda = *SigmaZeroDecayLambda;
-   e.SigmaZeroDecayPhoton = *SigmaZeroDecayPhoton;
-   e.KaonDecay = *KaonDecay;
+   e.PrimaryKaonP = *PrimaryKaonP;
+   e.PrimaryKaonM = *PrimaryKaonM;
+   e.PrimaryNucleus = *PrimaryNucleus;
+
+   e.HyperonDecay = *HyperonDecay;
+   e.KaonPDecay = *KaonPDecay;
+   e.KaonPDecay_NuMuP = *KaonPDecay_NuMuP;
+   e.KaonPDecay_PiPPi0 = *KaonPDecay_PiPPi0;
+   e.KaonMDecay = *KaonMDecay;
+   e.Kaon0Decay = *Kaon0Decay;
+   e.NeutralKaonDecayK0SL = *NeutralKaonDecayK0SL;
 
    e.DecayVertex.clear();
 
@@ -311,27 +332,18 @@ Event EventAssembler::GetEvent(int i){
       e.DecayVertex.push_back(TVector3(DecayVertex_X->at(i_v),DecayVertex_Y->at(i_v),DecayVertex_Z->at(i_v)));
 
    e.RecoPrimaryVertex = *RecoPrimaryVertex;
+   e.NPrimaryDaughters = NPrimaryDaughters;
    e.NPrimaryTrackDaughters = NPrimaryTrackDaughters;
    e.NPrimaryShowerDaughters = NPrimaryShowerDaughters;
+   e.NOtherTracks = NOtherTracks;
+   e.NOtherRebuiltTracks = NOtherRebuiltTracks;
+   e.NOtherShowers = NOtherShowers;
 
-   e.TracklikePrimaryDaughters = *TracklikePrimaryDaughters;
-   e.ShowerlikePrimaryDaughters = *ShowerlikePrimaryDaughters;
-
-   e.ConnSeedIndexes_Plane0 = *ConnSeedIndexes_Plane0;
-   e.ConnOutputIndexes_Plane0 = *ConnOutputIndexes_Plane0;
-   e.ConnOutputSizes_Plane0 = *ConnOutputSizes_Plane0;
-   e.ConnSeedChannels_Plane0 = *ConnSeedChannels_Plane0;
-   e.ConnSeedTicks_Plane0 = *ConnSeedTicks_Plane0;
-   e.ConnSeedIndexes_Plane1 = *ConnSeedIndexes_Plane1;
-   e.ConnOutputIndexes_Plane1 = *ConnOutputIndexes_Plane1;
-   e.ConnOutputSizes_Plane1 = *ConnOutputSizes_Plane1;
-   e.ConnSeedChannels_Plane1 = *ConnSeedChannels_Plane1;
-   e.ConnSeedTicks_Plane1 = *ConnSeedTicks_Plane1;
-   e.ConnSeedIndexes_Plane2 = *ConnSeedIndexes_Plane2;
-   e.ConnOutputIndexes_Plane2 = *ConnOutputIndexes_Plane2;
-   e.ConnOutputSizes_Plane2 = *ConnOutputSizes_Plane2;
-   e.ConnSeedChannels_Plane2 = *ConnSeedChannels_Plane2;
-   e.ConnSeedTicks_Plane2 = *ConnSeedTicks_Plane2;
+   e.TrackPrimaryDaughters = *TrackPrimaryDaughters;
+   e.ShowerPrimaryDaughters = *ShowerPrimaryDaughters;
+   e.TrackOthers = *TrackOthers;
+   e.TrackRebuiltOthers = *TrackRebuiltOthers;
+   e.ShowerOthers = *ShowerOthers;
 
    if(LoadWeights){
    e.SysDials = *SysDials;

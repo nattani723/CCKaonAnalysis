@@ -99,7 +99,6 @@ class EventAssembler {
       std::vector<SimParticle>* Neutrino=0;
       std::vector<SimParticle>* Lepton=0;
       std::vector<SimParticle>* PrimaryHyperon=0;
-
       std::vector<SimParticle>* PrimaryNucleon=0;
       std::vector<SimParticle>* PrimaryPion=0;
       std::vector<SimParticle>* PrimaryKaon=0;
@@ -131,8 +130,8 @@ class EventAssembler {
       Int_t NOtherShowers;
 
       TVector3* RecoPrimaryVertex=0;
-      std::vector<RecoParticle>* TracklikePrimaryDaughters=0;
-      std::vector<RecoParticle>* ShowerlikePrimaryDaughters=0;
+      std::vector<RecoParticle>* TrackPrimaryDaughters=0;
+      std::vector<RecoParticle>* ShowerPrimaryDaughters=0;
       std::vector<RecoParticle>* TrackOthers=0;
       std::vector<RecoParticle>* TrackRebuiltOthers=0;
       std::vector<RecoParticle>* ShowerOthers=0;
