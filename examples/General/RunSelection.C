@@ -21,7 +21,10 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       // Setup selection manager. Set POT to scale sample to, import the BDT weights
       EventAssembler E;
       SelectionManager M(P);
+      std::cout << "aa" << std::endl;
       M.SetPOT(POT);
+      std::cout << "bb" << std::endl;
+
       //M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
       //M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
 
@@ -31,12 +34,22 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       double Sel_BG = 0.0;
 
       //E.SetFile("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
-      E.SetFile("/exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root");
+      E.SetFile("/exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root", "KAON");
       //if Data, EXT, Dirt, specify its typename as the second variable in SetFile
+      std::cout << "cc" << std::endl;
+
       M.AddSample("AssocKaon","AssocKaon",E.GetPOT());
+      std::cout << "dd" << std::endl;
+
+      M.UseFluxWeight(false);
+      M.UseGenWeight(false);
+      std::cout << "ee" << std::endl;
+
 
       // Event Loop
       for(int i=0;i<E.GetNEvents();i++){
+      std::cout << "yay" << std::endl;
+
 
          if(i % 10000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
 
