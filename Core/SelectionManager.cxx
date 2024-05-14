@@ -199,8 +199,6 @@ void SelectionManager::SetSignal(Event &e){
 
    for(size_t i_tr=0;i_tr<e.NMCTruths;i_tr++){
 
-     std::cout << "e.IsSignal: "<< e.IsSignal.at(i_tr) << std::endl; 
-
       IsSignal_tmp.at(i_tr) = false;
       IsSignal_NuMuP_tmp.at(i_tr) = false;
       IsSignal_PiPPi0_tmp.at(i_tr) = false;
@@ -214,6 +212,7 @@ void SelectionManager::SetSignal(Event &e){
 
          for(size_t i_d=0;i_d<e.KaonPDecay.size();i_d++){
 
+	   //std::cout << "i_tr: " << i_tr << ", e.KaonPDecay.at(i_d).MCTruthIndex: " << e.KaonPDecay.at(i_d).MCTruthIndex << ", e.KaonPDecay.at(i_d).PDG: " << e.KaonPDecay.at(i_d).PDG << ", e.KaonPDecay.at(i_d).ModMomentum: " << e.KaonPDecay.at(i_d).ModMomentum << std::endl;
 	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == -13 && e.KaonPDecay.at(i_d).ModMomentum > 0.0) 
 	     found_muon = true;
 
@@ -227,7 +226,7 @@ void SelectionManager::SetSignal(Event &e){
 	 IsSignal_PiPPi0_tmp.at(i_tr) = found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal_PiPPi0.at(i_tr);
 
       }
-   std::cout << "e.IsSignal after assessment: " << IsSignal_tmp.at(i_tr) << std::endl; 
+      //std::cout << "e.IsSignal after assessment: " << IsSignal_tmp.at(i_tr) << std::endl; 
 
    }
 
