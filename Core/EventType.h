@@ -12,11 +12,11 @@ const std::vector<int> Colors = {8,46,38,30,15,0};
 //const std::vector<std::string> Types2 = {"DirectLambda","RESLambda","DISLambda","DirectHYP","RESHYP","DISHYP","Neutron","Other","Dirt","EXT","Data","All"};
 const std::vector<std::string> Types2 = {"DirectLambda","DirectHYP","Neutron","Dirt","RESLambda","RESHYP","Other","EXT","DISLambda","DISHYP"/*,"Data"*/};
 const std::vector<std::string> Captions2 = {"Direct #Lambda","Direct Hyp","Neutron","Dirt","RES #Lambda","RES Hyp","Other #nu","Cosmic","DIS #Lambda","DIS Hyp"/*,"Data"*/};
-const std::vector<int> Colors2 = {8,kBlue-7,kRed-7,kCyan+3,kGreen+3,kBlue-10,kRed-10,kMagenta-7,30,15,0};
+ const std::vector<int> Colors2 = {8,kBlue-7,kRed-7,kCyan+3,kGreen+3,kBlue-10,kRed-10,kMagenta-7,30,15,0,0};
 
-const std::vector<std::string> Procs = {"Signal","OtherHYP","EXT","Dirt","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","Other"/*,"Data"*/};
-const std::vector<std::string> Captions3 = {"Signal","Other HYP","Cosmic","Dirt","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","Other"/*,"Data"*/};
-const std::vector<int> Colors3 = {8,46,2,3,4,5,6,7,9,11,12,30,15,0};
+ const std::vector<std::string> Procs = {"Signal","OtherHYP","EXT","Dirt","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","CCKAON","Other"/*,"Data"*/};
+ const std::vector<std::string> Captions3 = {"Signal","Other HYP","Cosmic","Dirt","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","CCKAON","Other"/*,"Data"*/};
+ const std::vector<int> Colors3 = {8,46,2,3,4,5,6,7,9,11,12,30,15,0};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -62,6 +62,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 	 if(!M.DaughterTrackCut(e)) continue;
 	 if(!M.DaughterFiducialVolumeCut(e)) continue;
 	 if(!M.DaughterTrackLengthCut(e)) continue;
+
          //if(!M.TrackCut(e)) continue;
          //if(!M.ShowerCut(e)) continue;
          //if(!M.ChooseMuonCandidate(e)) continue;

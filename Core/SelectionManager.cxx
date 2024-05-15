@@ -734,7 +734,7 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
       Hist_All->Fill(variable,weight*e.Weight);
       Hists_ByType[mode]->Fill(variable,weight*e.Weight);
       Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
-      Hists_ByProc[proc]->Fill(variable,weight*e.Weight);
+      Hists_ByProc[proc]->Fill(1,1);
    }
    else Hist_Data->Fill(variable,weight*e.Weight);
 
