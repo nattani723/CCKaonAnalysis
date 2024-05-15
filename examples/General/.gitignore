@@ -33,6 +33,7 @@ sites
 
 *.root
 lib/*
+Plots/
 
 *~
 *#
