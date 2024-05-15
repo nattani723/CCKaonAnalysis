@@ -278,6 +278,7 @@ Event EventAssembler::GetEvent(int i){
 
    e.CCNC = *CCNC;
    e.InActiveTPC = *InActiveTPC;
+   e.IsHyperon = *IsHyperon;
    e.IsKaon = *IsKaon;
    e.IsKaonP = *IsKaonP;
    e.IsKaonP_NuMuP = *IsKaonP_NuMuP;
@@ -338,6 +339,7 @@ Event EventAssembler::GetEvent(int i){
       e.DecayVertex.push_back(TVector3(DecayVertex_X->at(i_v),DecayVertex_Y->at(i_v),DecayVertex_Z->at(i_v)));
 
    e.RecoPrimaryVertex = *RecoPrimaryVertex;
+   e.PassNuCCInclusiveFilter = PassNuCCInclusiveFilter;
    e.NPrimaryDaughters = NPrimaryDaughters;
    e.NPrimaryTrackDaughters = NPrimaryTrackDaughters;
    e.NPrimaryShowerDaughters = NPrimaryShowerDaughters;

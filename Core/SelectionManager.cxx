@@ -401,9 +401,11 @@ bool SelectionManager::FiducialVolumeCut(const Event &e){
 
 // Apply the fiducial volume cut for daughter track
 
-bool SelectionManager::DaughterFiducialVolumeCut(const Event &e, RecoParticle& DaughterTrackParticle){
+bool SelectionManager::DaughterFiducialVolumeCut(const Event &e){
 
+  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
   TVector3 DaughterTrackEnd;
+
   DaughterTrackEnd.SetXYZ(DaughterTrackParticle.TrackEndX, DaughterTrackParticle.TrackEndY, DaughterTrackParticle.TrackEndZ);
    bool passed = a_FiducialVolume.InFiducialVolume_5cm(DaughterTrackEnd);
 
@@ -429,7 +431,7 @@ bool SelectionManager::NuCCInclusiveFilter(const Event &e){
 
 // Apply the three track cut
 
-bool SelectionManager::DaughterTrackCut(const Event &e, RecoParticle& DaughterTrackParticle){
+bool SelectionManager::DaughterTrackCut(const Event &e){
 
   RecoParticle PrimaryTrack;
   RecoParticle DaughterTrack;
@@ -440,7 +442,7 @@ bool SelectionManager::DaughterTrackCut(const Event &e, RecoParticle& DaughterTr
 
   int NDaughterTrack=0;
 
-   for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
+  for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
 
      PrimaryEnd.Clear();
      PrimaryTrack = e.TrackPrimaryDaughters.at(i_tr);
@@ -457,7 +459,8 @@ bool SelectionManager::DaughterTrackCut(const Event &e, RecoParticle& DaughterTr
        PrimaryDaughterDistance = PrimaryEnd - DaughterStart;
        if( PrimaryDaughterDistance.Mag() < 10){
 	 NDaughterTrack++;
-	 DaughterTrackParticle = DaughterTrack;
+	 SetDaughterTrackParticle(DaughterTrack);
+	 RecoParticle DaughterTrack_tmp = GetDaughterTrackParticle();
        }
 
      }
@@ -497,9 +500,10 @@ bool SelectionManager::ChooseMuonCandidate(Event &e){
 
 // Apply the secondary track length cut
 
-bool SelectionManager::DaughterTrackLengthCut(const Event &e, RecoParticle& DaughterTrackParticle){
+bool SelectionManager::DaughterTrackLengthCut(const Event &e){
 
-   bool passed = DaughterTrackParticle.TrackLength > 20.f;
+  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+  bool passed = DaughterTrackParticle.TrackLength > 20.f;
 
    UpdateCut(e,passed,"DaughterTrackLength");
 
@@ -1085,6 +1089,19 @@ double SelectionManager::GetPrediction(int bin,std::string type){
    std::cout << "Type/Proc " << type << " not found, returning -1" << std::endl;
    return -1;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+      RecoParticle SelectionManager::GetDaughterTrackParticle(){
+	return DaughterTrackParticle_;
+      }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+      RecoParticle SelectionManager::SetDaughterTrackParticle(RecoParticle &DaughterTrackParticle){
+	DaughterTrackParticle_ = DaughterTrackParticle;
+	test = DaughterTrackParticle.TrackEndX;
+      }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 

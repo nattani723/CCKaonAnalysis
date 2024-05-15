@@ -75,7 +75,8 @@ class SelectionManager {
 
       // Stores the parameters controlling the selection
       SelectionParameters TheParams;
-      RecoParticle DaughterTrackParticle;
+      RecoParticle DaughterTrackParticle_;
+      int test=0;
 
       // POT to scale samples to
       double POT;
@@ -134,9 +135,9 @@ class SelectionManager {
       bool FiducialVolumeCut(const Event &e);
       bool NuCCInclusiveFilter(const Event &e);
       bool ChooseMuonCandidate(Event &e);
-      bool DaughterTrackCut(const Event &e, RecoParticle& DaughterTrackParticle);
-      bool DaughterFiducialVolumeCut(const Event &e, RecoParticle& DaughterTrackParticle);
-      bool DaughterTrackLengthCut(const Event &e, RecoParticle& DaughterTrackParticle);
+      bool DaughterTrackCut(const Event &e);
+      bool DaughterFiducialVolumeCut(const Event &e);
+      bool DaughterTrackLengthCut(const Event &e);
       bool AnalysisBDTCut(Event &e);
       bool EventListCut(const Event &e);
 
@@ -185,6 +186,9 @@ class SelectionManager {
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
 
       double GetPrediction(int bin,std::string type="");
+
+      RecoParticle GetDaughterTrackParticle();
+      RecoParticle SetDaughterTrackParticle(RecoParticle &DaughterTrackParticle);
 
       std::string PlotDir="Plots/";
       std::string RootfileDir="rootfiles/";

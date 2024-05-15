@@ -36,7 +36,10 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       E.SetFile("/exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root", "KAON");
       //if Data, EXT, Dirt, specify its typename as the second variable in SetFile
 
-      M.AddSample("AssocKaon","AssocKaon",E.GetPOT());
+      // std::cout << "E.GetPOT(): " << E.GetPOT() << std::endl;
+      //M.AddSample("AssocKaon","AssocKaon",E.GetPOT());
+      //M.AddSample("AssocKaon","AssocKaon",E.GetPOT()*20);
+      M.AddSample("AssocKaon","AssocKaon",POT);
 
       M.UseFluxWeight(false);
       M.UseGenWeight(false);
@@ -55,6 +58,10 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          else BG += e.Weight;
 
          if(!M.FiducialVolumeCut(e)) continue;
+	 if(!M.NuCCInclusiveFilter(e)) continue;
+	 if(!M.DaughterTrackCut(e)) continue;
+	 if(!M.DaughterFiducialVolumeCut(e)) continue;
+	 if(!M.DaughterTrackLengthCut(e)) continue;
          //if(!M.TrackCut(e)) continue;
          //if(!M.ShowerCut(e)) continue;
          //if(!M.ChooseMuonCandidate(e)) continue;
