@@ -11,7 +11,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
    void VariableDistributionPlots(){
 
-      std::string label = "test";
+  std::string label = "NOtherTrack";//select the name?
       double POT = 1.0e21; // POT to scale samples to
 
       BuildTunes();
@@ -36,7 +36,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       M.SetPOT(POT);
 
       // Setup the histograms
-      M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");
+      //M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");
+      M.SetupHistograms(8,0.0,8.0,";Number of Tracks;Events");
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -62,15 +63,16 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             M.AddEvent(e);
 
          if(!M.FiducialVolumeCut(e)) continue;
-	 //if(!M.NuCCInclusiveFilter(e)) continue;
+	 if(!M.NuCCInclusiveFilter(e)) continue;
 	 //if(!M.DaughterTrackCut(e)) continue;
 	 //if(!M.DaughterFiducialVolumeCut(e)) continue;
 	 //if(!M.DaughterTrackLengthCut(e)) continue;
 
-            double E = e.Neutrino.at(0).E;
-	    //std::cout << E << std::endl;
+	 //double E = e.Neutrino.at(0).E;
+	 //double ntrk = e.NPrimaryTrackDaughters;
+	 double ntrk = e.NOtherTracks;
+            M.FillHistograms(e,ntrk);
 
-            M.FillHistograms(e,E);
          }
          E.Close();
       }

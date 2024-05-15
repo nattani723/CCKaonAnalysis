@@ -187,6 +187,7 @@ void SelectionManager::SetSignal(Event &e){
    e.EventIsSignal = false;
    e.EventIsSignal_NuMuP = false;
    e.EventIsSignal_PiPPi0 = false;
+
    e.GoodReco = false;
    e.GoodReco_NuMuP = false;
    e.GoodReco_PiPPi0 = false;
