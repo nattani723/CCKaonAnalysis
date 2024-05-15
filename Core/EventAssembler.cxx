@@ -55,8 +55,8 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("KaonPDecay",1);
    t_in->SetBranchStatus("NeutralKaonDecayK0SL",1);
 
-   t_in->SetBranchStatus("TracklikePrimaryDaughters",1);
-   t_in->SetBranchStatus("ShowerlikePrimaryDaughters",1);
+   //t_in->SetBranchStatus("TracklikePrimaryDaughters",1);
+   //t_in->SetBranchStatus("ShowerlikePrimaryDaughters",1);
    t_in->SetBranchStatus("TrackOthers",1);
    t_in->SetBranchStatus("TrackRebuiltOthers",1);
    t_in->SetBranchStatus("ShowerOthers",1);
