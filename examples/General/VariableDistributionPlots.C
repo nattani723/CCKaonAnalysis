@@ -36,8 +36,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       M.SetPOT(POT);
 
       // Setup the histograms
-      //M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");
-      M.SetupHistograms(8,0.0,8.0,";Number of Tracks;Events");
+      M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");
+      //M.SetupHistograms(8,0.0,8.0,";Number of Tracks;Events");
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -48,9 +48,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
          else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
 	
-
-      M.UseFluxWeight(false);
-      M.UseGenWeight(false);
+	M.UseFluxWeight(false);
+	M.UseGenWeight(false);
 
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
@@ -62,20 +61,21 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             M.SetSignal(e);
             M.AddEvent(e);
 
-         if(!M.FiducialVolumeCut(e)) continue;
-	 if(!M.NuCCInclusiveFilter(e)) continue;
-	 //if(!M.DaughterTrackCut(e)) continue;
-	 //if(!M.DaughterFiducialVolumeCut(e)) continue;
-	 //if(!M.DaughterTrackLengthCut(e)) continue;
-
-	 //double E = e.Neutrino.at(0).E;
-	 //double ntrk = e.NPrimaryTrackDaughters;
-	 double ntrk = e.NOtherTracks;
-            M.FillHistograms(e,ntrk);
+	    if(!M.FiducialVolumeCut(e)) continue;
+	    if(!M.NuCCInclusiveFilter(e)) continue;
+	    //if(!M.DaughterTrackCut(e)) continue;
+	    //if(!M.DaughterFiducialVolumeCut(e)) continue;
+	    //if(!M.DaughterTrackLengthCut(e)) continue;
+	    
+	    double E = e.Neutrino.at(0).E;
+	    double ntrk = e.NPrimaryTrackDaughters;
+	    double nottrk = e.NOtherTracks;
+            M.FillHistograms(e,E);
+            //M.FillHistograms(e,ntrk);
+            //M.FillHistograms(e,nottrk);
 
          }
          E.Close();
       }
-
       M.DrawHistograms(label);
    }

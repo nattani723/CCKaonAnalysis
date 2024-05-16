@@ -853,11 +853,12 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       Hists_ByType2[EventType::Types2.at(i_type)]->Scale(Scale);
       Hists_ByType2[EventType::Types2.at(i_type)]->Sumw2();
    }
+
    Hist_All->Sumw2();   
 
    Hists_ByProc["Signal"]->Scale(SignalScale);
    Hists_ByType["Signal"]->Scale(SignalScale);
-   Hists_ByType2["DirectLambda"]->Scale(SignalScale);
+   Hists_ByType2["CCKP"]->Scale(SignalScale);
 
    TH1D* h_errors = (TH1D*)Hist_All->Clone("h_errors");
 
