@@ -95,6 +95,7 @@ void EventAssembler::SetFile(string infilename,string sampletype){
 
    t_in->SetBranchStatus("EventHasKaonPScatter",1);
    t_in->SetBranchStatus("EventHasProtonScatter",1);
+   t_in->SetBranchStatus("EventHasPionScatter",1);
    t_in->SetBranchStatus("EventHasHyperon",1);
    t_in->SetBranchStatus("EventHasKaon",1);
    t_in->SetBranchStatus("EventHasKaonP",1);
@@ -160,6 +161,7 @@ void EventAssembler::SetFile(string infilename,string sampletype){
 
    t_in->SetBranchAddress("EventHasKaonPScatter", &EventHasKaonPScatter);
    t_in->SetBranchAddress("EventHasProtonScatter", &EventHasProtonScatter);
+   t_in->SetBranchAddress("EventHasPionScatter", &EventHasPionScatter);
    t_in->SetBranchAddress("EventHasHyperon", &EventHasHyperon);
    t_in->SetBranchAddress("EventHasKaon", &EventHasKaon);
    t_in->SetBranchAddress("EventHasKaonP", &EventHasKaonP);
@@ -302,6 +304,7 @@ Event EventAssembler::GetEvent(int i){
    e.GoodReco_PiPPi0 = GoodReco_PiPPi0;
    e.EventHasKaonPScatter = EventHasKaonPScatter;
    e.EventHasProtonScatter = EventHasProtonScatter;
+   e.EventHasPionScatter = EventHasPionScatter;
    e.EventHasHyperon = EventHasHyperon;
    e.EventHasKaon = EventHasKaon;
    e.EventHasKaonP = EventHasKaonP;

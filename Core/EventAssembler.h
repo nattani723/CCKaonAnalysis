@@ -88,6 +88,7 @@ class EventAssembler {
       Bool_t GoodRecoAsShower;
       Bool_t EventHasKaonPScatter;
       Bool_t EventHasProtonScatter;
+      Bool_t EventHasPionScatter;
       Bool_t EventHasHyperon;
       Bool_t EventHasKaon;
       Bool_t EventHasKaonP;

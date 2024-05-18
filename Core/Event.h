@@ -27,6 +27,7 @@ struct Event {
   Bool_t EventIsSignal_PiPPi0 = false;
   Bool_t EventHasKaonPScatter = false;
   Bool_t EventHasProtonScatter = false;
+  Bool_t EventHasPionScatter = false;
   Bool_t EventHasHyperon = false;
   Bool_t EventHasKaon = false;
   Bool_t EventHasKaonP = false;
