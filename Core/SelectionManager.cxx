@@ -214,7 +214,7 @@ void SelectionManager::SetSignal(Event &e){
          for(size_t i_d=0;i_d<e.KaonPDecay.size();i_d++){
 
 	   //std::cout << "i_tr: " << i_tr << ", e.KaonPDecay.at(i_d).MCTruthIndex: " << e.KaonPDecay.at(i_d).MCTruthIndex << ", e.KaonPDecay.at(i_d).PDG: " << e.KaonPDecay.at(i_d).PDG << ", e.KaonPDecay.at(i_d).ModMomentum: " << e.KaonPDecay.at(i_d).ModMomentum << std::endl;
-	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == -13 && e.KaonPDecay.at(i_d).ModMomentum > 0.0) 
+	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == -13 && e.KaonPDecay.at(i_d).ModMomentum > 0.1) 
 	     found_muon = true;
 
 	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == 211 && e.KaonPDecay.at(i_d).ModMomentum > 0.1)
