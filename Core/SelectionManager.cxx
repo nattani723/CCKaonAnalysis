@@ -449,6 +449,11 @@ bool SelectionManager::DaughterTrackCut(const Event &e){
      PrimaryTrack = e.TrackPrimaryDaughters.at(i_tr);
      PrimaryEnd.SetXYZ(PrimaryTrack.TrackEndX, PrimaryTrack.TrackEndY, PrimaryTrack.TrackEndZ);
 
+     if(PrimaryTrack.IsCCMu){
+	SetCCMuTrackParticle(PrimaryTrack);
+	continue;
+     }
+
      for(size_t i_tr_dau=0;i_tr_dau<e.TrackPrimaryDaughters.size();i_tr_dau++){
 
        if(i_tr == i_tr_dau) continue;
@@ -738,46 +743,28 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
       Hists_ByProc[proc]->Fill(1,1);
    }
    else Hist_Data->Fill(variable,weight*e.Weight);
+}
 
-   //if(mode != "Data") Hists_ByType["All"]->Fill(variable,weight*e.Weight);
 
-   /*
-      if( thisSampleType == "Data" ) mode = "Data";
-      else if( thisSampleType == "EXT" ) mode = "EXT";
-      else if( thisSampleType == "Dirt" ) mode = "Dirt";
-      else  if( e.EventIsSignal ) mode = "Signal";
-      else if( e.Mode.at(0) == "HYP") mode = "OtherHYP";
-      else { mode = e.Mode.at(0); isNuBackground = true; }
-      */
+///////////////////////////////////////////////////////////////////////////////////////////////
 
-   /*
-      if(mode != "OtherNu"){
-      std::cout << "Here" << std::endl; 
+// Fill the histograms wrt true match PDG
+
+void SelectionManager::FillHistogramsPDG(const Event &e,double variable,double weight){
+
+   std::string mode,mode2,proc;
+
+   mode = EventType::GetType(e);
+   mode2 = EventType::GetType2(e);
+   proc = EventType::GetProc(e);
+
+   if(mode != "Data"){
+      Hist_All->Fill(variable,weight*e.Weight);
       Hists_ByType[mode]->Fill(variable,weight*e.Weight);
-      Hists_ByProc[mode]->Fill(variable,weight*e.Weight);
-      }
-      else {
-
-      std::cout << "Here2" << std::endl;
-      Hists_ByType[ "OtherNu" ]->Fill(variable,weight*e.Weight);
-
-      if(mode != "Other"){
-      if(e.CCNC.at(0) == "CC") Hists_ByProc["CC"+mode]->Fill(variable,weight*e.Weight);
-      else Hists_ByProc["NC"]->Fill(variable,weight*e.Weight);
-      }
-      else Hists_ByProc["Other"]->Fill(variable,weight*e.Weight);
-      }
-
-      if(mode != "Data"){
-      Hists_ByType["All"]->Fill(variable,weight*e.Weight);
-      Hists_ByProc["All"]->Fill(variable,weight*e.Weight);
-      }
-
-   //std::string mode2 = EventType::GetType2(e);
-
-   std::cout << "Here3" << std::endl; 
-   Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
-   */
+      Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
+      Hists_ByProc[proc]->Fill(1,1);
+   }
+   else Hist_Data->Fill(variable,weight*e.Weight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1102,7 +1089,20 @@ double SelectionManager::GetPrediction(int bin,std::string type){
 
       RecoParticle SelectionManager::SetDaughterTrackParticle(RecoParticle &DaughterTrackParticle){
 	DaughterTrackParticle_ = DaughterTrackParticle;
-	test = DaughterTrackParticle.TrackEndX;
+	return DaughterTrackParticle_;
+      }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+      RecoParticle SelectionManager::GetCCMuTrackParticle(){
+	return CCMuTrackParticle_;
+      }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+      RecoParticle SelectionManager::SetCCMuTrackParticle(RecoParticle &DaughterTrackParticle){
+	CCMuTrackParticle_ = CCMuTrackParticle;
+	return CCMuTrackParticle_;
       }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
