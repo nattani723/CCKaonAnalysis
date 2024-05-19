@@ -149,9 +149,15 @@ class SelectionManager {
 
       std::string fTitle;
       int fHistNBins;
+      int fHist2DNXBins;
+      int fHist2DNBYins;
       double fHistLow;
       double fHistHigh;
-      std::vector<double> fHistBoundaries;
+      double fHist2DLowX;
+      double fHist2DHighY;
+      std::vector<double> fHist2DBoundaries;
+      std::vector<double> fHist2DBoundariesX;
+      std::vector<double> fHist2DBoundariesY;
 
       bool fHasData=false;
       bool fUseText=false;
@@ -163,6 +169,7 @@ class SelectionManager {
       std::map<std::string,TH1D*> Hists_ByType2;
       std::map<std::string,TH1D*> Hists_ByPrimaryPDG;
       std::map<std::string,TH1D*> Hists_ByDaughterPDG;
+      std::map<std::string,TH2D*> Hists_BySigBG;
 
       std::map<std::string,std::vector<TH1D*>> Multisim_Sys_Hists_All;
       std::map<std::string,std::vector<TH1D*>> SingleUnisim_Sys_Hists_All;
@@ -187,6 +194,8 @@ class SelectionManager {
       void SetupHistograms(int n,double low,double high,std::string title="");
       void SetupHistogramsPDG(int n,double low,double high,std::string title="");
       void SetupHistograms(std::vector<double> boundaries,std::string title="");
+      void Setup2DHistograms(int n_x, double low_x, double high_x, int n_y, double low_y, double high_y, std::string title);
+      void Setup2DHistograms(std::vector<double> boundariesx, std::vector<double> boundariesy, std::string title="");
       void FillHistograms(const Event &e,double variable,double weight=1.0);
       void FillHistogramsPDG(const Event &e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
