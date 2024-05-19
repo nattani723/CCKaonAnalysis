@@ -76,7 +76,9 @@ class SelectionManager {
       // Stores the parameters controlling the selection
       SelectionParameters TheParams;
       RecoParticle DaughterTrackParticle_;
-      int test=0;
+      RecoParticle CCMuTrackParticle_;
+      RecoParticle PrimaryKaonTrackParticle_;
+      //int test=0;
 
       // POT to scale samples to
       double POT;
@@ -159,6 +161,8 @@ class SelectionManager {
       std::map<std::string,TH1D*> Hists_ByProc;
       std::map<std::string,TH1D*> Hists_ByType;
       std::map<std::string,TH1D*> Hists_ByType2;
+      std::map<std::string,TH1D*> Hists_ByPrimaryPDG;
+      std::map<std::string,TH1D*> Hists_ByDaughterPDG;
 
       std::map<std::string,std::vector<TH1D*>> Multisim_Sys_Hists_All;
       std::map<std::string,std::vector<TH1D*>> SingleUnisim_Sys_Hists_All;
@@ -183,12 +187,18 @@ class SelectionManager {
       void SetupHistograms(int n,double low,double high,std::string title="");
       void SetupHistograms(std::vector<double> boundaries,std::string title="");
       void FillHistograms(const Event &e,double variable,double weight=1.0);
+      void FillHistogramsPDG(const Event &e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
+      void DrawHistogramsPDG(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
 
       double GetPrediction(int bin,std::string type="");
 
       RecoParticle GetDaughterTrackParticle();
       RecoParticle SetDaughterTrackParticle(RecoParticle &DaughterTrackParticle);
+      RecoParticle GetPrimaryKaonTrackParticle();
+      RecoParticle SetPrimaryKaonTrackParticle(RecoParticle &PrimaryKaonTrackParticle);
+      RecoParticle GetCCMuTrackParticle();
+      RecoParticle SetCCMuTrackParticle(RecoParticle &CCMu);
 
       std::string PlotDir="Plots/";
       std::string RootfileDir="rootfiles/";
