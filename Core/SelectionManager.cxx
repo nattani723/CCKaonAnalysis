@@ -465,6 +465,7 @@ bool SelectionManager::DaughterTrackCut(const Event &e){
        PrimaryDaughterDistance = PrimaryEnd - DaughterStart;
        if( PrimaryDaughterDistance.Mag() < 10){
 	 NDaughterTrack++;
+	 SetPrimaryKaonTrackParticle(PrimaryTrack);
 	 SetDaughterTrackParticle(DaughterTrack);
 	 RecoParticle DaughterTrack_tmp = GetDaughterTrackParticle();
        }
@@ -1094,6 +1095,18 @@ double SelectionManager::GetPrediction(int bin,std::string type){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+      RecoParticle SelectionManager::GetPrimaryKaonTrackParticle(){
+	return PrimaryKaonTrackParticle_;
+      }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+      RecoParticle SelectionManager::SetPrimaryKaonTrackParticle(RecoParticle &PrimaryKaonTrackParticle){
+	PrimaryKaonTrackParticle_ = PrimaryKaonTrackParticle;
+	return PrimaryKaonTrackParticle_;
+      }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
       RecoParticle SelectionManager::GetCCMuTrackParticle(){
 	return CCMuTrackParticle_;
       }
