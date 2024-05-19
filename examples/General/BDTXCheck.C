@@ -44,7 +44,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       // Setup the histograms
 
       //M.SetupHistogramsPDG(8,0.0,8.0,";Number of Tracks;Events");
-      M.Setup2DHistograms(8,0.0,8.0,3,0.0,3.0,";Number of Primary Tracks;Number of Daughter Tracks;Events");
+      M.Setup2DHistograms(8,0.0,8.0,3,0.0,3.0,";Number of Primary Tracks;Number of Daughter Tracks;");
 
 
       // Sample Loop

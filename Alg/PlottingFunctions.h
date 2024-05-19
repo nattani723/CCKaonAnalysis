@@ -707,20 +707,27 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
    p_plot->cd();
 
    
-   //for(size_t i_h=0;i_h<hist_v.size();i_h++){
-   for(size_t i_h=1;i_h<2;i_h++){
+   for(size_t i_h=0;i_h<hist_v.size();i_h++){
+   //for(size_t i_h=1;i_h<2;i_h++){
+
+     if(hist_v.at(i_h) == nullptr) {
+       std::cerr << "Error: Histogram at index " << i_h << " is null." << std::endl;
+       continue;
+     }
  
      std::string histname = label + EventType::SigBG.at(i_h);
      hist_v.at(i_h)->SetStats(0);
      hist_v.at(i_h)->Draw("COLZ");
-     p_plot->RedrawAxis();
+     if(i_h==0) p_plot->RedrawAxis();
 
      // Draw the various legends, labels etc.
+     /*
      if(POT.size() > 0) l_POT->Draw();
      if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
        l_POT2->Draw();
      }
      if(DrawWatermark) l_Watermark->Draw();
+     */
      
      c->cd();
      system(("mkdir -p " + plotdir).c_str());
@@ -728,6 +735,7 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
      c->Print((plotdir + "/" + histname + ".pdf").c_str());
      c->Print((plotdir + "/" + histname + ".C").c_str());
      c->Clear();
+
    }
    
    c->Close();
