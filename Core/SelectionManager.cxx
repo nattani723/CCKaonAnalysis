@@ -831,6 +831,20 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
    else Hist_Data->Fill(variable,weight*e.Weight);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Fill the 2D histograms
+
+void SelectionManager::Fill2DHistograms(const Event &e,double variable,double weight){
+
+   std::string sigbg;
+
+   mode = EventType::GetSigBG(e);
+
+   if(mode == "Data") return;
+      Hist_BySigBG[sigbg]->Fill(variable,weight*e.Weight);
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -961,6 +975,31 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    Hist_All->Write("All");
    Hist_Data->Write("Data");
    h_errors->Write("ErrorBand");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Draw the 2D histograms
+
+void SelectionManager::Draw2DHistograms(std::string label,double Scale,double SignalScale){
+
+   OpenHistFile(label);
+
+   system(("mkdir -p " + PlotDir).c_str());
+
+   //Hists_BySigBG["Signal"]->Scale(SignalScale);
+
+   std::vector<TH2D*> Hists_BySigBG_v;
+
+   for(size_t i_t=0;i_t<EventType::SigBG.size();i_t++) 
+      Hists_BySigBG_v.push_back(Hists_BySigBG[EventType::SigBG.at(i_t)]); 
+
+   HypPlot::Draw2DHistogram(Hists_BySigBG_v,EventType::Captions,PlotDir,label+"_BySigBG",{BeamMode},{Run},{POT},SignalScale,EventType::Colors);
+   
+   std::map<std::string,TH2D*>::iterator it;
+   for (it = Hists_BySigBG.begin(); it != Hists_BySigBG.end(); it++)
+      it->second->Write(it->first.c_str());
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
