@@ -627,6 +627,111 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Draw a stack of histograms
+// If you anto to include systematic uncertainties in the MC, make sure they're already included
+// in the error of h_errors
+// Inputs:
+// hist_v = the stack of histograms you want to draw
+// captions = list of what should be added to the legend for each histogram
+// plotdir = the directory to write the plots into
+// label = label to be added the front of the plot
+// mode = FHC/RHC/BNB
+// run = 1,3 or 13 (for 1+3)
+// POT = the POT used 
+// signalscale = scaling for the signal
+// colors = list of colors for the histograms
+// binlabels = bin labels
+
+void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,vector<int> colors){
+
+   assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
+   for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
+
+   const int nbins = hist_v.at(0)->GetNbinsX();
+
+   // Setup the canvas
+   TCanvas *c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
+   TPad *p_plot = new TPad("p_plot","p_plot",0,0,1,Single_PadSplit);
+   TPad *p_legend = new TPad("p_legend","p_legend",0,Single_PadSplit,1,1);
+   p_legend->SetBottomMargin(0);
+   p_legend->SetTopMargin(0.1);
+   p_plot->SetTopMargin(0.01);
+
+   // Create the empty legend
+   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
+   l->SetBorderSize(0);
+   const int nhists = 1;
+   int ncols = 2;
+   l->SetNColumns(ncols);
+
+   // Create the "MicroBooNE" watermark
+   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.005);
+   l_Watermark->SetTextAlign(32);
+   l_Watermark->SetTextSize(0.05);
+   l_Watermark->SetTextFont(62);
+
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+ 
+   // Create the POT label
+   //TLegend *l_POT = new TLegend(0.54,0.815,0.885,0.900);
+   TLegend *l_POT,*l_POT2;
+   if(DrawWatermark) l_POT = new TLegend(0.54,0.815,0.885,0.900);
+   else l_POT = new TLegend(0.54,0.900,0.885,0.985);
+   l_POT->SetBorderSize(0);
+   l_POT->SetMargin(0.005);
+   l_POT->SetTextAlign(32);
+   if(DrawWatermark) l_POT2 = new TLegend(0.536,0.735,0.886,0.815,NULL,"brNDC");
+   else l_POT2 = new TLegend(0.536,0.815,0.886,0.900,NULL,"brNDC");
+   //TLegend *l_POT2 = new TLegend(0.54,0.735,0.89,0.815,NULL,"brNDC");
+   l_POT2->SetBorderSize(0);
+   l_POT2->SetMargin(0.005);
+   l_POT2->SetTextAlign(32);
+
+   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
+
+   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+
+   // Draw everything
+   p_legend->Draw();
+   p_legend->cd();
+   l->Draw();
+   c->cd();
+   p_plot->Draw();
+   p_plot->cd();
+
+   
+   for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
+         std::string histname = label + EventType::SigBG.at(i_h);
+         hist_v.at(i_h)->Draw("COLZ");
+      p_plot->RedrawAxis();
+
+         // Draw the various legends, labels etc.
+   if(POT.size() > 0) l_POT->Draw();
+   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
+      l_POT2->Draw();
+   }
+   if(DrawWatermark) l_Watermark->Draw();
+
+   c->cd();
+   system(("mkdir -p " + plotdir).c_str());
+   c->Print((plotdir + "/" + histname + ".png").c_str());
+   c->Print((plotdir + "/" + histname + ".pdf").c_str());
+   c->Print((plotdir + "/" + histname + ".C").c_str());
+   }
+   
+   c->Clear();
+   c->Close();
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 // Draw a stack of histograms (No Stack mode)
 
 void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof,std::vector<double> data_v={}){
