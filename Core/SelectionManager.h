@@ -197,8 +197,10 @@ class SelectionManager {
       void Setup2DHistograms(int n_x, double low_x, double high_x, int n_y, double low_y, double high_y, std::string title);
       void Setup2DHistograms(std::vector<double> boundariesx, std::vector<double> boundariesy, std::string title="");
       void FillHistograms(const Event &e,double variable,double weight=1.0);
+      void Fill2DHistograms(const Event &e,double variable,double weight=1.0);
       void FillHistogramsPDG(const Event &e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
+      void Draw2DHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
       void DrawHistogramsPDG(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
 
       double GetPrediction(int bin,std::string type="");
