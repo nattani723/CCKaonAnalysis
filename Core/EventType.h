@@ -106,7 +106,7 @@ std::string GetProc(const Event &e){
 
 std::string GetPDG(const RecoParticle &p){
 
-   if(!p.TrackTruePDG.size()) throw std::invalid_argument("GetType: RecoParticle has TrackTruePDG.size() = 0, should be 1");
+   if(!p.TrackTruePDG!=0) throw std::invalid_argument("GetType: RecoParticle has TrackTruePDG == 0");
 
  if(p.TrackTruePDG == 321) return "KaonP";
  else if(p.TrackTruePDG == 2212) return "Proton";
@@ -115,9 +115,9 @@ std::string GetPDG(const RecoParticle &p){
  else if(p.TrackTruePDG == 211) return "PionP";
  else if(p.TrackTruePDG == -211) return "PionM";
  else if(p.TrackTruePDG == 11 || p.TrackTruePDG == -11 || p.TrackTruePDG == 22 || p.TrackTruePDG == 111 ) return "Shower";
- else return "Other"
+ else return "Other";
 
-}
+ }
 
 };
 

@@ -889,7 +889,7 @@ void SelectionManager::DrawHistogramsPDG(std::string label,double Scale,double S
    system(("mkdir -p " + PlotDir).c_str());
 
    // Create weight sums
-   for(size_t i_pdg=0;i_proc<EventType::PDGs.size();i_pdg++){
+   for(size_t i_pdg=0;i_pdg<EventType::PDGs.size();i_pdg++){
       Hists_ByPrimaryPDG[EventType::PDGs.at(i_pdg)]->Scale(Scale);
       Hists_ByDaughterPDG[EventType::PDGs.at(i_pdg)]->Sumw2();
    }
@@ -903,11 +903,11 @@ Hists_ByDaughterPDG["MuonP"]->Scale(SignalScale);
 std::vector<TH1D*> Hists_ByPrimaryPDG_v;
 std::vector<TH1D*> Hists_ByDaughterPDG_v;
 
-   for(size_t i_pdg=0;i_t<EventType::PDGs.size();i_pdg++) 
-      Hists_ByPrimaryPDG_v.push_back(Hists_ByPrimaryPDG[EventType::PDGs.at(i_t)]); 
+   for(size_t i_pdg=0;i_pdg<EventType::PDGs.size();i_pdg++) 
+      Hists_ByPrimaryPDG_v.push_back(Hists_ByPrimaryPDG[EventType::PDGs.at(i_pdg)]); 
 
-   for(size_t i_pdg=0;i_t<EventType::PDGs.size();i_pdg++) 
-      Hists_ByDaughterPDG_v.push_back(Hists_ByDaughterPDG[EventType::PDGs.at(i_t)]); 
+   for(size_t i_pdg=0;i_pdg<EventType::PDGs.size();i_pdg++) 
+      Hists_ByDaughterPDG_v.push_back(Hists_ByDaughterPDG[EventType::PDGs.at(i_pdg)]); 
 
    HypPlot::DrawHistogramNoStack(Hists_ByPrimaryPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByPrimaryPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
 HypPlot::DrawHistogramNoStack(Hists_ByDaughterPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByDaugterPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
@@ -917,11 +917,11 @@ HypPlot::DrawHistogramNoStack(Hists_ByDaughterPDG_v,h_errors,Hist_Data,EventType
       it->second->Write(it->first.c_str());
    for (it = Hists_ByDaughterPDG.begin(); it != Hists_ByDaughterPDG.end(); it++)
       it->second->Write(it->first.c_str());
-   }
+   
 
-   Hist_All->Write("All");
+//Hist_All->Write("All");
    //Hist_Data->Write("Data");
-   h_errors->Write("ErrorBand");
+   //h_errors->Write("ErrorBand");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1160,7 +1160,7 @@ double SelectionManager::GetPrediction(int bin,std::string type){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-      RecoParticle SelectionManager::SetCCMuTrackParticle(RecoParticle &DaughterTrackParticle){
+      RecoParticle SelectionManager::SetCCMuTrackParticle(RecoParticle &CCMuTrackParticle){
 	CCMuTrackParticle_ = CCMuTrackParticle;
 	return CCMuTrackParticle_;
       }
