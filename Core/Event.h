@@ -115,7 +115,7 @@ struct Event {
 	Float_t AnalysisBDTScore;
     
         vector<string> SysDials;
-        vector<vector<double>> SysWeights;
+  vector<vector<double>> SysWeights;
   //vector<vector<vector<double>>> SysWeights;
 
         void Print(){ std::cout << run << "  " << subrun << "  " << event << std::endl; }

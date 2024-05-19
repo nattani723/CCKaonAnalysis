@@ -185,6 +185,7 @@ class SelectionManager {
       TMatrixD GetCovarianceMatrix(std::string label,std::string name,std::string type="All");
 
       void SetupHistograms(int n,double low,double high,std::string title="");
+      void SetupHistogramsPDG(int n,double low,double high,std::string title="");
       void SetupHistograms(std::vector<double> boundaries,std::string title="");
       void FillHistograms(const Event &e,double variable,double weight=1.0);
       void FillHistogramsPDG(const Event &e,double variable,double weight=1.0);

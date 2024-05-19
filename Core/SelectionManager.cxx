@@ -620,6 +620,32 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Setup histograms. Give bin boundaries and number of bins. String containing axis titles 
+// (same format as Root TH1 titles).
+
+void SelectionManager::SetupHistogramsPDG(int n,double low,double high,std::string title){
+
+   fTitle = title;
+   fHistNBins = n;
+   fHistLow = low;
+   fHistHigh = high;
+
+   for(size_t i_pdg=0;i_pdg<EventType::PDGs.size();i_pdg++){
+      std::string histname_primary = "h_primary_" + EventType::PDGs.at(i_pdg);
+      std::string histname_daughter = "h_daughter_" + EventType::PDGs.at(i_pdg);
+      Hists_ByPrimaryPDG[EventType::PDGs.at(i_pdg)] = new TH1D(histname_primary.c_str(),fTitle.c_str(),n,low,high);
+      Hists_ByDaughterPDG[EventType::PDGs.at(i_pdg)] = new TH1D(histname_daughter.c_str(),fTitle.c_str(),n,low,high);
+   }
+
+   Hist_All = new TH1D("All",fTitle.c_str(),n,low,high);
+   Hist_Data = new TH1D("Data",fTitle.c_str(),n,low,high);
+
+   double width = (high-low)/n;
+   for(int i=0;i<n+1;i++) fHistBoundaries.push_back(low+width*i); 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 // Setup histograms for a systematic. Give the type (multisim, single unisim or dual unisim),
 // the number of universes and name
 
@@ -758,7 +784,7 @@ void SelectionManager::FillHistogramsPDG(const Event &e,double variable,double w
 	RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
 	RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
 	
-mode = EventType::GetType(e);
+	mode = EventType::GetType(e);
 	primarypdg = EventType::GetPDG(PrimaryKaonTrackParticle);
 	daughterpdg = EventType::GetPDG(DaughterTrackParticle);
 	

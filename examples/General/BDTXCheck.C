@@ -11,7 +11,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
    void BDTXCheck(){
 
-  //std::string label = "NOtherTrack";//select the name?
+  std::string label = "test";//select the name?
       double POT = 1.0e21; // POT to scale samples to
 
       BuildTunes();
@@ -21,9 +21,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       SampleTypes.push_back("AssocKaon"); 
       SampleFiles.push_back("/exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root");
 
+      /*
       SampleNames.push_back("GENIE Background"); 
       SampleTypes.push_back("Background");
       SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/KaonTrees.root");
+      */
 
       /*
       SampleNames.push_back("GENIE Background");
@@ -41,7 +43,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       // Setup the histograms
       //M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");
-      M.SetupHistograms(8,0.0,8.0,";Number of Tracks;Events");
+      M.SetupHistogramsPDG(8,0.0,8.0,";Number of Tracks;Events");
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -67,15 +69,16 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 	    if(!M.FiducialVolumeCut(e)) continue;
 	    if(!M.NuCCInclusiveFilter(e)) continue;
-	    //if(!M.DaughterTrackCut(e)) continue;
+	    if(!M.DaughterTrackCut(e)) continue;
 	    //if(!M.DaughterFiducialVolumeCut(e)) continue;
 	    //if(!M.DaughterTrackLengthCut(e)) continue;
-	    
+
 	    //double E = e.Neutrino.at(0).E;
 	    //double ntrk = e.NPrimaryTrackDaughters;
 	    double nottrk = e.NOtherTracks;
             //M.FillHistograms(e,E);
             //M.FillHistograms(e,ntrk);
+
             M.FillHistogramsPDG(e,nottrk);
 
          }
