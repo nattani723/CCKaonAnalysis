@@ -753,19 +753,20 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
 
 void SelectionManager::FillHistogramsPDG(const Event &e,double variable,double weight){
 
-   std::string mode,mode2,proc;
+   std::string mode, primarypdg, daughterpdg;
+	
+	RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
+	RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+	
+mode = EventType::GetType(e);
+	primarypdg = EventType::GetPDG(PrimaryKaonTrackParticle);
+	daughterpdg = EventType::GetPDG(DaughterTrackParticle);
+	
+	if(mode == "Data") return;
+	Hist_All->Fill(variable,weight*e.Weight);
+	Hists_ByPrimaryPDG[primarypdg]->Fill(variable,weight*e.Weight);
+	Hists_ByDaughterPDG[daughterpdg]->Fill(variable,weight*e.Weight);
 
-   mode = EventType::GetType(e);
-   mode2 = EventType::GetType2(e);
-   proc = EventType::GetProc(e);
-
-   if(mode != "Data"){
-      Hist_All->Fill(variable,weight*e.Weight);
-      Hists_ByType[mode]->Fill(variable,weight*e.Weight);
-      Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
-      Hists_ByProc[proc]->Fill(1,1);
-   }
-   else Hist_Data->Fill(variable,weight*e.Weight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -874,6 +875,52 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
    Hist_All->Write("All");
    Hist_Data->Write("Data");
+   h_errors->Write("ErrorBand");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Draw the histograms wrt truth match PDG
+
+void SelectionManager::DrawHistogramsPDG(std::string label,double Scale,double SignalScale){
+
+   OpenHistFile(label);
+
+   system(("mkdir -p " + PlotDir).c_str());
+
+   // Create weight sums
+   for(size_t i_pdg=0;i_proc<EventType::PDGs.size();i_pdg++){
+      Hists_ByPrimaryPDG[EventType::PDGs.at(i_pdg)]->Scale(Scale);
+      Hists_ByDaughterPDG[EventType::PDGs.at(i_pdg)]->Sumw2();
+   }
+	
+Hist_All->Sumw2(); 
+TH1D* h_errors = (TH1D*)Hist_All->Clone("h_errors");	
+	
+Hists_ByPrimaryPDG["KaonP"]->Scale(SignalScale);
+Hists_ByDaughterPDG["MuonP"]->Scale(SignalScale);
+
+std::vector<TH1D*> Hists_ByPrimaryPDG_v;
+std::vector<TH1D*> Hists_ByDaughterPDG_v;
+
+   for(size_t i_pdg=0;i_t<EventType::PDGs.size();i_pdg++) 
+      Hists_ByPrimaryPDG_v.push_back(Hists_ByPrimaryPDG[EventType::PDGs.at(i_t)]); 
+
+   for(size_t i_pdg=0;i_t<EventType::PDGs.size();i_pdg++) 
+      Hists_ByDaughterPDG_v.push_back(Hists_ByDaughterPDG[EventType::PDGs.at(i_t)]); 
+
+   HypPlot::DrawHistogramNoStack(Hists_ByPrimaryPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByPrimaryPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
+HypPlot::DrawHistogramNoStack(Hists_ByDaughterPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByDaugterPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
+
+   std::map<std::string,TH1D*>::iterator it;
+   for (it = Hists_ByPrimaryPDG.begin(); it != Hists_ByPrimaryPDG.end(); it++)
+      it->second->Write(it->first.c_str());
+   for (it = Hists_ByDaughterPDG.begin(); it != Hists_ByDaughterPDG.end(); it++)
+      it->second->Write(it->first.c_str());
+   }
+
+   Hist_All->Write("All");
+   //Hist_Data->Write("Data");
    h_errors->Write("ErrorBand");
 }
 
