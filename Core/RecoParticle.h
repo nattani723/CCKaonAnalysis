@@ -24,6 +24,7 @@ class RecoParticle : public TObject{
     int Index;
     bool InNuSlice = false;
     bool IsRebuilt = false;
+    bool IsCCMu = false;
 
     // General reco info
     int PDG; // Pandora PDG code (11 or 13)
