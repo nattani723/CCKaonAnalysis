@@ -644,6 +644,65 @@ void SelectionManager::SetupHistogramsPDG(int n,double low,double high,std::stri
    for(int i=0;i<n+1;i++) fHistBoundaries.push_back(low+width*i); 
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Setup histograms. Give bin boundaries and number of bins. String containing axis titles 
+// (same format as Root TH2 titles).
+
+void SelectionManager::Setup2DHistograms(int n_x, double low_x, double high_x, int n_y, double low_y, double high_y, std::string title){
+
+   fTitle = title;
+   fHist2DNXBins = n_x;
+   fHist2DNYBins = n_y;
+   fHist2DLowX = low_x;
+   fHist2DLowX = low_x;
+
+   for(size_t i_h=0;i_h<EventType::SigBG.size();i_h++){
+      std::string histname = "h_" + EventType::SigBG.at(i_h);
+      Hists2D_BySigBG[EventType::SigBG.at(i_h)] = new TH2D(histname.c_str(), fTitle.c_str(), n_x, low_x, high_x, n_y, low_y, high_y);
+   }
+
+   double width_x = (high_x-low_x)/n_x;
+   double width_y = (high_y-low_y)/n_y;
+   for(int i=0;i<n+1;i++) fHist2DBoundariesX.push_back(low_x+width_x*i);
+   for(int i=0;i<n+1;i++) fHist2DBoundariesY.push_back(low_y+width_y*i); 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Setup histograms, vector with bin boundaries and string containing axis titles (same format
+// as Root TH2 titles).
+
+void SelectionManager::Setup2DHistograms(std::vector<double> boundariesx, std::vector<double> boundariesy, std::string title){
+
+   if(boundariesx.size() < 2 || boundariesy.size() < 2)
+      throw std::invalid_argument("Require at least 2 bin boundaries"); 
+
+   fTitle = title;
+   fHist2DNXBins = boundariesx.size()-1;
+   fHist2DNYBins = boundariesy.size()-1;
+   fHist2DLowX = boundariesx.front();
+   fHist2DLowX = boundariesy.front();
+   fHist2DHighX = boundariesx.back();
+   fHist2DHighX = boundariesy.back();
+   fHist2DBoundariesX = boundariesx;
+   fHist2DBoundariesY = boundariesy;
+	
+   const int arr_n_x = boundariesx.size();
+   const int arr_n_y = boundariesy.size();
+   Double_t arr_boundaries_x[arr_n_x];
+   Double_t arr_boundaries_y[arr_n_y];
+	
+   for(size_t i=0;i<arr_n_x;i++) arr_boundaries_x[i] = boundariesx.at(i);
+
+   for(size_t i_h=0;i_h<EventType::SigBG.size();i_h++){
+      std::string histname = "h_" + EventType::SigBG.at(i_h);
+      Hists2D_BySigBG[EventType::SigBG.at(i_h)] = new TH2D(histname.c_str(), fTitle.c_str(), fHist2DNXBins, arr_boundaries_x, fHist2DNYBins, arr_boundaries_y);
+   }
+
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Setup histograms for a systematic. Give the type (multisim, single unisim or dual unisim),
