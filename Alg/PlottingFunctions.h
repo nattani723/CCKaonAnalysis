@@ -10,6 +10,7 @@
 #include "TGaxis.h"
 #include "FluxWeight2.h"
 #include "TMatrixDSym.h"
+#include "EventType.h"
 
 using std::string;
 using std::vector;
@@ -642,7 +643,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
 // colors = list of colors for the histograms
 // binlabels = bin labels
 
-void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,vector<int> colors){
+void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale){
 
    assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
    for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
@@ -706,26 +707,29 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
    p_plot->cd();
 
    
-   for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
-         std::string histname = label + EventType::SigBG.at(i_h);
-         hist_v.at(i_h)->Draw("COLZ");
-      p_plot->RedrawAxis();
+   //for(size_t i_h=0;i_h<hist_v.size();i_h++){
+   for(size_t i_h=1;i_h<2;i_h++){
+ 
+     std::string histname = label + EventType::SigBG.at(i_h);
+     hist_v.at(i_h)->SetStats(0);
+     hist_v.at(i_h)->Draw("COLZ");
+     p_plot->RedrawAxis();
 
-         // Draw the various legends, labels etc.
-   if(POT.size() > 0) l_POT->Draw();
-   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
-      l_POT2->Draw();
-   }
-   if(DrawWatermark) l_Watermark->Draw();
-
-   c->cd();
-   system(("mkdir -p " + plotdir).c_str());
-   c->Print((plotdir + "/" + histname + ".png").c_str());
-   c->Print((plotdir + "/" + histname + ".pdf").c_str());
-   c->Print((plotdir + "/" + histname + ".C").c_str());
+     // Draw the various legends, labels etc.
+     if(POT.size() > 0) l_POT->Draw();
+     if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
+       l_POT2->Draw();
+     }
+     if(DrawWatermark) l_Watermark->Draw();
+     
+     c->cd();
+     system(("mkdir -p " + plotdir).c_str());
+     c->Print((plotdir + "/" + histname + ".png").c_str());
+     c->Print((plotdir + "/" + histname + ".pdf").c_str());
+     c->Print((plotdir + "/" + histname + ".C").c_str());
+     c->Clear();
    }
    
-   c->Clear();
    c->Close();
 
 }

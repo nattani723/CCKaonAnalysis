@@ -665,8 +665,8 @@ void SelectionManager::Setup2DHistograms(int n_x, double low_x, double high_x, i
 
    double width_x = (high_x-low_x)/n_x;
    double width_y = (high_y-low_y)/n_y;
-   for(int i=0;i<n+1;i++) fHist2DBoundariesX.push_back(low_x+width_x*i);
-   for(int i=0;i<n+1;i++) fHist2DBoundariesY.push_back(low_y+width_y*i); 
+   for(int i=0;i<n_x+1;i++) fHist2DBoundariesX.push_back(low_x+width_x*i);
+   for(int i=0;i<n_y+1;i++) fHist2DBoundariesY.push_back(low_y+width_y*i); 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -685,7 +685,7 @@ void SelectionManager::Setup2DHistograms(std::vector<double> boundariesx, std::v
    fHist2DLowX = boundariesx.front();
    fHist2DLowX = boundariesy.front();
    fHist2DHighX = boundariesx.back();
-   fHist2DHighX = boundariesy.back();
+   fHist2DHighY = boundariesy.back();
    fHist2DBoundariesX = boundariesx;
    fHist2DBoundariesY = boundariesy;
 	
@@ -835,14 +835,18 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
 
 // Fill the 2D histograms
 
-void SelectionManager::Fill2DHistograms(const Event &e,double variable,double weight){
+void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double variable_y,double weight){
 
-   std::string sigbg;
+  std::string mode, sigbg;
 
-   mode = EventType::GetSigBG(e);
-
-   if(mode == "Data") return;
-      Hist_BySigBG[sigbg]->Fill(variable,weight*e.Weight);
+  RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
+  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+  
+  mode = EventType::GetType(e);
+  sigbg = EventType::GetSigBG(PrimaryKaonTrackParticle, DaughterTrackParticle);
+  
+  if(mode == "Data") return;
+  Hists2D_BySigBG[sigbg]->Fill(variable_x,variable_y,weight*e.Weight);
 
 }
 
@@ -854,17 +858,17 @@ void SelectionManager::FillHistogramsPDG(const Event &e,double variable,double w
 
    std::string mode, primarypdg, daughterpdg;
 	
-	RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
-	RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
-	
-	mode = EventType::GetType(e);
-	primarypdg = EventType::GetPDG(PrimaryKaonTrackParticle);
-	daughterpdg = EventType::GetPDG(DaughterTrackParticle);
-	
-	if(mode == "Data") return;
-	Hist_All->Fill(variable,weight*e.Weight);
-	Hists_ByPrimaryPDG[primarypdg]->Fill(variable,weight*e.Weight);
-	Hists_ByDaughterPDG[daughterpdg]->Fill(variable,weight*e.Weight);
+   RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
+   RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+   
+   mode = EventType::GetType(e);
+   primarypdg = EventType::GetPDG(PrimaryKaonTrackParticle);
+   daughterpdg = EventType::GetPDG(DaughterTrackParticle);
+   
+   if(mode == "Data") return;
+   Hist_All->Fill(variable,weight*e.Weight);
+   Hists_ByPrimaryPDG[primarypdg]->Fill(variable,weight*e.Weight);
+   Hists_ByDaughterPDG[daughterpdg]->Fill(variable,weight*e.Weight);
 
 }
 
@@ -987,17 +991,17 @@ void SelectionManager::Draw2DHistograms(std::string label,double Scale,double Si
 
    system(("mkdir -p " + PlotDir).c_str());
 
-   //Hists_BySigBG["Signal"]->Scale(SignalScale);
+   //Hists2D_BySigBG["Signal"]->Scale(SignalScale);
 
-   std::vector<TH2D*> Hists_BySigBG_v;
+   std::vector<TH2D*> Hists2D_BySigBG_v;
 
    for(size_t i_t=0;i_t<EventType::SigBG.size();i_t++) 
-      Hists_BySigBG_v.push_back(Hists_BySigBG[EventType::SigBG.at(i_t)]); 
+      Hists2D_BySigBG_v.push_back(Hists2D_BySigBG[EventType::SigBG.at(i_t)]); 
 
-   HypPlot::Draw2DHistogram(Hists_BySigBG_v,EventType::Captions,PlotDir,label+"_BySigBG",{BeamMode},{Run},{POT},SignalScale,EventType::Colors);
+   HypPlot::Draw2DHistogram(Hists2D_BySigBG_v,EventType::Captions,PlotDir,label+"_BySigBG",{BeamMode},{Run},{POT},SignalScale);
    
    std::map<std::string,TH2D*>::iterator it;
-   for (it = Hists_BySigBG.begin(); it != Hists_BySigBG.end(); it++)
+   for (it = Hists2D_BySigBG.begin(); it != Hists2D_BySigBG.end(); it++)
       it->second->Write(it->first.c_str());
 	
 }

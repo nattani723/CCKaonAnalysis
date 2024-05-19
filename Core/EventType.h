@@ -21,6 +21,7 @@ const std::vector<int> Colors = {8,46,38,30,15,0};
 const std::vector<std::string> PDGs = {"KaonP", "Proton", "MuonP", "MuonM", "PionP", "PionM", "Shower", "Other"};
 const std::vector<std::string> CaptionsPDG = {"CC K^{+}", "proton", "#mu^{+}", "#mu^{-}", "#pi^{+}", "#pi^{-}", "Shower", "Other"};
 
+ const std::vector<std::string> SigBG = {"Signal", "BG"};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -104,20 +105,27 @@ std::string GetProc(const Event &e){
 
 // Get the PDG category 
 
-std::string GetPDG(const RecoParticle &p){
-
-  //   if(p.TrackTruePDG!=0) throw std::invalid_argument("GetType: RecoParticle has TrackTruePDG == 0");
- if(p.TrackTruePDG == 321) return "KaonP";
- else if(p.TrackTruePDG == 2212) return "Proton";
- else if(p.TrackTruePDG == -13) return "MuonP";
- else if(p.TrackTruePDG == 13) return "MuonP";
- else if(p.TrackTruePDG == 211) return "PionP";
- else if(p.TrackTruePDG == -211) return "PionM";
- else if(p.TrackTruePDG == 11 || p.TrackTruePDG == -11 || p.TrackTruePDG == 22 || p.TrackTruePDG == 111 ) return "Shower";
- else return "Other";
-
+ std::string GetPDG(const RecoParticle &p){
+   
+   //   if(p.TrackTruePDG!=0) throw std::invalid_argument("GetType: RecoParticle has TrackTruePDG == 0");
+   if(p.TrackTruePDG == 321) return "KaonP";
+   else if(p.TrackTruePDG == 2212) return "Proton";
+   else if(p.TrackTruePDG == -13) return "MuonP";
+   else if(p.TrackTruePDG == 13) return "MuonP";
+   else if(p.TrackTruePDG == 211) return "PionP";
+   else if(p.TrackTruePDG == -211) return "PionM";
+   else if(p.TrackTruePDG == 11 || p.TrackTruePDG == -11 || p.TrackTruePDG == 22 || p.TrackTruePDG == 111 ) return "Shower";
+   else return "Other";
+   
  }
 
+ std::string GetSigBG(const RecoParticle &p_track, const RecoParticle &p_daughter){
+
+   if(p_track.TrackTruePDG == 321 && (p_daughter.TrackTruePDG == -13 || p_daughter.TrackTruePDG == 211) ) return "Signal";
+   return "BG";
+   
+ }
+ 
 };
 
 #endif

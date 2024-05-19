@@ -42,8 +42,10 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       M.SetPOT(POT);
 
       // Setup the histograms
-      //M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");
-      M.SetupHistogramsPDG(8,0.0,8.0,";Number of Tracks;Events");
+
+      //M.SetupHistogramsPDG(8,0.0,8.0,";Number of Tracks;Events");
+      M.Setup2DHistograms(8,0.0,8.0,3,0.0,3.0,";Number of Primary Tracks;Number of Daughter Tracks;Events");
+
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -74,15 +76,17 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 	    //if(!M.DaughterTrackLengthCut(e)) continue;
 
 	    //double E = e.Neutrino.at(0).E;
-	    //double ntrk = e.NPrimaryTrackDaughters;
+	    double ntrk = e.NPrimaryTrackDaughters;
 	    double nottrk = e.NOtherTracks;
             //M.FillHistograms(e,E);
             //M.FillHistograms(e,ntrk);
 
-            M.FillHistogramsPDG(e,nottrk);
+            //M.FillHistogramsPDG(e,nottrk);
+            M.Fill2DHistograms(e,ntrk,nottrk);
 
          }
          E.Close();
       }
-      M.DrawHistogramsPDG(label);
+      //M.DrawHistogramsPDG(label);
+      M.Draw2DHistograms(label);
    }
