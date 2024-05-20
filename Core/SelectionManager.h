@@ -67,8 +67,9 @@ class SelectionManager {
       void SetBeamMode(int mode);
       void SetRun(int run){ Run = run; }
 
-      void ImportSelectorBDTWeights(std::string WeightDir="");
-      void ImportAnalysisBDTWeights(std::string WeightDir="");
+      void ImportBDTWeights(std::string WeightDir="");
+      //void ImportSelectorBDTWeights(std::string WeightDir="");
+      //void ImportAnalysisBDTWeights(std::string WeightDir="");
 
       SelectionParameters GetParams();
 
@@ -101,8 +102,9 @@ class SelectionManager {
       FV::FiducialVolume a_FiducialVolume;
       MuonID a_MuonID;
       TrackLengthCutManager a_TrackLengthCutManager;
-      SelectorBDTManager a_SelectorBDTManager;
-      AnalysisBDTManager a_AnalysisBDTManager;
+      BDTManager a_BDTManager;
+      //SelectorBDTManager a_SelectorBDTManager;
+      //AnalysisBDTManager a_AnalysisBDTManager;
       EventListFilter a_EventListFilter;
       SecondaryVertexFitter a_SecondaryVertexFitter;
 
@@ -141,7 +143,7 @@ class SelectionManager {
       bool DaughterTrackCut(const Event &e);
       bool DaughterFiducialVolumeCut(const Event &e);
       bool DaughterTrackLengthCut(const Event &e);
-      bool AnalysisBDTCut(Event &e);
+      bool BDTCut(Event &e);
       bool EventListCut(const Event &e);
 
       // Histogram Functions //

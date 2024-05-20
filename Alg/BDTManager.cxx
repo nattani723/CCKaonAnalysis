@@ -147,7 +147,7 @@ bool BDTManager::SetVariables(RecoParticle PrimaryKaonTrackParticle, RecoParticl
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void BDTManager::SetupSelectorBDT(std::string WeightsDir,std::string alg){
+void BDTManager::SetupBDT(std::string WeightsDir,std::string alg){
 
    assert(fMode == "Test");
 
@@ -236,7 +236,7 @@ std::pair<int,int> BDTManager::NominateTracks(Event &e){
       }
    }
 
-   e.SelectorBDTScore = BDT_Best;
+   e.BDTScore = BDT_Best;
 
    return std::make_pair(i_proton_candidate,i_pion_candidate);
 
@@ -264,11 +264,12 @@ std::pair<int,int> BDTManager::NominateTracksCheat(Event &e){
    //if(!SetVariables(e.TrackPrimaryDaughters.at(i_proton_candidate),e.TrackPrimaryDaughters.at(i_pion_candidate))) return {-1,-1};
 
    //e.SelectorBDTScore = reader->EvaluateMVA("BDT method"); 
-   e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 
+   e.BDTScore = reader->EvaluateMVA(Alg + " method"); 
 
    return std::make_pair(i_proton_candidate,i_pion_candidate);
 }
 
+/*
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 double BDTManager::GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate){
@@ -277,6 +278,21 @@ double BDTManager::GetScore(RecoParticle DecayProtonCandidate,RecoParticle Decay
 
    return reader->EvaluateMVA(Alg+ " method");
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+*/
+
+double BDTManager::CalculateScore(Event &e){
+  
+  if(!SetVariables(e)) return -1.0;
+
+  double score = reader->EvaluateMVA("BDT method");
+
+  e.AnalysisBDTScore = score;
+
+  return score;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 

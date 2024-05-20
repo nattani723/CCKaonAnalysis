@@ -27,13 +27,14 @@ double p_Separation_Cut;
 // Vertex Fitter Parameters
 double p_VertexPull=5.0;
 
-double p_AnalysisBDT_Cut;
+double p_BDT_Cut;
 
 double p_W_Max;
 double p_W_Min;
 double p_Alpha_Cut;
 
 // Selector BDT Weights file
+std::string p_BDT_WeightsDir="";
 std::string p_SelectorBDT_WeightsDir="";
 
 // Analysis BDT Weights file

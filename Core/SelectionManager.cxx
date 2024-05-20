@@ -13,8 +13,7 @@ SelectionManager::SelectionManager() :
    a_FiducialVolume(1,0.0) ,
    a_MuonID(-0.35,18.0,0.0) ,
    a_TrackLengthCutManager(1000.0,1000.0) , 
-   a_SelectorBDTManager("Test") ,
-   a_AnalysisBDTManager("Test") ,
+   a_BDTManager("Test") ,
    a_EventListFilter() ,
    a_SecondaryVertexFitter(5)
 {
@@ -41,8 +40,7 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    a_FiducialVolume(p.p_FV,p.p_Padding) ,
    a_MuonID(p.p_PID_Cut,p.p_Minimum_MIP_Length,p.p_Max_Displacement) ,
    a_TrackLengthCutManager(p.p_SecondaryTrackLengthCut,p.p_SecondaryTrackLengthCut) ,
-   a_SelectorBDTManager("Test") , 
-   a_AnalysisBDTManager("Test") ,
+   a_BDTManager("Test") , 
    a_EventListFilter() ,
    a_SecondaryVertexFitter(p.p_VertexPull)
 {
@@ -54,8 +52,6 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    // Set the selection parameters
    TheParams = p;
    DeclareCuts();
-   a_SelectorBDTManager.SetCuts(p.p_Proton_PID_Cut,p.p_Pion_PID_Cut,p.p_Separation_Cut);
-   a_AnalysisBDTManager.SetPull(p.p_VertexPull);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,12 +364,13 @@ void SelectionManager::Reset(){
 
 // Load the track selector BDT weights
 
-void SelectionManager::ImportSelectorBDTWeights(std::string WeightDir){
+void SelectionManager::ImportBDTWeights(std::string WeightDir){
 
-   std::cout << "SelectionManager: Importing Selector BDT Weights from " << WeightDir << std::endl;
-   a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
+   std::cout << "SelectionManager: Importing BDT Weights from " << WeightDir << std::endl;
+   a_BDTManager.SetupBDT(WeightDir);
 }
 
+/*
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Load the analysis BDT weights
@@ -384,6 +381,7 @@ void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
    a_AnalysisBDTManager.SetupAnalysisBDT(WeightDir);
 
 }
+*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -522,9 +520,9 @@ bool SelectionManager::DaughterTrackLengthCut(const Event &e){
 
 // Calculate decay analysis BDT score and apply cut
 
-bool SelectionManager::AnalysisBDTCut(Event &e){
+bool SelectionManager::BDTCut(Event &e){
 
-   bool passed = a_AnalysisBDTManager.CalculateScore(e) > TheParams.p_AnalysisBDT_Cut; 
+   bool passed = a_BDTManager.CalculateScore(e) > TheParams.p_BDT_Cut; 
 
    UpdateCut(e,passed,"BDT");
 
