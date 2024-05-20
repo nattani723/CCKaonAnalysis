@@ -846,6 +846,7 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
 
 void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,double weight){
 
+  std::string mode = EventType::GetType(e);
   if(mode == "Data") return;
 
   RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
@@ -874,7 +875,7 @@ void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,double 
 
 void SelectionManager::FillEtoPCurve(){
 
-  nbin = Hist_BDT_All->GetNBinsX();
+  int nbin = Hist_BDT_All->GetNbinsX();
   double denominator = Hist_BDT_All->Integral(1,nbin+1);
   for (int bin=1; bin<=nbin+1; bin++) {
     double signal = Hist_BDT_Signal->Integral(bin,nbin+1);

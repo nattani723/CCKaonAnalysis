@@ -204,7 +204,7 @@ class SelectionManager {
 
       void SetupHistograms(int n,double low,double high,std::string title="");
       void SetupHistograms(std::vector<double> boundaries,std::string title="");
-      void SetupHistogramsEtoP(int n,double low,double high,std::string title="");
+      void SetupHistogramsEtoP();
       void SetupHistogramsPDG(int n,double low,double high,std::string title="");
       void Setup2DHistograms(int n_x, double low_x, double high_x, int n_y, double low_y, double high_y, std::string title);
       void Setup2DHistograms(std::vector<double> boundariesx, std::vector<double> boundariesy, std::string title="");

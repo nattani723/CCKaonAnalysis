@@ -71,8 +71,6 @@ void TrainBDT(){
    dataloader->PrepareTrainingAndTestTree(mycuts,mycutb,Setup);
 
 
-
-
    if(Use["BDT"]) factory->BookMethod( dataloader, TMVA::Types::kBDT, "BDT", "!H:!V:NTrees=300:MinNodeSize=4%:MaxDepth=10:BoostType=AdaBoost:AdaBoostBeta=0.65:UseBaggedBoost:BaggedSampleFraction=0.16:SeparationType=CrossEntropy:nCuts=10:DoBoostMonitor=true:UseRandomisedTrees=True:UseNvars=13");
    //"!H:!V:NTrees=850:MinNodeSize=2.5%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:UseBaggedBoost:BaggedSampleFraction=0.5:SeparationType=GiniIndex:nCuts=20" );
 
