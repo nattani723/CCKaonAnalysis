@@ -72,6 +72,7 @@ void BDTManager::SetupTrainingTrees(){
    t_Signal->Branch("DaughterTrack_LLR_PID",&v_DaughterTrack_LLR_PID);
    t_Signal->Branch("DaughterTrack_LLR_PID_Kaon",&v_DaughterTrack_LLR_PID_Kaon);
    t_Signal->Branch("DaughterTrack_dEdX",&v_DaughterTrack_dEdX);
+   t_Signal->Branch("DaughterTrackLength",&v_DaughterTrackLength);
 
    t_Background->Branch("PrimaryTrack_Chi2_Kaon_3Plane",&v_PrimaryTrack_Chi2_Kaon_3Plane);
    t_Background->Branch("PrimaryTrack_Chi2_Proton_3Plane",&v_PrimaryTrack_Chi2_Proton_3Plane);
@@ -159,13 +160,19 @@ void BDTManager::SetupSelectorBDT(std::string WeightsDir,std::string alg){
    TMVA::Tools::Instance();
    reader = new TMVA::Reader( "!Color:!Silent" );
 
-   reader->AddVariable("separation",&v_separation);
-   reader->AddVariable("proton_trkscore",&v_proton_trkscore);
-   reader->AddVariable("pion_trkscore",&v_pion_trkscore);
-   reader->AddVariable("proton_dEdX",&v_proton_dEdX);
-   reader->AddVariable("pion_dEdX",&v_pion_dEdX);
-   reader->AddVariable("proton_LLR",&v_proton_LLR);
-   reader->AddVariable("pion_LLR",&v_pion_LLR);
+   reader->AddVariable("PrimaryTrack_Chi2_Kaon_3Plane",&v_PrimaryTrack_Chi2_Kaon_3Plane);
+   reader->AddVariable("PrimaryTrack_Chi2_Proton_3Plane",&v_PrimaryTrack_Chi2_Proton_3Plane);
+   reader->AddVariable("PrimaryTrack_Chi2_Muon_3Plane",&v_PrimaryTrack_Chi2_Muon_3Plane);
+   reader->AddVariable("PrimaryTrack_Chi2_Pion_3Plane",&v_PrimaryTrack_Chi2_Pion_3Plane);
+   reader->AddVariable("DaughterTrack_Chi2_Kaon_3Plane",&v_DaughterTrack_Chi2_Kaon_3Plane);
+   reader->AddVariable("DaughterTrack_Chi2_Proton_3Plane",&v_DaughterTrack_Chi2_Proton_3Plane);
+   reader->AddVariable("DaughterTrack_Chi2_Muon_3Plane",&v_DaughterTrack_Chi2_Muon_3Plane);
+   reader->AddVariable("DaughterTrack_Chi2_Pion_3Plane",&v_DaughterTrack_Chi2_Pion_3Plane);
+   reader->AddVariable("PrimaryTrack_LLR_PID",&v_PrimaryTrack_LLR_PID);
+   reader->AddVariable("PrimaryTrack_LLR_PID_Kaon",&v_PrimaryTrack_LLR_PID_Kaon);
+   reader->AddVariable("DaughterTrack_LLR_PID",&v_DaughterTrack_LLR_PID);
+   reader->AddVariable("DaughterTrack_LLR_PID_Kaon",&v_DaughterTrack_LLR_PID_Kaon);
+   reader->AddVariable("DaughterTrackLength",&v_DaughterTrackLength);
 
    std::map<std::string,int> Use;
    for(size_t i_a=0;i_a<Algs_str.size();i_a++)

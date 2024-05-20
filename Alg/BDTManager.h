@@ -1,5 +1,5 @@
-#ifndef _SelectorBDTManager_h_
-#define _SelectorBDTManager_h_
+#ifndef _BDTManager_h_
+#define _BDTManager_h_
 
 #include "Event.h"
 #include "TFile.h"
@@ -15,13 +15,13 @@
 // and testing. Training for filling the trees train
 // new BDT tunes. Testing to use them in the selection
 
-class SelectorBDTManager {
+class BDTManager {
 
    public:
 
-      SelectorBDTManager();
-      SelectorBDTManager(std::string Mode);
-      ~SelectorBDTManager();
+      BDTManager();
+      BDTManager(std::string Mode);
+      ~BDTManager();
 
       void FillTree(const Event &e, const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle);
       void WriteTrainingTrees();    
