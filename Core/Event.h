@@ -113,6 +113,7 @@ struct Event {
 
 	Float_t SelectorBDTScore;
 	Float_t AnalysisBDTScore;
+  Float_t BDTScore;
     
         vector<string> SysDials;
   vector<vector<double>> SysWeights;

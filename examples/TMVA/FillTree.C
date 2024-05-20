@@ -46,7 +46,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
             Event e = E.GetEvent(i);
 
-            M.SetSignal(e);                
+            M.SetSignal(e);
             M.AddEvent(e);
 
 	    if(!M.FiducialVolumeCut(e)) continue;

@@ -167,8 +167,14 @@ class SelectionManager {
       bool fHasData=false;
       bool fUseText=false;
 
-      TH1D* Hist_Data=nullptr;
-      TH1D* Hist_All=nullptr;
+      TH1D * Hist_Data=nullptr;
+      TH1D * Hist_All=nullptr;
+      TH1D * Hist_BDT_Signal=nullptr;
+      TH1D * Hist_BDT_All=nullptr;
+      TH1D * Hist_Efficiency=nullptr;
+      TH1D * Hist_Purity=nullptr;
+      TH1D * Hist_EtoP=nullptr;
+
       std::map<std::string,TH1D*> Hists_ByProc;
       std::map<std::string,TH1D*> Hists_ByType;
       std::map<std::string,TH1D*> Hists_ByType2;
@@ -197,16 +203,21 @@ class SelectionManager {
       TMatrixD GetCovarianceMatrix(std::string label,std::string name,std::string type="All");
 
       void SetupHistograms(int n,double low,double high,std::string title="");
-      void SetupHistogramsPDG(int n,double low,double high,std::string title="");
       void SetupHistograms(std::vector<double> boundaries,std::string title="");
+      void SetupHistogramsEtoP(int n,double low,double high,std::string title="");
+      void SetupHistogramsPDG(int n,double low,double high,std::string title="");
       void Setup2DHistograms(int n_x, double low_x, double high_x, int n_y, double low_y, double high_y, std::string title);
       void Setup2DHistograms(std::vector<double> boundariesx, std::vector<double> boundariesy, std::string title="");
       void FillHistograms(const Event &e,double variable,double weight=1.0);
+      void FillHistogramsEtoP(const Event &e,double variable,double weight=1.0);
       void Fill2DHistograms(const Event &e,double variable_x,double variable_y,double weight=1.0);
       void FillHistogramsPDG(const Event &e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
       void Draw2DHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
       void DrawHistogramsPDG(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
+
+      void FillEtoPCurve();
+      void PlotEtoPCurve();
 
       double GetPrediction(int bin,std::string type="");
 
@@ -216,6 +227,8 @@ class SelectionManager {
       RecoParticle SetPrimaryKaonTrackParticle(RecoParticle &PrimaryKaonTrackParticle);
       RecoParticle GetCCMuTrackParticle();
       RecoParticle SetCCMuTrackParticle(RecoParticle &CCMu);
+
+      TH1D* GetHist_All();
 
       std::string PlotDir="Plots/";
       std::string RootfileDir="rootfiles/";

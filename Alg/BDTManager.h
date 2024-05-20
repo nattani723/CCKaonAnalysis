@@ -76,8 +76,6 @@ class BDTManager {
 
       void SetupBDT(std::string WeightsDir="",std::string alg="BDT");
       void SetAlg(std::string alg);
-      std::pair<int,int> NominateTracks(Event &e);      
-      std::pair<int,int> NominateTracksCheat(Event &e);
       double GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate);
       double CalculateScore(Event &e);
 

@@ -518,7 +518,7 @@ bool SelectionManager::DaughterTrackLengthCut(const Event &e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-// Calculate decay analysis BDT score and apply cut
+// Calculate decay analysis BDT score and apply cut. This also stores BDT score for each Event.
 
 bool SelectionManager::BDTCut(Event &e){
 
@@ -614,6 +614,18 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
 
    double width = (high-low)/n;
    for(int i=0;i<n+1;i++) fHistBoundaries.push_back(low+width*i); 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::SetupHistogramsEtoP(){
+
+   Hist_BDT_Signal = new TH1D("BDT_Signal",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
+   Hist_BDT_All = new TH1D("BDT_All",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
+   Hist_Efficiency = new TH1D("BDT_Efficiency",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
+   Hist_Purity = new TH1D("BDT_Purity",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
+   Hist_EtoP = new TH1D("BDT_EtoP",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -827,6 +839,82 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
       Hists_ByProc[proc]->Fill(1,1);
    }
    else Hist_Data->Fill(variable,weight*e.Weight);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////                                                                                                                 
+// Fill the histograms for EtP calculation
+
+void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,double weight){
+
+  if(mode == "Data") return;
+
+  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+  RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
+      
+  Hist_BDT_All->Fill(variable,weight*e.Weight);
+  
+  if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
+    Hist_BDT_Signal->Fill(variable,weight*e.Weight);
+
+  FillEtoPCurve();
+
+  PlotEtoPCurve();
+  /*
+    Hist_Efficiency_Left->Fill(variable,weight*e.Weight);
+    Hist_Purity_Left->Fill(variable,weight*e.Weight);
+    Hist_EtoP_Left->Fill(variable,weight*e.Weight);
+    Hist_Efficiency_Right->Fill(variable,weight*e.Weight);
+    Hist_Purity_Right->Fill(variable,weight*e.Weight);
+    Hist_EtoP_Right->Fill(variable,weight*e.Weight);
+  */
+  
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::FillEtoPCurve(){
+
+  nbin = Hist_BDT_All->GetNBinsX();
+  double denominator = Hist_BDT_All->Integral(1,nbin+1);
+  for (int bin=1; bin<=nbin+1; bin++) {
+    double signal = Hist_BDT_Signal->Integral(bin,nbin+1);
+    double all = Hist_BDT_All->Integral(bin,nbin+1);
+    double efficiency = denominator>0 ? signal/denominator : 0;
+    double purity = all>0 ? signal/all : 0;
+    Hist_Efficiency->SetBinContent(bin,efficiency);
+    Hist_Purity->SetBinContent(bin,purity);
+    Hist_EtoP->SetBinContent(bin, efficiency*purity);
+  }
+
+  int binmax = Hist_EtoP->GetMaximumBin();
+  std::cout << "Cut at " << Hist_EtoP->GetXaxis()->GetBinCenter(binmax) << " gives " << std::endl;
+  std::cout << "Efficiency of " << Hist_Efficiency->GetBinContent(binmax) << std::endl;
+  std::cout << "Purity of " << Hist_Purity->GetBinContent(binmax) << std::endl;
+  std::cout << "E*P of " << Hist_EtoP->GetBinContent(binmax) << std::endl;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////                                                                                                                 
+void SelectionManager::PlotEtoPCurve(){
+
+  TString output_pdf_bdtcut = "BDT_opt_cut.pdf";
+
+  TCanvas * c = new TCanvas();
+  c->SetFillStyle(4000);
+
+  Hist_Efficiency->SetMinimum(0);
+  Hist_Efficiency->SetMaximum(1);
+  Hist_Efficiency->Draw("C");
+  Hist_Purity->Draw("C,SAME");
+  Hist_EtoP->Draw("C,SAME");
+
+  TLegend * legend = new TLegend(0.65,0.7,0.85,0.85);
+  legend->AddEntry(Hist_Efficiency,"Efficiency","l");
+  legend->AddEntry(Hist_Purity,"Purity","l");
+  legend->AddEntry(Hist_EtoP,"Eff. #times Pur.","l");
+  legend->Draw();
+  c->Print(output_pdf_bdtcut);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1290,6 +1378,12 @@ double SelectionManager::GetPrediction(int bin,std::string type){
 	CCMuTrackParticle_ = CCMuTrackParticle;
 	return CCMuTrackParticle_;
       }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+TH1D* SelectionManager::GetHist_All(){
+  return Hist_All;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
