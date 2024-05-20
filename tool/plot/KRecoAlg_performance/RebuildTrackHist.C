@@ -1,33 +1,5 @@
-#include <iostream>
-#include <TH2D.h>
-#include <TFile.h>
-#include <TROOT.h>
-#include <TChain.h>
-#include <TTree.h>
-#include <TVectorT.h>
-#include <vector>
-#include <iostream>
-#include <stdio.h>
-#include <string.h>
+#include "RebuildTrackHist.h"
 
-
-void Initialise();
-void GeneratePlots(TFile *f, TString pl, TCanvas* &c, TString output_name);
-void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name);
-void RebuildTrackHist(TString input_name, TString output_name, TString pl);
-
-
-
-// Cuts
-TString output_pdf_trk = "chi2_trk.pdf";
-TString output_pdf_dau = "chi2_dau.pdf";;
-int n0 = 0;
-int n1 = 0;
-int n2 = 0;
-int n3 = 0;
-int n4 = 0;
-//int n5 = 0;
-double n5=0;
 
 
 void Initialise()
@@ -84,94 +56,19 @@ void GeneratePlots(TFile *f, TString pl, TCanvas* &c, TString output_name)
   DrawChi2(f, "ka", "pr", pl, "track", c, output_name);
 }
 
-//void Draw(TFile *f, TString var, double scale, int dencut, bool print)
-void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name)
-{
+
+void LoadTree(TFile *f, TString pl, TTree * t){
+
   TString fname(f->GetName());
 
-  TTree * t;
+  //TTree * t;
   if(fname.Contains("TMVA")){
     t = (TTree*) f->Get("dataset_tree325_node4_depth4_beta60_frac12_ncut5_addspec/TestTree");
   }else{
     t = (TTree*) f->Get("CCKaonTracks");
   }
 
-  int nentry = t->GetEntries();
-
-  Float_t true_dau_pip_length;
-  Float_t true_dau_muon_length;
-
-  Float_t reco_track_daughter_old_length;
-  Float_t reco_track_daughter_old_chi2ka_pl2;
-  Float_t reco_track_daughter_old_chi2pr_pl2;
-  Float_t reco_track_daughter_old_chi2pi_pl2;
-  Float_t reco_track_daughter_old_chi2mu_pl2;
-  Float_t reco_track_daughter_old_llrpid_pl2;
-  Float_t reco_track_daughter_old_chi2ka_3pl;
-  Float_t reco_track_daughter_old_chi2pr_3pl;
-  Float_t reco_track_daughter_old_chi2pi_3pl;
-  Float_t reco_track_daughter_old_chi2mu_3pl;
-  Float_t reco_track_daughter_old_llrpid_3pl;
-  Float_t reco_track_daughter_old_llrpid_k_3pl;
-  Float_t reco_track_daughter_old_Bragg_fwd_ka_pl2;
-  Float_t reco_track_daughter_old_Bragg_fwd_pr_pl2;
-  Float_t reco_track_daughter_old_Bragg_fwd_pi_pl2;
-  Float_t reco_track_daughter_old_Bragg_fwd_mu_pl2;
-
-  Float_t reco_track_length;
-  Float_t reco_track_distance;
-  Float_t reco_track_daughter_length;
-  Float_t reco_track_daughter_distance;
-  Float_t reco_track_daughter_vtx_distance;
-  Float_t reco_track_chi2ka_pl2;
-  Float_t reco_track_chi2pr_pl2;
-  Float_t reco_track_chi2pi_pl2;
-  Float_t reco_track_chi2mu_pl2;
-  Float_t reco_track_llrpid_pl2;
-  Float_t reco_track_daughter_chi2ka_pl2;
-  Float_t reco_track_daughter_chi2pr_pl2;
-  Float_t reco_track_daughter_chi2pi_pl2;
-  Float_t reco_track_daughter_chi2mu_pl2;
-  Float_t reco_track_daughter_llrpid_pl2;
-  Float_t reco_track_chi2ka_3pl;
-  Float_t reco_track_chi2pr_3pl;
-  Float_t reco_track_chi2pi_3pl;
-  Float_t reco_track_chi2mu_3pl;
-  Float_t reco_track_llrpid_3pl;
-  Float_t reco_track_llrpid_k_3pl;
-  Float_t reco_track_daughter_chi2ka_3pl;
-  Float_t reco_track_daughter_chi2pr_3pl;
-  Float_t reco_track_daughter_chi2pi_3pl;
-  Float_t reco_track_daughter_chi2mu_3pl;
-  Float_t reco_track_daughter_llrpid_3pl;
-  Float_t reco_track_daughter_llrpid_k_3pl;
-  Float_t reco_track_Bragg_fwd_ka_pl2;
-  Float_t reco_track_Bragg_fwd_pr_pl2;
-  Float_t reco_track_Bragg_fwd_pi_pl2;
-  Float_t reco_track_Bragg_fwd_mu_pl2;
-
-  
-  //Int_t reco_track_true_pdg;
-  Float_t reco_track_daughter_true_pdg;
-  Float_t reco_track_daughter_old_true_pdg;
-  Float_t BDT;
-  Float_t true_kaon_ke;
-  Float_t true_kaon_length;
-  Int_t true_kaon_end_process;
-
-  Int_t true_nu_pdg, true_nu_ccnc, true_nu_vtx_inCCInclusiveTPC, true_kaon_end_inCCInclusiveTPC, true_kaon_daughter_end_in5cmTPC, reco_track_true_pdg;
-  //Float_t true_nu_pdg, true_nu_ccnc, true_nu_vtx_inCCInclusiveTPC, true_kaon_end_inCCInclusiveTPC, true_kaon_daughter_end_in5cmTPC, reco_track_true_pdg;
-
-  /*
-  if(fname.Contains("TMVA")){
-    cout << "aa" << endl;
-    Float_t true_nu_pdg, true_nu_ccnc, true_kaon_ke, true_nu_vtx_inCCInclusiveTPC, true_kaon_end_inCCInclusiveTPC, true_kaon_daughter_end_in5cmTPC, reco_track_true_pdg;
-  }else if(fname.Contains("7Nov")){
-    cout << "bb" << endl;
-    Int_t true_nu_pdg, true_nu_ccnc, true_nu_vtx_inCCInclusiveTPC, true_kaon_end_inCCInclusiveTPC, true_kaon_daughter_end_in5cmTPC, reco_track_true_pdg;
-  }
-  */
-
+  nentry = t->GetEntries();
 
   t->SetBranchAddress("true_nu_pdg", &true_nu_pdg);
   t->SetBranchAddress("true_nu_ccnc", &true_nu_ccnc);
@@ -244,192 +141,145 @@ void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCan
       //}
   }
 
-  /*
-  TH2D * h_chi2_trk_pr_ka = new TH2D("h_chi2_trk_pr_ka", "Track #chi^{2}_{P} vs #chi^{2}_{K};  #chi^{2}_{P}; #chi^{2}_{K}", 100, 0 , 50, 100, 0, 50);
-  TH2D * h_chi2_trk_pr_ka_bg = new TH2D("h_chi2_trk_pr_ka_bg", "Track #chi^{2}_{P} vs #chi^{2}_{K};  #chi^{2}_{P}; #chi^{2}_{K}", 100, 0 , 50, 100, 0, 50);
-  TH2D * h_chi2_trk_pr_ka_sig = new TH2D("h_chi2_trk_pr_ka_sig", "Track #chi^{2}_{P} vs #chi^{2}_{K};  #chi^{2}_{P}; #chi^{2}_{K}", 100, 0 , 50, 100, 0, 50);
-  TH2D * h_chi2_trk_pi_ka = new TH2D("h_chi2_trk_pi_ka", "Track #chi^{2}_{#pi} vs #chi^{2}_{K}; #chi^{2}_{#pi}; #chi^{2}_{K}", 100, 0 , 100, 100, 0, 100);
-  TH2D * h_chi2_trk_mu_ka = new TH2D("h_chi2_trk_mu_ka", "Track #chi^{2}_{#mu} vs #chi^{2}_{K}; #chi^{2}_{#mu}, #chi^{2}_{K}", 100, 0 , 100, 100, 0, 100);
+}
 
-  TH2D * h_chi2_dau_pr_mu = new TH2D("h_chi2_dau_pr_mu", "Daughter #chi^{2}_{P} vs #chi^{2}_{#mu}; #chi^{2}_{P}; #chi^{2}_{#mu}",100, 0 , 100, 100, 0, 100);
-  TH2D * h_chi2_dau_pi_mu = new TH2D("h_chi2_trk_pi_mu", "Daughter #chi^{2}_{#pi} vs #chi^{2}_{#mu}; #chi^{2}_{#pi}; #chi^{2}_{#mu}", 100, 0 , 100, 100, 0, 100);
-  TH2D * h_chi2_dau_ka_mu = new TH2D("h_chi2_trk_ka_mu", "Daughter #chi^{2}_{K} vs #chi^{2}_{#mu}; #chi^{2}_{K}; #chi^{2}_{#mu}", 100, 0 , 100, 100, 0, 50);
-  TH2D * h_chi2_dau_pr_pi = new TH2D("h_chi2_dau_pr_pi", "Daughter #chi^{2}_{P} vs #chi^{2}_{#pi}; #chi^{2}_{P}; #chi^{2}_{#pi}", 100, 0 , 100, 100, 0, 100);
-  TH2D * h_chi2_dau_mu_pi = new TH2D("h_chi2_trk_mu_pi", "Daughter #chi^{2}_{#mu} vs #chi^{2}_{#pi}; #chi^{2}_{#mu}; #chi^{2}_{#pi}", 100, 0 , 100, 100, 0, 100);
-  TH2D * h_chi2_dau_ka_pi = new TH2D("h_chi2_trk_ka_pi", "Daughter #chi^{2}_{K} vs #chi^{2}_{#pi}; #chi^{2}_{K}; #chi^{2}_{#pi}", 100, 0 , 100, 100, 0, 100);
-  */
+//void Draw(TFile *f, TString var, double scale, int dencut, bool print)
+viod SetHistos(){
 
-  TH1D * h_track_chi2ka_ka = new TH1D("BDT_track_kaka", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_chi2ka_pr = new TH1D("BDT_track_kapr", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_chi2ka_pi = new TH1D("BDT_track_kapi", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_chi2ka_mu = new TH1D("BDT_track_kamu", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_chi2ka_ot = new TH1D("BDT_track_kaot", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2ka_ka = new TH1D("BDT_track_kaka", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2ka_pr = new TH1D("BDT_track_kapr", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2ka_pi = new TH1D("BDT_track_kapi", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2ka_mu = new TH1D("BDT_track_kamu", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2ka_ot = new TH1D("BDT_track_kaot", "; BDT Response; Number of Events", 50, 0, 100);
 
-  TH1D * h_track_chi2pr_ka = new TH1D("BDT_track_prka", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_chi2pr_pr = new TH1D("BDT_track_prpr", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_chi2pr_pi = new TH1D("BDT_track_prpi", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_chi2pr_mu = new TH1D("BDT_track_prmu", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_chi2pr_ot = new TH1D("BDT_track_prot", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2pr_ka = new TH1D("BDT_track_prka", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2pr_pr = new TH1D("BDT_track_prpr", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2pr_pi = new TH1D("BDT_track_prpi", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2pr_mu = new TH1D("BDT_track_prmu", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_chi2pr_ot = new TH1D("BDT_track_prot", "; BDT Response; Number of Events", 50, 0, 100);
 
-  TH1D * h_track_llr_ka = new TH1D("BDT_track_llrka", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_llr_pr = new TH1D("BDT_track_llrpr", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_llr_pi = new TH1D("BDT_track_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_llr_mu = new TH1D("BDT_track_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_llr_ot = new TH1D("BDT_track_llrot", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llr_ka = new TH1D("BDT_track_llrka", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llr_pr = new TH1D("BDT_track_llrpr", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llr_pi = new TH1D("BDT_track_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llr_mu = new TH1D("BDT_track_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llr_ot = new TH1D("BDT_track_llrot", "; BDT Response; Number of Events", 50, -1, 1);
 
-  TH1D * h_track_llrka_ka = new TH1D("BDT_track_llrkaka", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_llrka_pr = new TH1D("BDT_track_llrkapr", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_llrka_pi = new TH1D("BDT_track_llrkapi", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_llrka_mu = new TH1D("BDT_track_llrkamu", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_llrka_ot = new TH1D("BDT_track_llrkaot", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llrka_ka = new TH1D("BDT_track_llrkaka", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llrka_pr = new TH1D("BDT_track_llrkapr", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llrka_pi = new TH1D("BDT_track_llrkapi", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llrka_mu = new TH1D("BDT_track_llrkamu", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_llrka_ot = new TH1D("BDT_track_llrkaot", "; BDT Response; Number of Events", 50, -1, 1);
 
-  //
+  h_track_dau_llr_pr = new TH1D("BDT_track_dau_llapr", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llr_pi = new TH1D("BDT_track_dau_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llr_mu = new TH1D("BDT_track_dau_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llr_sh = new TH1D("BDT_track_dau_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llr_ot = new TH1D("BDT_track_dau_llrot", "; BDT Response; Number of Events", 50, -1, 1);
 
-  TH1D * h_track_dau_llr_pr = new TH1D("BDT_track_dau_llapr", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_llr_pi = new TH1D("BDT_track_dau_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_llr_mu = new TH1D("BDT_track_dau_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_llr_sh = new TH1D("BDT_track_dau_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_llr_ot = new TH1D("BDT_track_dau_llrot", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llrka_pr = new TH1D("BDT_track_dau_llapr", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llrka_pi = new TH1D("BDT_track_dau_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llrka_mu = new TH1D("BDT_track_dau_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llrka_sh = new TH1D("BDT_track_dau_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_llrka_ot = new TH1D("BDT_track_dau_llrot", "; BDT Response; Number of Events", 50, -1, 1);
 
-  TH1D * h_track_dau_llrka_pr = new TH1D("BDT_track_dau_llapr", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_llrka_pi = new TH1D("BDT_track_dau_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_llrka_mu = new TH1D("BDT_track_dau_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_llrka_sh = new TH1D("BDT_track_dau_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_llrka_ot = new TH1D("BDT_track_dau_llrot", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_chi2pr_pr = new TH1D("BDT_track_dau_prpr", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_chi2pr_pi = new TH1D("BDT_track_dau_prpi", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_chi2pr_mu = new TH1D("BDT_track_dau_prmu", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_chi2pr_sh = new TH1D("BDT_track_dau_prsh", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_chi2pr_ot = new TH1D("BDT_track_dau_prot", "; BDT Response; Number of Events", 50, 0, 150);
 
-  TH1D * h_track_dau_chi2pr_pr = new TH1D("BDT_track_dau_prpr", "; BDT Response; Number of Events", 50, 0, 150);
-  TH1D * h_track_dau_chi2pr_pi = new TH1D("BDT_track_dau_prpi", "; BDT Response; Number of Events", 50, 0, 150);
-  TH1D * h_track_dau_chi2pr_mu = new TH1D("BDT_track_dau_prmu", "; BDT Response; Number of Events", 50, 0, 150);
-  TH1D * h_track_dau_chi2pr_sh = new TH1D("BDT_track_dau_prsh", "; BDT Response; Number of Events", 50, 0, 150);
-  TH1D * h_track_dau_chi2pr_ot = new TH1D("BDT_track_dau_prot", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_chi2pi_pr = new TH1D("BDT_track_dau_prpr", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2pi_pi = new TH1D("BDT_track_dau_prpi", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2pi_mu = new TH1D("BDT_track_dau_prmu", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2pi_sh = new TH1D("BDT_track_dau_prsh", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2pi_ot = new TH1D("BDT_track_dau_prot", "; BDT Response; Number of Events", 50, 0, 100);
 
-  TH1D * h_track_dau_chi2pi_pr = new TH1D("BDT_track_dau_prpr", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_chi2pi_pi = new TH1D("BDT_track_dau_prpi", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_chi2pi_mu = new TH1D("BDT_track_dau_prmu", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_chi2pi_sh = new TH1D("BDT_track_dau_prsh", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_chi2pi_ot = new TH1D("BDT_track_dau_prot", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2mu_pr = new TH1D("BDT_track_dau_mupr", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2mu_pi = new TH1D("BDT_track_dau_mupi", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2mu_mu = new TH1D("BDT_track_dau_mumu", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2mu_sh = new TH1D("BDT_track_dau_mush", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_chi2mu_ot = new TH1D("BDT_track_dau_muot", "; BDT Response; Number of Events", 50, 0, 100);
 
-  TH1D * h_track_dau_chi2mu_pr = new TH1D("BDT_track_dau_mupr", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_chi2mu_pi = new TH1D("BDT_track_dau_mupi", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_chi2mu_mu = new TH1D("BDT_track_dau_mumu", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_chi2mu_sh = new TH1D("BDT_track_dau_mush", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_chi2mu_ot = new TH1D("BDT_track_dau_muot", "; BDT Response; Number of Events", 50, 0, 100);
-
-  TH1D * h_track_dau_ln_pr = new TH1D("track_dau_ln_pr", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_ln_pi = new TH1D("track_dau_ln_pi", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_ln_mu = new TH1D("track_dau_ln_mu", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_ln_sh = new TH1D("track_dau_ln_sh", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_ln_ot = new TH1D("track_dau_ln_ot", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_pr = new TH1D("track_dau_ln_pr", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_pi = new TH1D("track_dau_ln_pi", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_mu = new TH1D("track_dau_ln_mu", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_sh = new TH1D("track_dau_ln_sh", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_ot = new TH1D("track_dau_ln_ot", "; BDT Response; Number of Events", 50, 0, 100);
 
   //
 
-  TH1D * h_track_dau_old_llr_pr = new TH1D("BDT_track_dau_old_llapr", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_old_llr_pi = new TH1D("BDT_track_dau_old_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_old_llr_mu = new TH1D("BDT_track_dau_old_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_old_llr_sh = new TH1D("BDT_track_dau_old_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_old_llr_ot = new TH1D("BDT_track_dau_old_llrot", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llr_pr = new TH1D("BDT_track_dau_old_llapr", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llr_pi = new TH1D("BDT_track_dau_old_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llr_mu = new TH1D("BDT_track_dau_old_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llr_sh = new TH1D("BDT_track_dau_old_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llr_ot = new TH1D("BDT_track_dau_old_llrot", "; BDT Response; Number of Events", 50, -1, 1);
 
-  TH1D * h_track_dau_old_llrka_pr = new TH1D("BDT_track_dau_old_llapr", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_old_llrka_pi = new TH1D("BDT_track_dau_old_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_old_llrka_mu = new TH1D("BDT_track_dau_old_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_old_llrka_sh = new TH1D("BDT_track_dau_old_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
-  TH1D * h_track_dau_old_llrka_ot = new TH1D("BDT_track_dau_old_llrot", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llrka_pr = new TH1D("BDT_track_dau_old_llapr", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llrka_pi = new TH1D("BDT_track_dau_old_llrpi", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llrka_mu = new TH1D("BDT_track_dau_old_llrmu", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llrka_sh = new TH1D("BDT_track_dau_old_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
+  h_track_dau_old_llrka_ot = new TH1D("BDT_track_dau_old_llrot", "; BDT Response; Number of Events", 50, -1, 1);
 
-  TH1D * h_track_dau_old_chi2pr_pr = new TH1D("BDT_track_dau_old_prpr", "; BDT Response; Number of Events", 50, 0, 150);
-  TH1D * h_track_dau_old_chi2pr_pi = new TH1D("BDT_track_dau_old_prpi", "; BDT Response; Number of Events", 50, 0, 150);
-  TH1D * h_track_dau_old_chi2pr_mu = new TH1D("BDT_track_dau_old_prmu", "; BDT Response; Number of Events", 50, 0, 150);
-  TH1D * h_track_dau_old_chi2pr_sh = new TH1D("BDT_track_dau_old_prsh", "; BDT Response; Number of Events", 50, 0, 150);
-  TH1D * h_track_dau_old_chi2pr_ot = new TH1D("BDT_track_dau_old_prot", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_old_chi2pr_pr = new TH1D("BDT_track_dau_old_prpr", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_old_chi2pr_pi = new TH1D("BDT_track_dau_old_prpi", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_old_chi2pr_mu = new TH1D("BDT_track_dau_old_prmu", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_old_chi2pr_sh = new TH1D("BDT_track_dau_old_prsh", "; BDT Response; Number of Events", 50, 0, 150);
+  h_track_dau_old_chi2pr_ot = new TH1D("BDT_track_dau_old_prot", "; BDT Response; Number of Events", 50, 0, 150);
 
-  TH1D * h_track_dau_old_chi2pi_pr = new TH1D("BDT_track_dau_old_prpr", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_chi2pi_pi = new TH1D("BDT_track_dau_old_prpi", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_chi2pi_mu = new TH1D("BDT_track_dau_old_prmu", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_chi2pi_sh = new TH1D("BDT_track_dau_old_prsh", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_chi2pi_ot = new TH1D("BDT_track_dau_old_prot", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2pi_pr = new TH1D("BDT_track_dau_old_prpr", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2pi_pi = new TH1D("BDT_track_dau_old_prpi", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2pi_mu = new TH1D("BDT_track_dau_old_prmu", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2pi_sh = new TH1D("BDT_track_dau_old_prsh", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2pi_ot = new TH1D("BDT_track_dau_old_prot", "; BDT Response; Number of Events", 50, 0, 100);
 
-  TH1D * h_track_dau_old_chi2mu_pr = new TH1D("BDT_track_dau_old_mupr", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_chi2mu_pi = new TH1D("BDT_track_dau_old_mupi", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_chi2mu_mu = new TH1D("BDT_track_dau_old_mumu", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_chi2mu_sh = new TH1D("BDT_track_dau_old_mush", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_chi2mu_ot = new TH1D("BDT_track_dau_old_muot", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2mu_pr = new TH1D("BDT_track_dau_old_mupr", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2mu_pi = new TH1D("BDT_track_dau_old_mupi", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2mu_mu = new TH1D("BDT_track_dau_old_mumu", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2mu_sh = new TH1D("BDT_track_dau_old_mush", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_chi2mu_ot = new TH1D("BDT_track_dau_old_muot", "; BDT Response; Number of Events", 50, 0, 100);
 
-  TH1D * h_track_dau_old_ln_pr = new TH1D("track_dau_old_ln_pr", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_ln_pi = new TH1D("track_dau_old_ln_pi", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_ln_mu = new TH1D("track_dau_old_ln_mu", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_ln_sh = new TH1D("track_dau_old_ln_sh", "; BDT Response; Number of Events", 50, 0, 100);
-  TH1D * h_track_dau_old_ln_ot = new TH1D("track_dau_old_ln_ot", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_ln_pr = new TH1D("track_dau_old_ln_pr", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_ln_pi = new TH1D("track_dau_old_ln_pi", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_ln_mu = new TH1D("track_dau_old_ln_mu", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_ln_sh = new TH1D("track_dau_old_ln_sh", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_old_ln_ot = new TH1D("track_dau_old_ln_ot", "; BDT Response; Number of Events", 50, 0, 100);
 
 
+  h_truek_trkln_chi2ka = new TH2D("h_truek_trkln_chi2ka", "Track length vs #chi^{2}_{K};  #chi^{2}_{K}; Track length", 50, 0 , 50, 50, 0, 100);
 
-  /*
-  TH1D * h_track_dau_dis_ln_pr = new TH1D("track_dau_dis_ln_pr", "; BDT Response; Number of Events", 50, 0, 10);
-  TH1D * h_track_dau_dis_ln_pi = new TH1D("track_dau_dis_ln_pi", "; BDT Response; Number of Events", 50, 0, 10);
-  TH1D * h_track_dau_dis_ln_mu = new TH1D("track_dau_dis_ln_mu", "; BDT Response; Number of Events", 50, 0, 10);
-  TH1D * h_track_dau_dis_ln_sh = new TH1D("track_dau_dis_ln_sh", "; BDT Response; Number of Events", 50, 0, 10);
-  TH1D * h_track_dau_dis_ln_ot = new TH1D("track_dau_dis_ln_ot", "; BDT Response; Number of Events", 50, 0, 10);
-
-  TH1D * h_track_dis_ln_pr = new TH1D("track_dau_dis_ln_pr", "; BDT Response; Number of Events", 50, 0, 10);
-  TH1D * h_track_dis_ln_pi = new TH1D("track_dau_dis_ln_pi", "; BDT Response; Number of Events", 50, 0, 10);
-  TH1D * h_track_dis_ln_mu = new TH1D("track_dau_dis_ln_mu", "; BDT Response; Number of Events", 50, 0, 10);
-  TH1D * h_track_dis_ln_ot = new TH1D("track_dau_dis_ln_ot", "; BDT Response; Number of Events", 50, 0, 10);
-  */
-
-  TH1D * h_reco_track_Bragg_fwd_ka_pl2_ka = new TH1D("reco_track_Bragg_fwd_ka_pl2_ka", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_ka_pl2_pr = new TH1D("reco_track_Bragg_fwd_ka_pl2_pr", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_ka_pl2_pi = new TH1D("reco_track_Bragg_fwd_ka_pl2_pi", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_ka_pl2_mu = new TH1D("reco_track_Bragg_fwd_ka_pl2_mu", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_ka_pl2_ot = new TH1D("reco_track_Bragg_fwd_ka_pl2_ot", "; ;", 50, -1, 1);
-
-  TH1D * h_reco_track_Bragg_fwd_pr_pl2_ka = new TH1D("reco_track_Bragg_fwd_pr_pl2_ka", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_pr_pl2_pr = new TH1D("reco_track_Bragg_fwd_pr_pl2_pr", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_pr_pl2_pi = new TH1D("reco_track_Bragg_fwd_pr_pl2_pi", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_pr_pl2_mu = new TH1D("reco_track_Bragg_fwd_pr_pl2_mu", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_pr_pl2_ot = new TH1D("reco_track_Bragg_fwd_pr_pl2_ot", "; ;", 50, -1, 1);
-
-  TH1D * h_reco_track_Bragg_fwd_pi_pl2_ka = new TH1D("reco_track_Bragg_fwd_pi_pl2_ka", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_pi_pl2_pr = new TH1D("reco_track_Bragg_fwd_pi_pl2_pr", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_pi_pl2_pi = new TH1D("reco_track_Bragg_fwd_pi_pl2_pi", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_pi_pl2_mu = new TH1D("reco_track_Bragg_fwd_pi_pl2_mu", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_pi_pl2_ot = new TH1D("reco_track_Bragg_fwd_pi_pl2_ot", "; ;", 50, -1, 1);
-
-  TH1D * h_reco_track_Bragg_fwd_mu_pl2_ka = new TH1D("reco_track_Bragg_fwd_mu_pl2_ka", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_mu_pl2_pr = new TH1D("reco_track_Bragg_fwd_mu_pl2_pr", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_mu_pl2_pi = new TH1D("reco_track_Bragg_fwd_mu_pl2_pi", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_mu_pl2_mu = new TH1D("reco_track_Bragg_fwd_mu_pl2_mu", "; ;", 50, -1, 1);
-  TH1D * h_reco_track_Bragg_fwd_mu_pl2_ot = new TH1D("reco_track_Bragg_fwd_mu_pl2_ot", "; ;", 50, -1, 1);
+  h_reco_track_length = new TH1D("h_reco_track_length", "; reco_track_length; Number of Events", 50, 0, 50);
+  h_reco_track_daughter_distance = new TH1D("h_reco_track_daughter_distance", "; reco_track_daughter_distance; Number of Events", 50, 0, 50);
+  h_reco_track_daughter_vtx_distance = new TH1D(" h_reco_track_daughter_vtx_distance", ";  reco_track_daughter_vtx_distance; Number of Events", 50, 0, 50);
 
   /*
-  TH1D * h_track_chi2ka_ka_sig = new TH1D("BDT_track_kaka_sig", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2ka_pr_sig = new TH1D("BDT_track_kapr_sig", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2ka_pi_sig = new TH1D("BDT_track_kapi_sig", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2ka_mu_sig = new TH1D("BDT_track_kamu_sig", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2ka_ot_sig = new TH1D("BDT_track_kaot_sig", "; BDT Response; Number of Events", 100, 0, 100);
+  THStack * s_chi2ka = new THStack();
+  THStack * s_chi2pr = new THStack();
+  THStack * s_llr = new THStack();
+  THStack * s_llrka = new THStack();
 
-  TH1D * h_track_chi2pr_ka_sig = new TH1D("BDT_track_prka_sig", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2pr_pr_sig = new TH1D("BDT_track_prpr_sig", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2pr_pi_sig = new TH1D("BDT_track_prpi_sig", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2pr_mu_sig = new TH1D("BDT_track_prmu_sig", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2pr_ot_sig = new TH1D("BDT_track_prot_sig", "; BDT Response; Number of Events", 100, 0, 100);
+  THStack * s_llr_dau = new THStack();
+  THStack * s_llrka_dau = new THStack();
+  THStack * s_chi2pr_dau = new THStack();
+  THStack * s_chi2pi_dau = new THStack();
+  THStack * s_chi2mu_dau = new THStack();
+  THStack * s_trkln_dau = new THStack();
 
-  TH1D * h_track_chi2ka_ka_bg = new TH1D("BDT_track_kaka_bg", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2ka_pr_bg = new TH1D("BDT_track_kapr_bg", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2ka_pi_bg = new TH1D("BDT_track_kapi_bg", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2ka_mu_bg = new TH1D("BDT_track_kamu_bg", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2ka_ot_bg = new TH1D("BDT_track_kaot_bg", "; BDT Response; Number of Events", 100, 0, 100);
+  THStack * s_llr_dau_old = new THStack();
+  THStack * s_llrka_dau_old = new THStack();
+  THStack * s_chi2pr_dau_old = new THStack();
+  THStack * s_chi2pi_dau_old = new THStack();
+  THStack * s_chi2mu_dau_old = new THStack();
+  THStack * s_trkln_dau_old = new THStack();
 
-  TH1D * h_track_chi2pr_ka_bg = new TH1D("BDT_track_prka_bg", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2pr_pr_bg = new TH1D("BDT_track_prpr_bg", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2pr_pi_bg = new TH1D("BDT_track_prpi_bg", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2pr_mu_bg = new TH1D("BDT_track_prmu_bg", "; BDT Response; Number of Events", 100, 0, 100);
-  TH1D * h_track_chi2pr_o_bgt = new TH1D("BDT_track_prot_bg", "; BDT Response; Number of Events", 100, 0, 100);
+  THStack * s_braggka = new THStack();
+  THStack * s_braggpr = new THStack();
+  THStack * s_braggpi = new THStack();
+  THStack * s_braggmu = new THStack();
   */
 
-  TH2D * h_truek_trkln_chi2ka = new TH2D("h_truek_trkln_chi2ka", "Track length vs #chi^{2}_{K};  #chi^{2}_{K}; Track length", 50, 0 , 50, 50, 0, 100);
+}
 
-  TH1D * h_reco_track_length = new TH1D("h_reco_track_length", "; reco_track_length; Number of Events", 50, 0, 50);
-  TH1D * h_reco_track_daughter_distance = new TH1D("h_reco_track_daughter_distance", "; reco_track_daughter_distance; Number of Events", 50, 0, 50);
-  TH1D * h_reco_track_daughter_vtx_distance = new TH1D(" h_reco_track_daughter_vtx_distance", ";  reco_track_daughter_vtx_distance; Number of Events", 50, 0, 50);
-
+void SetHistosStyle(){
   h_track_chi2ka_ka->SetLineColor(kBlue);
   h_track_chi2ka_pr->SetLineColor(kRed);
   h_track_chi2ka_pi->SetLineColor(TColor::GetColorDark(kGreen));
@@ -545,67 +395,7 @@ void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCan
   h_track_dau_old_ln_ot->SetLineWidth(2);
   h_track_dau_old_ln_pi->SetFillColorAlpha(TColor::GetColorDark(kGreen), 0.5);
   h_track_dau_old_ln_mu->SetFillColorAlpha(kCyan, 0.3);
-  /*
-  h_track_dau_old_ln_pr->SetLineColor(kRed);
-  h_track_dau_old_ln_pi->SetLineColor(TColor::GetColorDark(kGreen));
-  h_track_dau_old_ln_mu->SetLineColor(kCyan);
-  h_track_dau_old_ln_sh->SetLineColor(kMagenta);
-  h_track_dau_old_ln_ot->SetLineColor(kOrange+1);
-  */
 
-  /*
-  h_track_dau_ln_pr->SetFillColor(kRed);
-  h_track_dau_ln_pi->SetFillColor(TColor::GetColorDark(kGreen));
-  h_track_dau_ln_mu->SetFillColor(kCyan);
-  h_track_dau_ln_sh->SetFillColor(kMagenta);
-  h_track_dau_ln_ot->SetFillColor(kOrange+1);
-
-  h_track_dau_old_ln_pr->SetFillColor(kRed);
-  h_track_dau_old_ln_pi->SetFillColor(TColor::GetColorDark(kGreen));
-  h_track_dau_old_ln_mu->SetFillColor(kCyan);
-  h_track_dau_old_ln_sh->SetFillColor(kMagenta);
-  h_track_dau_old_ln_ot->SetFillColor(kOrange+1);
-  */
-
-  /*
-  h_track_dis_ln_pr->SetLineColor(kRed);
-  h_track_dis_ln_pi->SetLineColor(TColor::GetColorDark(kGreen));
-  h_track_dis_ln_mu->SetLineColor(kCyan);
-  h_track_dis_ln_sh->SetLineColor(kMagenta);
-  h_track_dis_ln_ot->SetLineColor(kOrange+1);
-
-  h_track_dau_dis_ln_pr->SetLineColor(kRed);
-  h_track_dau_dis_ln_pi->SetLineColor(TColor::GetColorDark(kGreen));
-  h_track_dau_dis_ln_mu->SetLineColor(kCyan);
-  h_track_dau_dis_ln_sh->SetLineColor(kMagenta);
-  h_track_dau_dis_ln_ot->SetLineColor(kOrange+1);
-  */
-
-  /*
-  h_reco_track_Bragg_fwd_ka_pl2_ka->SetFillColor(kBlue);
-  h_reco_track_Bragg_fwd_ka_pl2_pr->SetFillColor(kRed);
-  h_reco_track_Bragg_fwd_ka_pl2_pi->SetFillColor(TColor::GetColorDark(kGreen));
-  h_reco_track_Bragg_fwd_ka_pl2_mu->SetFillColor(kViolet);
-  h_reco_track_Bragg_fwd_ka_pl2_ot->SetFillColor(kOrange+1);
-
-  h_reco_track_Bragg_fwd_pr_pl2_ka->SetFillColor(kBlue);
-  h_reco_track_Bragg_fwd_pr_pl2_pr->SetFillColor(kRed);
-  h_reco_track_Bragg_fwd_pr_pl2_pi->SetFillColor(TColor::GetColorDark(kGreen));
-  h_reco_track_Bragg_fwd_pr_pl2_mu->SetFillColor(kViolet);
-  h_reco_track_Bragg_fwd_pr_pl2_ot->SetFillColor(kOrange+1);
-
-  h_reco_track_Bragg_fwd_pi_pl2_ka->SetFillColor(kBlue);
-  h_reco_track_Bragg_fwd_pi_pl2_pr->SetFillColor(kRed);
-  h_reco_track_Bragg_fwd_pi_pl2_pi->SetFillColor(TColor::GetColorDark(kGreen));
-  h_reco_track_Bragg_fwd_pi_pl2_mu->SetFillColor(kViolet);
-  h_reco_track_Bragg_fwd_pi_pl2_ot->SetFillColor(kOrange+1);
-
-  h_reco_track_Bragg_fwd_mu_pl2_ka->SetFillColor(kBlue);
-  h_reco_track_Bragg_fwd_mu_pl2_pr->SetFillColor(kRed);
-  h_reco_track_Bragg_fwd_mu_pl2_pi->SetFillColor(TColor::GetColorDark(kGreen));
-  h_reco_track_Bragg_fwd_mu_pl2_mu->SetFillColor(kViolet);
-  h_reco_track_Bragg_fwd_mu_pl2_ot->SetFillColor(kOrange+1);
-  */
 
   
   h_reco_track_Bragg_fwd_ka_pl2_ka->SetLineColor(kBlue);
@@ -656,626 +446,53 @@ void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCan
   h_reco_track_Bragg_fwd_mu_pl2_mu->SetLineWidth(3);
   h_reco_track_Bragg_fwd_mu_pl2_ot->SetLineWidth(3);
 
-  THStack * s_chi2ka = new THStack();
-  THStack * s_chi2pr = new THStack();
-  THStack * s_llr = new THStack();
-  THStack * s_llrka = new THStack();
+}
 
-  THStack * s_llr_dau = new THStack();
-  THStack * s_llrka_dau = new THStack();
-  THStack * s_chi2pr_dau = new THStack();
-  THStack * s_chi2pi_dau = new THStack();
-  THStack * s_chi2mu_dau = new THStack();
-  THStack * s_trkln_dau = new THStack();
+void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name)
+{
 
-  THStack * s_llr_dau_old = new THStack();
-  THStack * s_llrka_dau_old = new THStack();
-  THStack * s_chi2pr_dau_old = new THStack();
-  THStack * s_chi2pi_dau_old = new THStack();
-  THStack * s_chi2mu_dau_old = new THStack();
-  THStack * s_trkln_dau_old = new THStack();
-
-  //THStack * s_trkdis = new THStack();
-  //THStack * s_daudis = new THStack();
-  THStack * s_braggka = new THStack();
-  THStack * s_braggpr = new THStack();
-  THStack * s_braggpi = new THStack();
-  THStack * s_braggmu = new THStack();
+  LoadTree(TFile *f, TString pl, TTree* t);
 
   for(int ientry=0; ientry<nentry; ++ientry){
   //for(int ientry=0; ientry<9526; ++ientry){
     t->GetEntry(ientry);
     //if( fname.Contains("7Nov") || (fname.Contains("TMVA") && BDT>0.32)){
 
-	if(reco_track_true_pdg==321){
-	  h_track_llr_ka->Fill(reco_track_llrpid_3pl);
-	  h_track_llrka_ka->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_ka->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_ka->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_ka->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_ka->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	else if(reco_track_true_pdg==13){
-	  h_track_llr_mu->Fill(reco_track_llrpid_3pl); 
-	  h_track_llrka_mu->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_mu->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_mu->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_mu->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_mu->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	else if(reco_track_true_pdg==211){
-	  h_track_llr_pi->Fill(reco_track_llrpid_3pl);
-	  h_track_llrka_pi->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_pi->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_pi->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_pi->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_pi->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	else if(reco_track_true_pdg==2212){
-	  h_track_llr_pr->Fill(reco_track_llrpid_3pl);
-	  h_track_llrka_pr->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_pr->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_pr->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_pr->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_pr->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	else{
-	  h_track_llr_ot->Fill(reco_track_llrpid_3pl); 
-	  h_track_llrka_ot->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_ot->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_ot->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_ot->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_ot->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	
-	h_reco_track_length->Fill(reco_track_length);
-	h_reco_track_daughter_distance->Fill(reco_track_daughter_distance);
-	h_reco_track_daughter_vtx_distance->Fill(reco_track_daughter_vtx_distance);
+    FillPrimaryTrack();
+    
 
-	if(true_kaon_end_process == 0) n0++;                                                                                                                                                                                                                                                                                 
-	if(true_kaon_end_process == 1) n1++;                                                                                                                                                                                                                                                                                 
-	if(true_kaon_end_process == 2) n2++;                                                                                                                                                                                                                                                                                 
-	if(true_kaon_end_process == 3) n3++;                                                                                                                                                                                                                                                                                 
-	if(true_kaon_end_process == 4) n4++;                                                                                                                                                                                                                                                                                 
-	if(true_kaon_end_process == 5) n5++;  
-	//if(true_kaon_end_process>=0) n5/reco_ntracks++;
-
-	if( (reco_track_true_pdg==321 || reco_track_true_pdg==321 ) && ( reco_track_daughter_length>0 || reco_track_daughter_old_length>40)){
-	//if( (reco_track_true_pdg==321 || reco_track_true_pdg!=321 ) ){
-
-	//if( reco_track_true_pdg!=321 && (reco_track_daughter_length>25 || reco_track_daughter_old_length>40) ){
-	//if(reco_track_true_pdg==321 && reco_track_daughter_length>25){
-	//if(reco_track_true_pdg==321 && 
-	//((reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)
-	//|| (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) ){
- 	//if(reco_track_true_pdg==321 && ( (reco_track_daughter_length>25 && reco_track_daughter_old_length<40 )|| reco_track_daughter_old_length>40)){
-
-	  //if(reco_track_daughter_llrpid_3pl<0) continue;
-	  //if(reco_track_daughter_llrpid_k_3pl<0) continue;
-
-	//if(reco_track_true_pdg!=321 && ( (reco_track_daughter_length>25 && reco_track_daughter_old_length<40 )|| reco_track_daughter_old_length>40)){
-	  //if(reco_track_daughter_true_pdg==211) cout << reco_track_daughter_length << endl;
-
-	  /*
-	if(reco_track_true_pdg==321 && 
-	    ((reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)
-	     || (reco_track_daughter_old_length<40 && reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)
-	     || (reco_track_daughter_old_length>40 && reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) ){
-	  */
-	  
-	//if(reco_track_daughter_old_length>50 && reco_track_daughter_true_pdg!=211){
-	    
+	    //if(reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length))
+	    //add true track length 
 
 
-	  
-	  if(reco_track_daughter_old_length>40){
-	    if(reco_track_daughter_old_true_pdg==2212) h_track_dau_ln_pr->Fill(reco_track_daughter_old_length);
-	    else if(reco_track_daughter_old_true_pdg==-13)  h_track_dau_ln_mu->Fill(reco_track_daughter_old_length);
-	    else if(reco_track_daughter_old_true_pdg==211) h_track_dau_ln_pi->Fill(reco_track_daughter_old_length);  
-	    else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22) h_track_dau_ln_sh->Fill(reco_track_daughter_old_length);
-	    else if(reco_track_daughter_old_true_pdg!=-9999) h_track_dau_ln_ot->Fill(reco_track_daughter_old_length);
-	  }
-	  else if(reco_track_daughter_old_length<40){
-	  
-
-	  
-	  //else if(reco_track_daughter_length>25 && reco_track_daughter_old_length<40){
-	
-  
-	  if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg!=-13 && reco_track_daughter_true_pdg!=211) ){
-	  //if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==22||reco_track_daughter_true_pdg==-11||reco_track_daughter_true_pdg==11) ){
-	    /*
-	    if(true_kaon_end_process == 0) n0++;
-	    if(true_kaon_end_process == 1) n1++;
-	    if(true_kaon_end_process == 2) n2++;
-	    if(true_kaon_end_process == 3) n3++;
-	    if(true_kaon_end_process == 4) n4++;
-	    if(true_kaon_end_process == 5) n5++;
-	    */
-	    //cout << true_kaon_end_process << endl;
-	  }
-	  //if(reco_track_true_pdg==321){
-	  /*
-	  if(reco_track_true_pdg!=321 && (true_kaon_end_process==1 && true_kaon_end_process!=0)  ){
-	    if(reco_track_daughter_true_pdg!=2212 && reco_track_daughter_true_pdg!=-13 && reco_track_daughter_true_pdg!=-11 && reco_track_daughter_true_pdg!=11 && reco_track_daughter_true_pdg!=211 && reco_track_daughter_true_pdg!=22 && reco_track_daughter_true_pdg!=-9999 ) cout << reco_track_daughter_true_pdg << endl;
-	  }
-	  */
-	  /*
-	  if(reco_track_true_pdg!=321){
-	    if(reco_track_true_pdg!=2212 && reco_track_true_pdg!=13 && reco_track_true_pdg!=211) cout << reco_track_true_pdg << endl;
-	  }
-	  */
-
-	if(reco_track_daughter_true_pdg==2212){
-	  h_track_dau_ln_pr->Fill(reco_track_daughter_length);
-	  //h_track_dis_ln_pr->Fill(reco_track_distance);
-	  //h_track_dau_dis_ln_pr->Fill(reco_track_daughter_distance);
-	  h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
-	  h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl);
-	}
-	//else if(reco_track_daughter_true_pdg==-13){
-	else if( (reco_track_daughter_true_pdg==-13 || reco_track_daughter_true_pdg==13) ){
-	  h_track_dau_ln_mu->Fill(reco_track_daughter_length);
-	  //h_track_dis_ln_mu->Fill(reco_track_distance);
-	  //h_track_dau_dis_ln_mu->Fill(reco_track_daughter_distance);
-	  h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl);
-	  h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl);
-	}
-	else if(reco_track_daughter_true_pdg==211){
-	  h_track_dau_ln_pi->Fill(reco_track_daughter_length);
-	  //h_track_dis_ln_pi->Fill(reco_track_distance);
-	  //h_track_dau_dis_ln_pi->Fill(reco_track_daughter_distance);
-	  h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl);
-	  h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl);
-	}
-	else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22){
-	  h_track_dau_ln_sh->Fill(reco_track_daughter_length);
-	  h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl);
-	  h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl);
-	}
-	else if(reco_track_daughter_true_pdg!=-9999){
-	  h_track_dau_ln_ot->Fill(reco_track_daughter_length);
-	  //h_track_dis_ln_ot->Fill(reco_track_distance);
-	  //h_track_dau_dis_ln_ot->Fill(reco_track_daughter_distance);
-	  h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
-	  h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
-	}
-	}
-
-	  }
-
-	if( (reco_track_true_pdg==321 || reco_track_true_pdg==321) && reco_track_daughter_old_length>0){
-	//if(reco_track_true_pdg!=321 && reco_track_daughter_old_length>0){
-	//if(reco_track_true_pdg!=321 && reco_track_daughter_old_length>25){
-	//if(reco_track_true_pdg!=321 && reco_track_daughter_old_length>25){
-
-	//if(reco_track_true_pdg==321 && reco_track_daughter_old_length>25 &&reco_track_daughter_old_true_pdg==211 ) cout << reco_track_daughter_old_length << endl;
-	/*    
-	  if(reco_track_true_pdg==321 && reco_track_daughter_old_length>25 &&
-	  ((reco_track_daughter_old_true_pdg==211 && std::abs(reco_track_daughter_old_length-true_dau_pip_length)<0.2*true_dau_pip_length)
-	  || (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) ){
-	*/
-
-	if(reco_track_daughter_old_true_pdg==2212){
-	  h_track_dau_old_ln_pr->Fill(reco_track_daughter_old_length);
-	  h_track_dau_old_llr_pr->Fill(reco_track_daughter_old_llrpid_3pl);
-	  h_track_dau_old_llrka_pr->Fill(reco_track_daughter_old_llrpid_k_3pl);
-	}
-	else if(reco_track_daughter_old_true_pdg==-13){
-	  h_track_dau_old_ln_mu->Fill(reco_track_daughter_old_length);
-	  h_track_dau_old_llr_mu->Fill(reco_track_daughter_old_llrpid_3pl);
-	  h_track_dau_old_llrka_mu->Fill(reco_track_daughter_old_llrpid_k_3pl);
-	}
-	else if(reco_track_daughter_old_true_pdg==211){
-	  h_track_dau_old_ln_pi->Fill(reco_track_daughter_old_length);
-	  h_track_dau_old_llr_pi->Fill(reco_track_daughter_old_llrpid_3pl);
-	  h_track_dau_old_llrka_pi->Fill(reco_track_daughter_old_llrpid_k_3pl);
-	}
-	else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22){
-	  h_track_dau_old_ln_sh->Fill(reco_track_daughter_old_length);
-	  h_track_dau_old_llr_sh->Fill(reco_track_daughter_old_llrpid_3pl);
-	  h_track_dau_old_llrka_sh->Fill(reco_track_daughter_old_llrpid_k_3pl);	  
-	}
-	else if(reco_track_daughter_old_true_pdg!=-9999){
-	  h_track_dau_old_ln_ot->Fill(reco_track_daughter_old_length);
-	  h_track_dau_old_llr_ot->Fill(reco_track_daughter_old_llrpid_3pl);
-	  h_track_dau_old_llrka_ot->Fill(reco_track_daughter_old_llrpid_k_3pl);
-	}
-
-	}
-
-
-      if(pl=="pl2"){
-
-	/*
-	h_chi2_trk_pr_ka->Fill(reco_track_chi2pr_pl2, reco_track_chi2ka_pl2);
-
-	if(true_nu_pdg==14 && true_nu_ccnc==0 && true_kaon_ke>=0 && true_nu_vtx_inCCInclusiveTPC==1 && true_kaon_end_inCCInclusiveTPC==1 && true_kaon_daughter_end_in5cmTPC==1 && reco_track_true_pdg==321){
-	  h_chi2_trk_pr_ka_sig->Fill(reco_track_chi2pr_pl2, reco_track_chi2ka_pl2);
-	}
-	else h_chi2_trk_pr_ka_bg->Fill(reco_track_chi2pr_pl2, reco_track_chi2ka_pl2);
-
-	h_truek_trkln_chi2ka->Fill(reco_track_chi2ka_pl2, true_kaon_length);
-	*/
-	/*
-	h_chi2_trk_pi_ka->Fill(reco_track_chi2pi_pl2, reco_track_chi2ka_pl2);
-	h_chi2_trk_mu_ka->Fill(reco_track_chi2mu_pl2, reco_track_chi2ka_pl2);
-	
-	h_chi2_dau_pr_mu->Fill(reco_track_daughter_chi2pr_pl2, reco_track_daughter_chi2mu_pl2);
-	h_chi2_dau_pi_mu->Fill(reco_track_daughter_chi2pi_pl2, reco_track_daughter_chi2mu_pl2);
-	h_chi2_dau_ka_mu->Fill(reco_track_daughter_chi2ka_pl2, reco_track_daughter_chi2mu_pl2);
-	h_chi2_dau_pr_pi->Fill(reco_track_daughter_chi2pr_pl2, reco_track_daughter_chi2ka_pl2);
-	h_chi2_dau_mu_pi->Fill(reco_track_daughter_chi2mu_pl2, reco_track_daughter_chi2ka_pl2);
-	h_chi2_dau_ka_pi->Fill(reco_track_daughter_chi2ka_pl2, reco_track_daughter_chi2ka_pl2);
-	*/
-	
-	if(reco_track_true_pdg==321){
-	  h_track_chi2ka_ka->Fill(reco_track_chi2ka_pl2);
-	  h_track_chi2pr_ka->Fill(reco_track_chi2pr_pl2);
-	}
-	else if(reco_track_true_pdg==13){
-	  h_track_chi2ka_mu->Fill(reco_track_chi2ka_pl2);
-	  h_track_chi2pr_mu->Fill(reco_track_chi2pr_pl2);
-	}
-	else if(reco_track_true_pdg==211){
-	  h_track_chi2ka_pi->Fill(reco_track_chi2ka_pl2);
-	  h_track_chi2pr_pi->Fill(reco_track_chi2pr_pl2);
-	}
-	else if(reco_track_true_pdg==2212){
-	  h_track_chi2ka_pr->Fill(reco_track_chi2ka_pl2);
-	  h_track_chi2pr_pr->Fill(reco_track_chi2pr_pl2);
-	}
-	else{
-	  h_track_chi2ka_ot->Fill(reco_track_chi2ka_pl2);
-	  h_track_chi2pr_ot->Fill(reco_track_chi2pr_pl2);
-	}
-
-	if(reco_track_daughter_true_pdg==2212){
-	  h_track_dau_chi2pr_pr->Fill(reco_track_daughter_chi2pr_pl2);
-	  h_track_dau_chi2pi_pr->Fill(reco_track_daughter_chi2pi_pl2);
-	  h_track_dau_chi2mu_pr->Fill(reco_track_daughter_chi2mu_pl2);
-	}
-	else if(reco_track_daughter_true_pdg==-13){
-	  h_track_dau_chi2pr_mu->Fill(reco_track_daughter_chi2pr_pl2);
-	  h_track_dau_chi2pi_mu->Fill(reco_track_daughter_chi2pi_pl2);
-	  h_track_dau_chi2mu_mu->Fill(reco_track_daughter_chi2mu_pl2);
-	}
-	else if(reco_track_daughter_true_pdg==211){
-	  h_track_dau_chi2pr_pi->Fill(reco_track_daughter_chi2pr_pl2);
-	  h_track_dau_chi2pi_pi->Fill(reco_track_daughter_chi2pi_pl2);
-	  h_track_dau_chi2mu_pi->Fill(reco_track_daughter_chi2mu_pl2);
-	}
-	else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22 ){
-	  h_track_dau_chi2pr_sh->Fill(reco_track_daughter_chi2pr_pl2);
-	  h_track_dau_chi2pi_sh->Fill(reco_track_daughter_chi2pi_pl2);
-	  h_track_dau_chi2mu_sh->Fill(reco_track_daughter_chi2mu_pl2);
-	}
-	else{
-	  h_track_dau_chi2pr_ot->Fill(reco_track_daughter_chi2pr_pl2);
-	  h_track_dau_chi2pi_ot->Fill(reco_track_daughter_chi2pi_pl2);
-	  h_track_dau_chi2mu_ot->Fill(reco_track_daughter_chi2mu_pl2);
-	}
-
-	if(reco_track_daughter_old_true_pdg==2212){
-	  h_track_dau_old_chi2pr_pr->Fill(reco_track_daughter_old_chi2pr_pl2);
-	  h_track_dau_old_chi2pi_pr->Fill(reco_track_daughter_old_chi2pi_pl2);
-	  h_track_dau_old_chi2mu_pr->Fill(reco_track_daughter_old_chi2mu_pl2);
-	}
-	else if(reco_track_daughter_old_true_pdg==-13){
-	  h_track_dau_old_chi2pr_mu->Fill(reco_track_daughter_old_chi2pr_pl2);
-	  h_track_dau_old_chi2pi_mu->Fill(reco_track_daughter_old_chi2pi_pl2);
-	  h_track_dau_old_chi2mu_mu->Fill(reco_track_daughter_old_chi2mu_pl2);
-	}
-	else if(reco_track_daughter_old_true_pdg==211){
-	  h_track_dau_old_chi2pr_pi->Fill(reco_track_daughter_old_chi2pr_pl2);
-	  h_track_dau_old_chi2pi_pi->Fill(reco_track_daughter_old_chi2pi_pl2);
-	  h_track_dau_old_chi2mu_pi->Fill(reco_track_daughter_old_chi2mu_pl2);
-	}
-	else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22 ){
-	  h_track_dau_old_chi2pr_sh->Fill(reco_track_daughter_old_chi2pr_pl2);
-	  h_track_dau_old_chi2pi_sh->Fill(reco_track_daughter_old_chi2pi_pl2);
-	  h_track_dau_old_chi2mu_sh->Fill(reco_track_daughter_old_chi2mu_pl2);
-	}
-	else{
-	  h_track_dau_old_chi2pr_ot->Fill(reco_track_daughter_old_chi2pr_pl2);
-	  h_track_dau_old_chi2pi_ot->Fill(reco_track_daughter_old_chi2pi_pl2);
-	  h_track_dau_old_chi2mu_ot->Fill(reco_track_daughter_old_chi2mu_pl2);
-	}
-
-
-      }else{
-	/*
-	h_chi2_trk_pr_ka->Fill(reco_track_chi2pr_3pl, reco_track_chi2ka_3pl);
-
-	if(true_nu_pdg==14 && true_nu_ccnc==0 && true_kaon_ke>=0 && true_nu_vtx_inCCInclusiveTPC==1 && true_kaon_end_inCCInclusiveTPC==1 && true_kaon_daughter_end_in5cmTPC==1 && reco_track_true_pdg==321){
-	  h_chi2_trk_pr_ka_sig->Fill(reco_track_chi2pr_3pl, reco_track_chi2ka_3pl);
-	}
-	else h_chi2_trk_pr_ka_bg->Fill(reco_track_chi2pr_3pl, reco_track_chi2ka_3pl);
-
-	h_truek_trkln_chi2ka->Fill(reco_track_chi2ka_3pl, true_kaon_length);
-	*/
-	/*
-	h_chi2_trk_pr_ka->Fill(reco_track_daughter_chi2pr_3pl, reco_track_daughter_chi2ka_3pl);
-	h_chi2_trk_pi_ka->Fill(reco_track_daughter_chi2pi_3pl, reco_track_daughter_chi2ka_3pl);
-	h_chi2_trk_mu_ka->Fill(reco_track_daughter_chi2mu_3pl, reco_track_daughter_chi2ka_3pl);
-	
-	h_chi2_dau_pr_mu->Fill(reco_track_daughter_chi2pr_3pl, reco_track_daughter_chi2mu_3pl);
-	h_chi2_dau_pi_mu->Fill(reco_track_daughter_chi2pi_3pl, reco_track_daughter_chi2mu_3pl);
-	h_chi2_dau_ka_mu->Fill(reco_track_daughter_chi2ka_3pl, reco_track_daughter_chi2mu_3pl);
-	h_chi2_dau_pr_pi->Fill(reco_track_daughter_chi2pr_3pl, reco_track_daughter_chi2ka_3pl);
-	h_chi2_dau_mu_pi->Fill(reco_track_daughter_chi2mu_3pl, reco_track_daughter_chi2ka_3pl);
-	h_chi2_dau_ka_pi->Fill(reco_track_daughter_chi2ka_3pl, reco_track_daughter_chi2ka_3pl);
-	*/	
-	
-	//cout << reco_track_true_pdg << endl;
-
-	if(reco_track_true_pdg==321){
-	  h_track_chi2ka_ka->Fill(reco_track_chi2ka_3pl);
-	  h_track_chi2pr_ka->Fill(reco_track_chi2pr_3pl);
-	}
-	else if(reco_track_true_pdg==13){
-	  h_track_chi2ka_mu->Fill(reco_track_chi2ka_3pl);
-	  h_track_chi2pr_mu->Fill(reco_track_chi2pr_3pl);
-	}
-	else if(reco_track_true_pdg==211){
-	  h_track_chi2ka_pi->Fill(reco_track_chi2ka_3pl);
-	  h_track_chi2pr_pi->Fill(reco_track_chi2pr_3pl);
-	}
-	else if(reco_track_true_pdg==2212){
-	  h_track_chi2ka_pr->Fill(reco_track_chi2ka_3pl);
-	  h_track_chi2pr_pr->Fill(reco_track_chi2pr_3pl);
-	}
-	else{
-	  h_track_chi2ka_ot->Fill(reco_track_chi2ka_3pl);
-	  h_track_chi2pr_ot->Fill(reco_track_chi2pr_3pl);
-	}
-
-
-	if(reco_track_daughter_true_pdg==2212){
-	  h_track_dau_chi2pr_pr->Fill(reco_track_daughter_chi2pr_3pl);
-	  h_track_dau_chi2pi_pr->Fill(reco_track_daughter_chi2pi_3pl);
-	  h_track_dau_chi2mu_pr->Fill(reco_track_daughter_chi2mu_3pl);
-	}
-	else if(reco_track_daughter_true_pdg==-13){
-	  h_track_dau_chi2pr_mu->Fill(reco_track_daughter_chi2pr_3pl);
-	  h_track_dau_chi2pi_mu->Fill(reco_track_daughter_chi2pi_3pl);
-	  h_track_dau_chi2mu_mu->Fill(reco_track_daughter_chi2mu_3pl);
-	}
-	else if(reco_track_daughter_true_pdg==211){
-	  h_track_dau_chi2pr_pi->Fill(reco_track_daughter_chi2pr_3pl);
-	  h_track_dau_chi2pi_pi->Fill(reco_track_daughter_chi2pi_3pl);
-	  h_track_dau_chi2mu_pi->Fill(reco_track_daughter_chi2mu_3pl);
-	}
-	else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22 ){
-	  h_track_dau_chi2pr_sh->Fill(reco_track_daughter_chi2pr_3pl);
-	  h_track_dau_chi2pi_sh->Fill(reco_track_daughter_chi2pi_3pl);
-	  h_track_dau_chi2mu_sh->Fill(reco_track_daughter_chi2mu_3pl);
-	}
-	else{
-	  h_track_dau_chi2pr_ot->Fill(reco_track_daughter_chi2pr_3pl);
-	  h_track_dau_chi2pi_ot->Fill(reco_track_daughter_chi2pi_3pl);
-	  h_track_dau_chi2mu_ot->Fill(reco_track_daughter_chi2mu_3pl);
-	}
-
-	if(reco_track_daughter_old_true_pdg==2212){
-	  h_track_dau_old_chi2pr_pr->Fill(reco_track_daughter_old_chi2pr_3pl);
-	  h_track_dau_old_chi2pi_pr->Fill(reco_track_daughter_old_chi2pi_3pl);
-	  h_track_dau_old_chi2mu_pr->Fill(reco_track_daughter_old_chi2mu_3pl);
-	}
-	else if(reco_track_daughter_old_true_pdg==-13){
-	  h_track_dau_old_chi2pr_mu->Fill(reco_track_daughter_old_chi2pr_3pl);
-	  h_track_dau_old_chi2pi_mu->Fill(reco_track_daughter_old_chi2pi_3pl);
-	  h_track_dau_old_chi2mu_mu->Fill(reco_track_daughter_old_chi2mu_3pl);
-	}
-	else if(reco_track_daughter_old_true_pdg==211){
-	  h_track_dau_old_chi2pr_pi->Fill(reco_track_daughter_old_chi2pr_3pl);
-	  h_track_dau_old_chi2pi_pi->Fill(reco_track_daughter_old_chi2pi_3pl);
-	  h_track_dau_old_chi2mu_pi->Fill(reco_track_daughter_old_chi2mu_3pl);
-	}
-	else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22 ){
-	  h_track_dau_old_chi2pr_sh->Fill(reco_track_daughter_old_chi2pr_3pl);
-	  h_track_dau_old_chi2pi_sh->Fill(reco_track_daughter_old_chi2pi_3pl);
-	  h_track_dau_old_chi2mu_sh->Fill(reco_track_daughter_old_chi2mu_3pl);
-	}
-	else{
-	  h_track_dau_old_chi2pr_ot->Fill(reco_track_daughter_old_chi2pr_3pl);
-	  h_track_dau_old_chi2pi_ot->Fill(reco_track_daughter_old_chi2pi_3pl);
-	  h_track_dau_old_chi2mu_ot->Fill(reco_track_daughter_old_chi2mu_3pl);
-	}
-
+    if(mode=="All"){	  
+      FillOldTrackLength();
+      if(IsHybrid) FillHybridTrackLength();
+      else FillRebuiltTrackLength();
+    }
+    else if(mode=="IsK"){
+      if(reco_track_true_pdg==321){
+	FillOldTrackLength();
+	if(IsHybrid) FillHybridTrackLength();
+	else FillRebuiltTrackLength();
       }
-      //}
+    }
+    else if(mode=="NotK"){
+      if(reco_track_true_pdg!=321){
+	FillOldTrackLength();
+	if(IsHybrid) FillHybridTrackLength();
+	else FillRebuiltTrackLength();
+	
+      }
+    }
+    
+    if(pl=="pl2") FillPl2PID();
+    else if(pl=="3pl") Fill3PlPID();
+    
   }
 
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_pr);
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_ot);
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_ka);
-
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_mu);
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_pi);
-
-
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_pr);
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_ot);
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_ka);
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_mu);
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_pi);
-
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_pr);
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_ot);
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_ka);
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_mu);
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_pi);
-
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_pr);
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_ot);
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_ka);
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_mu);
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_pi);
-
-
-  s_chi2ka->Add(h_track_chi2ka_ka);
-  s_chi2ka->Add(h_track_chi2ka_pr);
-  s_chi2ka->Add(h_track_chi2ka_pi);
-  s_chi2ka->Add(h_track_chi2ka_mu);
-  s_chi2ka->Add(h_track_chi2ka_ot);
-  
-  s_chi2pr->Add(h_track_chi2pr_ka);
-  s_chi2pr->Add(h_track_chi2pr_pr);
-  s_chi2pr->Add(h_track_chi2pr_pi);
-  s_chi2pr->Add(h_track_chi2pr_mu);
-  s_chi2pr->Add(h_track_chi2pr_ot);
-
-  s_llr->Add(h_track_llr_pr);
-  s_llr->Add(h_track_llr_ka);
-  s_llr->Add(h_track_llr_ot);
-  s_llr->Add(h_track_llr_mu);
-  s_llr->Add(h_track_llr_pi);
-  /*
-  s_llr->Add(h_track_llr_ka);
-  s_llr->Add(h_track_llr_pr);
-  s_llr->Add(h_track_llr_pi);
-  s_llr->Add(h_track_llr_mu);
-  s_llr->Add(h_track_llr_ot);
-  */
-  s_llrka->Add(h_track_llrka_ka);
-  s_llrka->Add(h_track_llrka_pr);
-  s_llrka->Add(h_track_llrka_pi);
-  s_llrka->Add(h_track_llrka_mu);
-  s_llrka->Add(h_track_llrka_ot);
-
-  s_llr_dau->Add(h_track_dau_llr_pr);
-  s_llr_dau->Add(h_track_dau_llr_mu);
-  s_llr_dau->Add(h_track_dau_llr_pi);
-  s_llr_dau->Add(h_track_dau_llr_sh);
-  s_llr_dau->Add(h_track_dau_llr_ot);
-
-  s_llrka_dau->Add(h_track_dau_llrka_pr);
-  s_llrka_dau->Add(h_track_dau_llrka_mu);
-  s_llrka_dau->Add(h_track_dau_llrka_pi);
-  s_llrka_dau->Add(h_track_dau_llrka_sh);
-  s_llrka_dau->Add(h_track_dau_llrka_ot);
-
-  s_chi2pr_dau->Add(h_track_dau_chi2pr_pr);
-  s_chi2pr_dau->Add(h_track_dau_chi2pr_mu);
-  s_chi2pr_dau->Add(h_track_dau_chi2pr_pi);
-  s_chi2pr_dau->Add(h_track_dau_chi2pr_sh);
-  s_chi2pr_dau->Add(h_track_dau_chi2pr_ot);
-
-  s_chi2pi_dau->Add(h_track_dau_chi2pi_pr);
-  s_chi2pi_dau->Add(h_track_dau_chi2pi_mu);
-  s_chi2pi_dau->Add(h_track_dau_chi2pi_pi);
-  s_chi2pi_dau->Add(h_track_dau_chi2pi_sh);
-  s_chi2pi_dau->Add(h_track_dau_chi2pi_ot);
-
-  s_chi2mu_dau->Add(h_track_dau_chi2mu_pr);
-  s_chi2mu_dau->Add(h_track_dau_chi2mu_mu);
-  s_chi2mu_dau->Add(h_track_dau_chi2mu_pi);
-  s_chi2mu_dau->Add(h_track_dau_chi2mu_sh);
-  s_chi2mu_dau->Add(h_track_dau_chi2mu_ot);
-
-
-  s_trkln_dau->Add(h_track_dau_ln_pi);
-  s_trkln_dau->Add(h_track_dau_ln_mu);
-  s_trkln_dau->Add(h_track_dau_ln_sh);
-  s_trkln_dau->Add(h_track_dau_ln_pr);
-  s_trkln_dau->Add(h_track_dau_ln_ot);
-
-
-  s_llr_dau_old->Add(h_track_dau_old_llr_pr);
-  s_llr_dau_old->Add(h_track_dau_old_llr_mu);
-  s_llr_dau_old->Add(h_track_dau_old_llr_pi);
-  s_llr_dau_old->Add(h_track_dau_old_llr_sh);
-  s_llr_dau_old->Add(h_track_dau_old_llr_ot);
-
-  s_llrka_dau_old->Add(h_track_dau_old_llrka_pr);
-  s_llrka_dau_old->Add(h_track_dau_old_llrka_mu);
-  s_llrka_dau_old->Add(h_track_dau_old_llrka_pi);
-  s_llrka_dau_old->Add(h_track_dau_old_llrka_sh);
-  s_llrka_dau_old->Add(h_track_dau_old_llrka_ot);
-
-  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_pr);
-  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_mu);
-  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_pi);
-  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_sh);
-  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_ot);
-
-  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_pr);
-  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_mu);
-  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_pi);
-  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_sh);
-  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_ot);
-
-  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_pr);
-  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_mu);
-  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_pi);
-  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_sh);
-  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_ot);
-
-
-  s_trkln_dau_old->Add(h_track_dau_old_ln_pi);
-  s_trkln_dau_old->Add(h_track_dau_old_ln_mu);
-  s_trkln_dau_old->Add(h_track_dau_old_ln_sh);
-  s_trkln_dau_old->Add(h_track_dau_old_ln_pr);
-  s_trkln_dau_old->Add(h_track_dau_old_ln_ot);
-
-
-  /*
-  s_trkln_dau->Add(h_track_dau_ln_mu);
-  s_trkln_dau->Add(h_track_dau_ln_pr);
-  s_trkln_dau->Add(h_track_dau_ln_pi);
-  s_trkln_dau->Add(h_track_dau_ln_sh);
-  s_trkln_dau->Add(h_track_dau_ln_ot);
-
-  s_daudis->Add(h_track_dau_dis_ln_mu);
-  s_daudis->Add(h_track_dau_dis_ln_pr);
-  s_daudis->Add(h_track_dau_dis_ln_pi);
-  s_daudis->Add(h_track_dau_dis_ln_ot);
-
-  s_trkdis->Add(h_track_dis_ln_mu);
-  s_trkdis->Add(h_track_dis_ln_pr);
-  s_trkdis->Add(h_track_dis_ln_pi);
-  s_trkdis->Add(h_track_dis_ln_ot);
-  */
-
-  TLegend * l_ka = new TLegend(0.75,0.65,0.95,0.95);
-  l_ka->AddEntry(h_track_chi2ka_ka, "True K^{+}"  , "f");
-  l_ka->AddEntry(h_track_chi2ka_pr, "True p" , "f");
-  l_ka->AddEntry(h_track_chi2ka_pi, "True #pi^{+}"   , "f");
-  l_ka->AddEntry(h_track_chi2ka_mu, "True #mu^{-}"   , "f");
-  l_ka->AddEntry(h_track_chi2ka_ot, "Others"   , "f");
-
-  TLegend * l_pr = new TLegend(0.75,0.65,0.95,0.95);
-  l_pr->AddEntry(h_track_chi2pr_ka, "True K^{+}"  , "f");
-  l_pr->AddEntry(h_track_chi2pr_pr, "True p" , "f");
-  l_pr->AddEntry(h_track_chi2pr_pi, "True #pi^{+}"   , "f");
-  l_pr->AddEntry(h_track_chi2pr_mu, "True #mu^{-}"   , "f");
-  l_pr->AddEntry(h_track_chi2pr_ot, "Others"   , "f");
-
-  TLegend * l_pr_dau = new TLegend(0.75,0.65,0.95,0.95);
-  l_pr_dau->AddEntry(h_track_dau_chi2pr_pr, "True p" , "f");
-  l_pr_dau->AddEntry(h_track_dau_chi2pr_pi, "True #pi^{+}"   , "f");
-  l_pr_dau->AddEntry(h_track_dau_chi2pr_mu, "True #mu^{+}"   , "f");
-  l_pr_dau->AddEntry(h_track_dau_chi2pr_sh, "True shower"   , "f");
-  l_pr_dau->AddEntry(h_track_dau_chi2pr_ot, "Others"   , "f");
-
-  TLegend * l_pr_dau_ln = new TLegend(0.75,0.65,0.95,0.95);
-  l_pr_dau_ln->AddEntry(h_track_dau_ln_pr, "True p" , "f");
-  l_pr_dau_ln->AddEntry(h_track_dau_ln_pi, "True #pi^{+}"   , "f");
-  l_pr_dau_ln->AddEntry(h_track_dau_ln_mu, "True #mu^{+}"   , "f");
-  l_pr_dau_ln->AddEntry(h_track_dau_ln_sh, "True shower"   , "f");
-  l_pr_dau_ln->AddEntry(h_track_dau_ln_ot, "Others"   , "f");
-
-  TLegend * l_pr_dau2 = new TLegend(0.15,0.58,0.35,0.88);
-  l_pr_dau2->AddEntry(h_track_dau_chi2pr_pr, "True p" , "f");
-  l_pr_dau2->AddEntry(h_track_dau_chi2pr_pi, "True #pi^{+}"   , "f");
-  l_pr_dau2->AddEntry(h_track_dau_chi2pr_mu, "True #mu^{+}"   , "f");
-  l_pr_dau2->AddEntry(h_track_dau_chi2pr_sh, "True shower"   , "f");
-  l_pr_dau2->AddEntry(h_track_dau_chi2pr_ot, "Others"   , "f");
-
-  h_reco_track_daughter_vtx_distance->SetLineColor(kRed);
-  h_reco_track_daughter_distance->SetLineColor(kBlue);
-  h_reco_track_length->SetLineColor(kBlack);
+  AddStackHistos();
+  AddLegend();  
 
 
   if(trdau.Contains("tra")){
@@ -1482,3 +699,507 @@ void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCan
   delete s_chi2pr;
 }
 
+void FillHybridTrackLength(){
+  
+  if(reco_track_daughter_old_length>40){
+    if(reco_track_daughter_old_true_pdg==2212)
+      h_track_dau_ln_pr->Fill(reco_track_daughter_old_length);
+    else if(reco_track_daughter_old_true_pdg==-13)
+      h_track_dau_ln_mu->Fill(reco_track_daughter_old_length);
+    else if(reco_track_daughter_old_true_pdg==211)
+      h_track_dau_ln_pi->Fill(reco_track_daughter_old_length);  
+    else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22)
+      h_track_dau_ln_sh->Fill(reco_track_daughter_old_length);
+    else if(reco_track_daughter_old_true_pdg!=-9999)
+      h_track_dau_ln_ot->Fill(reco_track_daughter_old_length);
+  }
+  else if(reco_track_daughter_old_length<40){
+    
+    if(reco_track_daughter_true_pdg==2212){
+      h_track_dau_ln_pr->Fill(reco_track_daughter_length);
+      //h_track_dis_ln_pr->Fill(reco_track_distance);
+      //h_track_dau_dis_ln_pr->Fill(reco_track_daughter_distance);
+      h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
+      h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl);
+    }
+    //else if(reco_track_daughter_true_pdg==-13){
+    else if( (reco_track_daughter_true_pdg==-13 || reco_track_daughter_true_pdg==13) ){
+      h_track_dau_ln_mu->Fill(reco_track_daughter_length);
+      //h_track_dis_ln_mu->Fill(reco_track_distance);
+      //h_track_dau_dis_ln_mu->Fill(reco_track_daughter_distance);
+      h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl);
+      h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl);
+    }
+    else if(reco_track_daughter_true_pdg==211){
+      h_track_dau_ln_pi->Fill(reco_track_daughter_length);
+      //h_track_dis_ln_pi->Fill(reco_track_distance);
+      //h_track_dau_dis_ln_pi->Fill(reco_track_daughter_distance);
+      h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl);
+      h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl);
+    }
+    else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22){
+      h_track_dau_ln_sh->Fill(reco_track_daughter_length);
+      h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl);
+      h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl);
+    }
+    else if(reco_track_daughter_true_pdg!=-9999){
+      h_track_dau_ln_ot->Fill(reco_track_daughter_length);
+      //h_track_dis_ln_ot->Fill(reco_track_distance);
+      //h_track_dau_dis_ln_ot->Fill(reco_track_daughter_distance);
+      h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
+      h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
+    }
+  }
+  
+}
+
+
+void FillOldTrackLength(){
+
+  if(reco_track_daughter_old_true_pdg==2212){
+    h_track_dau_old_ln_pr->Fill(reco_track_daughter_old_length);
+    h_track_dau_old_llr_pr->Fill(reco_track_daughter_old_llrpid_3pl);
+    h_track_dau_old_llrka_pr->Fill(reco_track_daughter_old_llrpid_k_3pl);
+  }
+  else if(reco_track_daughter_old_true_pdg==-13){
+    h_track_dau_old_ln_mu->Fill(reco_track_daughter_old_length);
+    h_track_dau_old_llr_mu->Fill(reco_track_daughter_old_llrpid_3pl);
+    h_track_dau_old_llrka_mu->Fill(reco_track_daughter_old_llrpid_k_3pl);
+	}
+  else if(reco_track_daughter_old_true_pdg==211){
+    h_track_dau_old_ln_pi->Fill(reco_track_daughter_old_length);
+    h_track_dau_old_llr_pi->Fill(reco_track_daughter_old_llrpid_3pl);
+    h_track_dau_old_llrka_pi->Fill(reco_track_daughter_old_llrpid_k_3pl);
+  }
+  else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22){
+    h_track_dau_old_ln_sh->Fill(reco_track_daughter_old_length);
+    h_track_dau_old_llr_sh->Fill(reco_track_daughter_old_llrpid_3pl);
+    h_track_dau_old_llrka_sh->Fill(reco_track_daughter_old_llrpid_k_3pl);	  
+  }
+  else if(reco_track_daughter_old_true_pdg!=-9999){
+    h_track_dau_old_ln_ot->Fill(reco_track_daughter_old_length);
+    h_track_dau_old_llr_ot->Fill(reco_track_daughter_old_llrpid_3pl);
+    h_track_dau_old_llrka_ot->Fill(reco_track_daughter_old_llrpid_k_3pl);
+  }
+  
+}
+
+void FillRebuiltTrackLength(){
+
+  if(reco_track_daughter_true_pdg==2212){
+    h_track_dau_ln_pr->Fill(reco_track_daughter_length);
+    h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl);
+  }
+  else if(reco_track_daughter_true_pdg==-13){
+    h_track_dau_ln_mu->Fill(reco_track_daughter_length);
+    h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl);
+  }
+  else if(reco_track_daughter_true_pdg==211){
+    h_track_dau_ln_pi->Fill(reco_track_daughter_length);
+    h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl);
+  }
+  else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22){
+    h_track_dau_ln_sh->Fill(reco_track_daughter_length);
+    h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl);	  
+  }
+  else if(reco_track_daughter_true_pdg!=-9999){
+    h_track_dau_ln_ot->Fill(reco_track_daughter_length);
+    h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
+  }
+  
+}
+
+
+	void FillPl2PID(){
+
+	if(reco_track_true_pdg==321){
+	  h_track_chi2ka_ka->Fill(reco_track_chi2ka_pl2);
+	  h_track_chi2pr_ka->Fill(reco_track_chi2pr_pl2);
+	}
+	else if(reco_track_true_pdg==13){
+	  h_track_chi2ka_mu->Fill(reco_track_chi2ka_pl2);
+	  h_track_chi2pr_mu->Fill(reco_track_chi2pr_pl2);
+	}
+	else if(reco_track_true_pdg==211){
+	  h_track_chi2ka_pi->Fill(reco_track_chi2ka_pl2);
+	  h_track_chi2pr_pi->Fill(reco_track_chi2pr_pl2);
+	}
+	else if(reco_track_true_pdg==2212){
+	  h_track_chi2ka_pr->Fill(reco_track_chi2ka_pl2);
+	  h_track_chi2pr_pr->Fill(reco_track_chi2pr_pl2);
+	}
+	else{
+	  h_track_chi2ka_ot->Fill(reco_track_chi2ka_pl2);
+	  h_track_chi2pr_ot->Fill(reco_track_chi2pr_pl2);
+	}
+
+	if(reco_track_daughter_true_pdg==2212){
+	  h_track_dau_chi2pr_pr->Fill(reco_track_daughter_chi2pr_pl2);
+	  h_track_dau_chi2pi_pr->Fill(reco_track_daughter_chi2pi_pl2);
+	  h_track_dau_chi2mu_pr->Fill(reco_track_daughter_chi2mu_pl2);
+	}
+	else if(reco_track_daughter_true_pdg==-13){
+	  h_track_dau_chi2pr_mu->Fill(reco_track_daughter_chi2pr_pl2);
+	  h_track_dau_chi2pi_mu->Fill(reco_track_daughter_chi2pi_pl2);
+	  h_track_dau_chi2mu_mu->Fill(reco_track_daughter_chi2mu_pl2);
+	}
+	else if(reco_track_daughter_true_pdg==211){
+	  h_track_dau_chi2pr_pi->Fill(reco_track_daughter_chi2pr_pl2);
+	  h_track_dau_chi2pi_pi->Fill(reco_track_daughter_chi2pi_pl2);
+	  h_track_dau_chi2mu_pi->Fill(reco_track_daughter_chi2mu_pl2);
+	}
+	else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22 ){
+	  h_track_dau_chi2pr_sh->Fill(reco_track_daughter_chi2pr_pl2);
+	  h_track_dau_chi2pi_sh->Fill(reco_track_daughter_chi2pi_pl2);
+	  h_track_dau_chi2mu_sh->Fill(reco_track_daughter_chi2mu_pl2);
+	}
+	else{
+	  h_track_dau_chi2pr_ot->Fill(reco_track_daughter_chi2pr_pl2);
+	  h_track_dau_chi2pi_ot->Fill(reco_track_daughter_chi2pi_pl2);
+	  h_track_dau_chi2mu_ot->Fill(reco_track_daughter_chi2mu_pl2);
+	}
+
+	if(reco_track_daughter_old_true_pdg==2212){
+	  h_track_dau_old_chi2pr_pr->Fill(reco_track_daughter_old_chi2pr_pl2);
+	  h_track_dau_old_chi2pi_pr->Fill(reco_track_daughter_old_chi2pi_pl2);
+	  h_track_dau_old_chi2mu_pr->Fill(reco_track_daughter_old_chi2mu_pl2);
+	}
+	else if(reco_track_daughter_old_true_pdg==-13){
+	  h_track_dau_old_chi2pr_mu->Fill(reco_track_daughter_old_chi2pr_pl2);
+	  h_track_dau_old_chi2pi_mu->Fill(reco_track_daughter_old_chi2pi_pl2);
+	  h_track_dau_old_chi2mu_mu->Fill(reco_track_daughter_old_chi2mu_pl2);
+	}
+	else if(reco_track_daughter_old_true_pdg==211){
+	  h_track_dau_old_chi2pr_pi->Fill(reco_track_daughter_old_chi2pr_pl2);
+	  h_track_dau_old_chi2pi_pi->Fill(reco_track_daughter_old_chi2pi_pl2);
+	  h_track_dau_old_chi2mu_pi->Fill(reco_track_daughter_old_chi2mu_pl2);
+	}
+	else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22 ){
+	  h_track_dau_old_chi2pr_sh->Fill(reco_track_daughter_old_chi2pr_pl2);
+	  h_track_dau_old_chi2pi_sh->Fill(reco_track_daughter_old_chi2pi_pl2);
+	  h_track_dau_old_chi2mu_sh->Fill(reco_track_daughter_old_chi2mu_pl2);
+	}
+	else{
+	  h_track_dau_old_chi2pr_ot->Fill(reco_track_daughter_old_chi2pr_pl2);
+	  h_track_dau_old_chi2pi_ot->Fill(reco_track_daughter_old_chi2pi_pl2);
+	  h_track_dau_old_chi2mu_ot->Fill(reco_track_daughter_old_chi2mu_pl2);
+	}
+
+	}
+
+	void Fill3PlPID(){
+	if(reco_track_true_pdg==321){
+	  h_track_chi2ka_ka->Fill(reco_track_chi2ka_3pl);
+	  h_track_chi2pr_ka->Fill(reco_track_chi2pr_3pl);
+	}
+	else if(reco_track_true_pdg==13){
+	  h_track_chi2ka_mu->Fill(reco_track_chi2ka_3pl);
+	  h_track_chi2pr_mu->Fill(reco_track_chi2pr_3pl);
+	}
+	else if(reco_track_true_pdg==211){
+	  h_track_chi2ka_pi->Fill(reco_track_chi2ka_3pl);
+	  h_track_chi2pr_pi->Fill(reco_track_chi2pr_3pl);
+	}
+	else if(reco_track_true_pdg==2212){
+	  h_track_chi2ka_pr->Fill(reco_track_chi2ka_3pl);
+	  h_track_chi2pr_pr->Fill(reco_track_chi2pr_3pl);
+	}
+	else{
+	  h_track_chi2ka_ot->Fill(reco_track_chi2ka_3pl);
+	  h_track_chi2pr_ot->Fill(reco_track_chi2pr_3pl);
+	}
+
+
+	if(reco_track_daughter_true_pdg==2212){
+	  h_track_dau_chi2pr_pr->Fill(reco_track_daughter_chi2pr_3pl);
+	  h_track_dau_chi2pi_pr->Fill(reco_track_daughter_chi2pi_3pl);
+	  h_track_dau_chi2mu_pr->Fill(reco_track_daughter_chi2mu_3pl);
+	}
+	else if(reco_track_daughter_true_pdg==-13){
+	  h_track_dau_chi2pr_mu->Fill(reco_track_daughter_chi2pr_3pl);
+	  h_track_dau_chi2pi_mu->Fill(reco_track_daughter_chi2pi_3pl);
+	  h_track_dau_chi2mu_mu->Fill(reco_track_daughter_chi2mu_3pl);
+	}
+	else if(reco_track_daughter_true_pdg==211){
+	  h_track_dau_chi2pr_pi->Fill(reco_track_daughter_chi2pr_3pl);
+	  h_track_dau_chi2pi_pi->Fill(reco_track_daughter_chi2pi_3pl);
+	  h_track_dau_chi2mu_pi->Fill(reco_track_daughter_chi2mu_3pl);
+	}
+	else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22 ){
+	  h_track_dau_chi2pr_sh->Fill(reco_track_daughter_chi2pr_3pl);
+	  h_track_dau_chi2pi_sh->Fill(reco_track_daughter_chi2pi_3pl);
+	  h_track_dau_chi2mu_sh->Fill(reco_track_daughter_chi2mu_3pl);
+	}
+	else{
+	  h_track_dau_chi2pr_ot->Fill(reco_track_daughter_chi2pr_3pl);
+	  h_track_dau_chi2pi_ot->Fill(reco_track_daughter_chi2pi_3pl);
+	  h_track_dau_chi2mu_ot->Fill(reco_track_daughter_chi2mu_3pl);
+	}
+
+	if(reco_track_daughter_old_true_pdg==2212){
+	  h_track_dau_old_chi2pr_pr->Fill(reco_track_daughter_old_chi2pr_3pl);
+	  h_track_dau_old_chi2pi_pr->Fill(reco_track_daughter_old_chi2pi_3pl);
+	  h_track_dau_old_chi2mu_pr->Fill(reco_track_daughter_old_chi2mu_3pl);
+	}
+	else if(reco_track_daughter_old_true_pdg==-13){
+	  h_track_dau_old_chi2pr_mu->Fill(reco_track_daughter_old_chi2pr_3pl);
+	  h_track_dau_old_chi2pi_mu->Fill(reco_track_daughter_old_chi2pi_3pl);
+	  h_track_dau_old_chi2mu_mu->Fill(reco_track_daughter_old_chi2mu_3pl);
+	}
+	else if(reco_track_daughter_old_true_pdg==211){
+	  h_track_dau_old_chi2pr_pi->Fill(reco_track_daughter_old_chi2pr_3pl);
+	  h_track_dau_old_chi2pi_pi->Fill(reco_track_daughter_old_chi2pi_3pl);
+	  h_track_dau_old_chi2mu_pi->Fill(reco_track_daughter_old_chi2mu_3pl);
+	}
+	else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22 ){
+	  h_track_dau_old_chi2pr_sh->Fill(reco_track_daughter_old_chi2pr_3pl);
+	  h_track_dau_old_chi2pi_sh->Fill(reco_track_daughter_old_chi2pi_3pl);
+	  h_track_dau_old_chi2mu_sh->Fill(reco_track_daughter_old_chi2mu_3pl);
+	}
+	else{
+	  h_track_dau_old_chi2pr_ot->Fill(reco_track_daughter_old_chi2pr_3pl);
+	  h_track_dau_old_chi2pi_ot->Fill(reco_track_daughter_old_chi2pi_3pl);
+	  h_track_dau_old_chi2mu_ot->Fill(reco_track_daughter_old_chi2mu_3pl);
+	}
+
+	}
+
+void FillPrimaryTrack(){
+
+    if(reco_track_true_pdg==321){
+      h_track_llr_ka->Fill(reco_track_llrpid_3pl);
+      h_track_llrka_ka->Fill(reco_track_llrpid_k_3pl);
+      h_reco_track_Bragg_fwd_ka_pl2_ka->Fill(reco_track_Bragg_fwd_ka_pl2);
+      h_reco_track_Bragg_fwd_pr_pl2_ka->Fill(reco_track_Bragg_fwd_pr_pl2);
+      h_reco_track_Bragg_fwd_pi_pl2_ka->Fill(reco_track_Bragg_fwd_pi_pl2);
+      h_reco_track_Bragg_fwd_mu_pl2_ka->Fill(reco_track_Bragg_fwd_mu_pl2);
+    }
+	else if(reco_track_true_pdg==13){
+	  h_track_llr_mu->Fill(reco_track_llrpid_3pl); 
+	  h_track_llrka_mu->Fill(reco_track_llrpid_k_3pl);
+	  h_reco_track_Bragg_fwd_ka_pl2_mu->Fill(reco_track_Bragg_fwd_ka_pl2);
+	  h_reco_track_Bragg_fwd_pr_pl2_mu->Fill(reco_track_Bragg_fwd_pr_pl2);
+	  h_reco_track_Bragg_fwd_pi_pl2_mu->Fill(reco_track_Bragg_fwd_pi_pl2);
+	  h_reco_track_Bragg_fwd_mu_pl2_mu->Fill(reco_track_Bragg_fwd_mu_pl2);
+	}
+	else if(reco_track_true_pdg==211){
+	  h_track_llr_pi->Fill(reco_track_llrpid_3pl);
+	  h_track_llrka_pi->Fill(reco_track_llrpid_k_3pl);
+	  h_reco_track_Bragg_fwd_ka_pl2_pi->Fill(reco_track_Bragg_fwd_ka_pl2);
+	  h_reco_track_Bragg_fwd_pr_pl2_pi->Fill(reco_track_Bragg_fwd_pr_pl2);
+	  h_reco_track_Bragg_fwd_pi_pl2_pi->Fill(reco_track_Bragg_fwd_pi_pl2);
+	  h_reco_track_Bragg_fwd_mu_pl2_pi->Fill(reco_track_Bragg_fwd_mu_pl2);
+	}
+	else if(reco_track_true_pdg==2212){
+	  h_track_llr_pr->Fill(reco_track_llrpid_3pl);
+	  h_track_llrka_pr->Fill(reco_track_llrpid_k_3pl);
+	  h_reco_track_Bragg_fwd_ka_pl2_pr->Fill(reco_track_Bragg_fwd_ka_pl2);
+	  h_reco_track_Bragg_fwd_pr_pl2_pr->Fill(reco_track_Bragg_fwd_pr_pl2);
+	  h_reco_track_Bragg_fwd_pi_pl2_pr->Fill(reco_track_Bragg_fwd_pi_pl2);
+	  h_reco_track_Bragg_fwd_mu_pl2_pr->Fill(reco_track_Bragg_fwd_mu_pl2);
+	}
+	else{
+	  h_track_llr_ot->Fill(reco_track_llrpid_3pl); 
+	  h_track_llrka_ot->Fill(reco_track_llrpid_k_3pl);
+	  h_reco_track_Bragg_fwd_ka_pl2_ot->Fill(reco_track_Bragg_fwd_ka_pl2);
+	  h_reco_track_Bragg_fwd_pr_pl2_ot->Fill(reco_track_Bragg_fwd_pr_pl2);
+	  h_reco_track_Bragg_fwd_pi_pl2_ot->Fill(reco_track_Bragg_fwd_pi_pl2);
+	  h_reco_track_Bragg_fwd_mu_pl2_ot->Fill(reco_track_Bragg_fwd_mu_pl2);
+	}
+	
+	h_reco_track_length->Fill(reco_track_length);
+	h_reco_track_daughter_distance->Fill(reco_track_daughter_distance);
+	h_reco_track_daughter_vtx_distance->Fill(reco_track_daughter_vtx_distance);
+
+	if(true_kaon_end_process == 0) n0++; 
+	if(true_kaon_end_process == 1) n1++;
+	if(true_kaon_end_process == 2) n2++;
+	if(true_kaon_end_process == 3) n3++;
+	if(true_kaon_end_process == 4) n4++;
+	if(true_kaon_end_process == 5) n5++; 
+
+}
+
+void AddStackHistos(){
+
+  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_pr);
+  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_ot);
+  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_ka);
+
+  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_mu);
+  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_pi);
+
+
+  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_pr);
+  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_ot);
+  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_ka);
+  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_mu);
+  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_pi);
+
+  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_pr);
+  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_ot);
+  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_ka);
+  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_mu);
+  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_pi);
+
+  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_pr);
+  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_ot);
+  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_ka);
+  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_mu);
+  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_pi);
+
+
+  s_chi2ka->Add(h_track_chi2ka_ka);
+  s_chi2ka->Add(h_track_chi2ka_pr);
+  s_chi2ka->Add(h_track_chi2ka_pi);
+  s_chi2ka->Add(h_track_chi2ka_mu);
+  s_chi2ka->Add(h_track_chi2ka_ot);
+  
+  s_chi2pr->Add(h_track_chi2pr_ka);
+  s_chi2pr->Add(h_track_chi2pr_pr);
+  s_chi2pr->Add(h_track_chi2pr_pi);
+  s_chi2pr->Add(h_track_chi2pr_mu);
+  s_chi2pr->Add(h_track_chi2pr_ot);
+
+  s_llr->Add(h_track_llr_pr);
+  s_llr->Add(h_track_llr_ka);
+  s_llr->Add(h_track_llr_ot);
+  s_llr->Add(h_track_llr_mu);
+  s_llr->Add(h_track_llr_pi);
+  /*
+  s_llr->Add(h_track_llr_ka);
+  s_llr->Add(h_track_llr_pr);
+  s_llr->Add(h_track_llr_pi);
+  s_llr->Add(h_track_llr_mu);
+  s_llr->Add(h_track_llr_ot);
+  */
+  s_llrka->Add(h_track_llrka_ka);
+  s_llrka->Add(h_track_llrka_pr);
+  s_llrka->Add(h_track_llrka_pi);
+  s_llrka->Add(h_track_llrka_mu);
+  s_llrka->Add(h_track_llrka_ot);
+
+  s_llr_dau->Add(h_track_dau_llr_pr);
+  s_llr_dau->Add(h_track_dau_llr_mu);
+  s_llr_dau->Add(h_track_dau_llr_pi);
+  s_llr_dau->Add(h_track_dau_llr_sh);
+  s_llr_dau->Add(h_track_dau_llr_ot);
+
+  s_llrka_dau->Add(h_track_dau_llrka_pr);
+  s_llrka_dau->Add(h_track_dau_llrka_mu);
+  s_llrka_dau->Add(h_track_dau_llrka_pi);
+  s_llrka_dau->Add(h_track_dau_llrka_sh);
+  s_llrka_dau->Add(h_track_dau_llrka_ot);
+
+  s_chi2pr_dau->Add(h_track_dau_chi2pr_pr);
+  s_chi2pr_dau->Add(h_track_dau_chi2pr_mu);
+  s_chi2pr_dau->Add(h_track_dau_chi2pr_pi);
+  s_chi2pr_dau->Add(h_track_dau_chi2pr_sh);
+  s_chi2pr_dau->Add(h_track_dau_chi2pr_ot);
+
+  s_chi2pi_dau->Add(h_track_dau_chi2pi_pr);
+  s_chi2pi_dau->Add(h_track_dau_chi2pi_mu);
+  s_chi2pi_dau->Add(h_track_dau_chi2pi_pi);
+  s_chi2pi_dau->Add(h_track_dau_chi2pi_sh);
+  s_chi2pi_dau->Add(h_track_dau_chi2pi_ot);
+
+  s_chi2mu_dau->Add(h_track_dau_chi2mu_pr);
+  s_chi2mu_dau->Add(h_track_dau_chi2mu_mu);
+  s_chi2mu_dau->Add(h_track_dau_chi2mu_pi);
+  s_chi2mu_dau->Add(h_track_dau_chi2mu_sh);
+  s_chi2mu_dau->Add(h_track_dau_chi2mu_ot);
+
+
+  s_trkln_dau->Add(h_track_dau_ln_pi);
+  s_trkln_dau->Add(h_track_dau_ln_mu);
+  s_trkln_dau->Add(h_track_dau_ln_sh);
+  s_trkln_dau->Add(h_track_dau_ln_pr);
+  s_trkln_dau->Add(h_track_dau_ln_ot);
+
+
+  s_llr_dau_old->Add(h_track_dau_old_llr_pr);
+  s_llr_dau_old->Add(h_track_dau_old_llr_mu);
+  s_llr_dau_old->Add(h_track_dau_old_llr_pi);
+  s_llr_dau_old->Add(h_track_dau_old_llr_sh);
+  s_llr_dau_old->Add(h_track_dau_old_llr_ot);
+
+  s_llrka_dau_old->Add(h_track_dau_old_llrka_pr);
+  s_llrka_dau_old->Add(h_track_dau_old_llrka_mu);
+  s_llrka_dau_old->Add(h_track_dau_old_llrka_pi);
+  s_llrka_dau_old->Add(h_track_dau_old_llrka_sh);
+  s_llrka_dau_old->Add(h_track_dau_old_llrka_ot);
+
+  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_pr);
+  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_mu);
+  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_pi);
+  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_sh);
+  s_chi2pr_dau_old->Add(h_track_dau_old_chi2pr_ot);
+
+  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_pr);
+  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_mu);
+  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_pi);
+  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_sh);
+  s_chi2pi_dau_old->Add(h_track_dau_old_chi2pi_ot);
+
+  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_pr);
+  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_mu);
+  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_pi);
+  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_sh);
+  s_chi2mu_dau_old->Add(h_track_dau_old_chi2mu_ot);
+
+
+  s_trkln_dau_old->Add(h_track_dau_old_ln_pi);
+  s_trkln_dau_old->Add(h_track_dau_old_ln_mu);
+  s_trkln_dau_old->Add(h_track_dau_old_ln_sh);
+  s_trkln_dau_old->Add(h_track_dau_old_ln_pr);
+  s_trkln_dau_old->Add(h_track_dau_old_ln_ot);
+
+
+}
+
+AddLegend(){
+  l_ka = new TLegend(0.75,0.65,0.95,0.95);
+  l_ka->AddEntry(h_track_chi2ka_ka, "True K^{+}"  , "f");
+  l_ka->AddEntry(h_track_chi2ka_pr, "True p" , "f");
+  l_ka->AddEntry(h_track_chi2ka_pi, "True #pi^{+}"   , "f");
+  l_ka->AddEntry(h_track_chi2ka_mu, "True #mu^{-}"   , "f");
+  l_ka->AddEntry(h_track_chi2ka_ot, "Others"   , "f");
+
+  l_pr = new TLegend(0.75,0.65,0.95,0.95);
+  l_pr->AddEntry(h_track_chi2pr_ka, "True K^{+}"  , "f");
+  l_pr->AddEntry(h_track_chi2pr_pr, "True p" , "f");
+  l_pr->AddEntry(h_track_chi2pr_pi, "True #pi^{+}"   , "f");
+  l_pr->AddEntry(h_track_chi2pr_mu, "True #mu^{-}"   , "f");
+  l_pr->AddEntry(h_track_chi2pr_ot, "Others"   , "f");
+
+  l_pr_dau = new TLegend(0.75,0.65,0.95,0.95);
+  l_pr_dau->AddEntry(h_track_dau_chi2pr_pr, "True p" , "f");
+  l_pr_dau->AddEntry(h_track_dau_chi2pr_pi, "True #pi^{+}"   , "f");
+  l_pr_dau->AddEntry(h_track_dau_chi2pr_mu, "True #mu^{+}"   , "f");
+  l_pr_dau->AddEntry(h_track_dau_chi2pr_sh, "True shower"   , "f");
+  l_pr_dau->AddEntry(h_track_dau_chi2pr_ot, "Others"   , "f");
+
+  l_pr_dau_ln = new TLegend(0.75,0.65,0.95,0.95);
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_pr, "True p" , "f");
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_pi, "True #pi^{+}"   , "f");
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_mu, "True #mu^{+}"   , "f");
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_sh, "True shower"   , "f");
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_ot, "Others"   , "f");
+
+  l_pr_dau2 = new TLegend(0.15,0.58,0.35,0.88);
+  l_pr_dau2->AddEntry(h_track_dau_chi2pr_pr, "True p" , "f");
+  l_pr_dau2->AddEntry(h_track_dau_chi2pr_pi, "True #pi^{+}"   , "f");
+  l_pr_dau2->AddEntry(h_track_dau_chi2pr_mu, "True #mu^{+}"   , "f");
+  l_pr_dau2->AddEntry(h_track_dau_chi2pr_sh, "True shower"   , "f");
+  l_pr_dau2->AddEntry(h_track_dau_chi2pr_ot, "Others"   , "f");
+
+  h_reco_track_daughter_vtx_distance->SetLineColor(kRed);
+  h_reco_track_daughter_distance->SetLineColor(kBlue);
+  h_reco_track_length->SetLineColor(kBlack);
+
+}
