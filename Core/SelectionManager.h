@@ -30,6 +30,7 @@
 #include "Misc.h"
 #include "SelectorBDTManager.h"
 #include "AnalysisBDTManager.h"
+#include "BDTManager.h"
 #include "PlottingFunctions.h"
 #include "EventListFilter.h"
 #include "SystematicsHeader.h"

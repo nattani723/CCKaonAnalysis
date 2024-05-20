@@ -105,7 +105,8 @@ void BDTManager::FillTree(const Event &e, const RecoParticle &PrimaryKaonTrackPa
 
    if(!SetVariables(RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle)) continue;
 
-   if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) t_Signal->Fill();
+   //if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) t_Signal->Fill();
+   if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
    else t_Background->Fill();
 
 }
