@@ -47,6 +47,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
 
 	E.SetFile(SampleFiles.at(i_s), "KAON");
+
 	if( SampleTypes.at(i_s) == "AssocKaon") M.AddSample("AssocKaon","AssocKaon",POT);
 	//if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
          else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
