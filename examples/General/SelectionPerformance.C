@@ -25,34 +25,39 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       BuildTunes();
 
-      SampleNames.push_back("GENIE Background");
+      SelectionParameters P = P_FHC_K_NOBDT_TEST;
+
+      SampleNames.push_back("AssocKaon"); 
+      SampleTypes.push_back("AssocKaon"); 
+      SampleFiles.push_back("/exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root");
+
+      SampleNames.push_back("GENIE Background"); 
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/analysisOutputFHC_Overlay_GENIE_Background_All.root");
-
-      SampleNames.push_back("GENIE Hyperon");
-      SampleTypes.push_back("Hyperon");
-      SampleFiles.push_back("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
-
-      SelectionParameters P = P_FHC_Tune_325_NoBDT;
+      SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/KaonTrees.root");
 
       std::string label = "test";
 
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
-      //M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
 
-      TEfficiency* Eff = new TEfficiency("Eff","",9,-0.5,8.5);
-      TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",9,-0.5,8.5);     
+      M.ImportBDTWeights(P.p_BDT_WeightsDir);;
+
+      TEfficiency* Eff = new TEfficiency("Eff","",6,-0.5,5.5);
+      TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",6,-0.5,5.5);
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
 
-         E.SetFile(SampleFiles.at(i_s));
-         if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
+	      E.SetFile(SampleFiles.at(i_s), "KAON");
+
+	      if( SampleTypes.at(i_s) == "AssocKaon") M.AddSample("AssocKaon","AssocKaon",POT);
+	      //if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
          else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
          else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
+
+      	M.UseFluxWeight(false);
+	      M.UseGenWeight(false);
 
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
@@ -63,38 +68,34 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             M.SetSignal(e);                
             M.AddEvent(e);
 
-            bool passed_FV=false,passed_Tracks=false,passed_Showers=false,passed_MuonID=false,passed_Selector=false,passed_Connectedness=false,passed_WCut=false,passed_AngleCut=false;
+            bool passed_FV=false, passed_NuCCFilter=false, passed_NDaughterTrack=false, passed_DaughterFV=false, passed_BDTCut=false;
+            //bool passed_DaughterTrackLength=false;
 
             passed_FV = M.FiducialVolumeCut(e);
-            if(passed_FV) passed_Tracks = M.TrackCut(e);
-            if(passed_Tracks) passed_Showers = M.ShowerCut(e);
-            if(passed_Showers) passed_MuonID = M.ChooseMuonCandidate(e);
-            if(passed_MuonID) passed_Selector = M.ChooseProtonPionCandidates(e); 
-            if(passed_Selector) passed_Connectedness = M.ConnectednessTest(e);
-            if(passed_Connectedness) passed_WCut = M.WCut(e);
-            if(passed_WCut) passed_AngleCut = M.AngleCut(e);
+            if(passed_FV) passed_NuCCFilter = M.NuCCInclusiveFilter(e);
+            if(passed_NuCCFilter) passed_NDaughterTrack = M.DaughterTrackCut(e);
+            if(passed_NDaughterTrack) passed_DaughterFV = M.DaughterFiducialVolumeCut(e);
+            if(passed_DaughterFV) passed_BDTCut = M.BDTCut(e);
+            //if(passed_BDTCut) passed_DaughterTrackLength = M.DaughterTrackLengthCut(e);
+
 
             if(e.EventIsSignal){
                Eff->FillWeighted(true,e.Weight,0);
                Eff->FillWeighted(passed_FV,e.Weight,1);
-               Eff->FillWeighted(passed_Tracks,e.Weight,2);
-               Eff->FillWeighted(passed_Showers,e.Weight,3);
-               Eff->FillWeighted(passed_MuonID,e.Weight,4);
-               Eff->FillWeighted(passed_Selector,e.Weight,5);
-               Eff->FillWeighted(passed_Connectedness,e.Weight,6);
-               Eff->FillWeighted(passed_WCut,e.Weight,7);
-               Eff->FillWeighted(passed_AngleCut,e.Weight,8);
+               Eff->FillWeighted(passed_NuCCFilter,e.Weight,2);
+               Eff->FillWeighted(passed_NDaughterTrack,e.Weight,3);
+               Eff->FillWeighted(passed_DaughterFV,e.Weight,4);
+               Eff->FillWeighted(passed_BDTCut,e.Weight,5);
+               //Eff->FillWeighted(passed_DaughterTrackLength ,e.Weight,6);
             }
             else {
                Background_Acceptance->FillWeighted(true,e.Weight,0);
                Background_Acceptance->FillWeighted(passed_FV,e.Weight,1);
-               Background_Acceptance->FillWeighted(passed_Tracks,e.Weight,2);
-               Background_Acceptance->FillWeighted(passed_Showers,e.Weight,3);
-               Background_Acceptance->FillWeighted(passed_MuonID,e.Weight,4);
-               Background_Acceptance->FillWeighted(passed_Selector,e.Weight,5);
-               Background_Acceptance->FillWeighted(passed_Connectedness,e.Weight,6);
-               Background_Acceptance->FillWeighted(passed_WCut,e.Weight,7);
-               Background_Acceptance->FillWeighted(passed_AngleCut,e.Weight,8);
+               Background_Acceptance->FillWeighted(passed_NuCCFilter,e.Weight,2);
+               Background_Acceptance->FillWeighted(passed_NDaughterTrack,e.Weight,3);
+               Background_Acceptance->FillWeighted(passed_DaughterFV,e.Weight,4);
+               Background_Acceptance->FillWeighted(passed_BDTCut,e.Weight,5);
+               //Background_Acceptance->FillWeighted(passed_DaughterTrackLength ,e.Weight,6);
             }
          }
          E.Close();
@@ -130,8 +131,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       gSystem->Exec("mkdir -p rootfiles");
       TFile *f_out = TFile::Open(("rootfiles/Expected_Events_" + label + ".root").c_str(),"RECREATE");
 
-      TH1D *h_ExpectedSignal = PosteriorPDF(Eff,9,"Signal");
-      TH1D *h_ExpectedBackground = PosteriorPDF(Background_Acceptance,9,"Background");
+      TH1D *h_ExpectedSignal = PosteriorPDF(Eff,6,"Signal");
+      TH1D *h_ExpectedBackground = PosteriorPDF(Background_Acceptance,6,"Background");
 
       h_ExpectedSignal->Write();
       h_ExpectedBackground->Write();  
