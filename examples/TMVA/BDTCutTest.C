@@ -70,7 +70,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       if(!M.NuCCInclusiveFilter(e)) continue;
       if(!M.DaughterTrackCut(e)) continue;
       if(!M.DaughterFiducialVolumeCut(e)) continue;
-      if(!M.BDTCut(e)) continue;
+      //if(!M.BDTCut(e)) continue;
       //if(!M.DaughterTrackLengthCut(e)) continue;
       
       double bdt = e.BDTScore;
