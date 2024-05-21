@@ -617,45 +617,45 @@ best_peak_z_true = event.best_peak_z_true[itrk];
 		best_peak_z = event.best_peak_z[itrk][max_dau_length_index];
       }
 	
-	reco_track_daughter_length = event.reco_track_daughter_length[itrk][max_dau_length_index];
-	reco_track_daughter_distance = event.reco_track_daughter_distance[itrk][max_dau_length_index];
-	reco_track_daughter_vtx_distance = event.reco_track_daughter_vtx_distance[itrk][max_dau_length_index];
-	reco_track_daughter_theta = event.reco_track_daughter_theta[itrk][max_dau_length_index];
-	reco_track_daughter_phi = event.reco_track_daughter_phi[itrk][max_dau_length_index];
+	reco_track_daughter_length = event.reco_track_daughter_length[itrk][0];
+	reco_track_daughter_distance = event.reco_track_daughter_distance[itrk][0];
+	reco_track_daughter_vtx_distance = event.reco_track_daughter_vtx_distance[itrk][0];
+	reco_track_daughter_theta = event.reco_track_daughter_theta[itrk][0];
+	reco_track_daughter_phi = event.reco_track_daughter_phi[itrk][0];
 	
-	reco_angle_track_daughter = event.reco_angle_track_daughter[itrk][max_dau_length_index];
+	reco_angle_track_daughter = event.reco_angle_track_daughter[itrk][0];
 	
-	reco_track_daughter_chi2ka_pl0 = event.reco_track_daughter_chi2ka_pl0[itrk][max_dau_length_index];
-	reco_track_daughter_chi2pr_pl0 = event.reco_track_daughter_chi2pr_pl0[itrk][max_dau_length_index];
-	reco_track_daughter_chi2pi_pl0 = event.reco_track_daughter_chi2pi_pl0[itrk][max_dau_length_index];
-	reco_track_daughter_chi2mu_pl0 = event.reco_track_daughter_chi2mu_pl0[itrk][max_dau_length_index];
+	reco_track_daughter_chi2ka_pl0 = event.reco_track_daughter_chi2ka_pl0[itrk][0];
+	reco_track_daughter_chi2pr_pl0 = event.reco_track_daughter_chi2pr_pl0[itrk][0];
+	reco_track_daughter_chi2pi_pl0 = event.reco_track_daughter_chi2pi_pl0[itrk][0];
+	reco_track_daughter_chi2mu_pl0 = event.reco_track_daughter_chi2mu_pl0[itrk][0];
 	
-	reco_track_daughter_chi2ka_pl1 = event.reco_track_daughter_chi2ka_pl1[itrk][max_dau_length_index];
-	reco_track_daughter_chi2pr_pl1 = event.reco_track_daughter_chi2pr_pl1[itrk][max_dau_length_index];
-	reco_track_daughter_chi2pi_pl1 = event.reco_track_daughter_chi2pi_pl1[itrk][max_dau_length_index];
-	reco_track_daughter_chi2mu_pl1 = event.reco_track_daughter_chi2mu_pl1[itrk][max_dau_length_index];
+	reco_track_daughter_chi2ka_pl1 = event.reco_track_daughter_chi2ka_pl1[itrk][0];
+	reco_track_daughter_chi2pr_pl1 = event.reco_track_daughter_chi2pr_pl1[itrk][0];
+	reco_track_daughter_chi2pi_pl1 = event.reco_track_daughter_chi2pi_pl1[itrk][0];
+	reco_track_daughter_chi2mu_pl1 = event.reco_track_daughter_chi2mu_pl1[itrk][0];
 	
-	reco_track_daughter_chi2ka_pl2 = event.reco_track_daughter_chi2ka_pl2[itrk][max_dau_length_index];
-	reco_track_daughter_chi2pr_pl2 = event.reco_track_daughter_chi2pr_pl2[itrk][max_dau_length_index];
-	reco_track_daughter_chi2pi_pl2 = event.reco_track_daughter_chi2pi_pl2[itrk][max_dau_length_index];
-	reco_track_daughter_chi2mu_pl2 = event.reco_track_daughter_chi2mu_pl2[itrk][max_dau_length_index];
+	reco_track_daughter_chi2ka_pl2 = event.reco_track_daughter_chi2ka_pl2[itrk][0];
+	reco_track_daughter_chi2pr_pl2 = event.reco_track_daughter_chi2pr_pl2[itrk][0];
+	reco_track_daughter_chi2pi_pl2 = event.reco_track_daughter_chi2pi_pl2[itrk][0];
+	reco_track_daughter_chi2mu_pl2 = event.reco_track_daughter_chi2mu_pl2[itrk][0];
 	
-	reco_track_daughter_chi2ka_3pl = event.reco_track_daughter_chi2ka_3pl[itrk][max_dau_length_index];
-	reco_track_daughter_chi2pr_3pl = event.reco_track_daughter_chi2pr_3pl[itrk][max_dau_length_index];
-	reco_track_daughter_chi2pi_3pl = event.reco_track_daughter_chi2pi_3pl[itrk][max_dau_length_index];
-	reco_track_daughter_chi2mu_3pl = event.reco_track_daughter_chi2mu_3pl[itrk][max_dau_length_index];
+	reco_track_daughter_chi2ka_3pl = event.reco_track_daughter_chi2ka_3pl[itrk][0];
+	reco_track_daughter_chi2pr_3pl = event.reco_track_daughter_chi2pr_3pl[itrk][0];
+	reco_track_daughter_chi2pi_3pl = event.reco_track_daughter_chi2pi_3pl[itrk][0];
+	reco_track_daughter_chi2mu_3pl = event.reco_track_daughter_chi2mu_3pl[itrk][0];
 	
-	reco_track_daughter_llrpid_3pl = event.reco_track_daughter_llrpid_3pl[itrk][max_dau_length_index];      
-	reco_track_daughter_llrpid_k_3pl = event.reco_track_daughter_llrpid_k_3pl[itrk][max_dau_length_index];      
-	reco_track_daughter_true_pdg = event.reco_track_daughter_true_pdg[itrk][max_dau_length_index];
+	reco_track_daughter_llrpid_3pl = event.reco_track_daughter_llrpid_3pl[itrk][0];      
+	reco_track_daughter_llrpid_k_3pl = event.reco_track_daughter_llrpid_k_3pl[itrk][0];      
+	reco_track_daughter_true_pdg = event.reco_track_daughter_true_pdg[itrk][0];
 	//if(event.reco_track_true_pdg[itrk]==321) cout << "reco_track_daughter_true_pdg: " << reco_track_daughter_true_pdg << ", length: " << reco_track_daughter_length << endl;
 	
-	reco_track_daughter_vtx_inTPC = event.reco_track_daughter_vtx_inTPC[itrk][max_dau_length_index];
-	reco_track_daughter_vtx_in5cmTPC = event.reco_track_daughter_vtx_in5cmTPC[itrk][max_dau_length_index];
-	reco_track_daughter_vtx_inCCInclusiveTPC = event.reco_track_daughter_vtx_inCCInclusiveTPC[itrk][max_dau_length_index];
-	reco_track_daughter_end_inTPC = event.reco_track_daughter_end_inTPC[itrk][max_dau_length_index];
-	reco_track_daughter_end_in5cmTPC = event.reco_track_daughter_end_in5cmTPC[itrk][max_dau_length_index];
-	reco_track_daughter_end_inCCInclusiveTPC = event.reco_track_daughter_end_inCCInclusiveTPC[itrk][max_dau_length_index];
+	reco_track_daughter_vtx_inTPC = event.reco_track_daughter_vtx_inTPC[itrk][0];
+	reco_track_daughter_vtx_in5cmTPC = event.reco_track_daughter_vtx_in5cmTPC[itrk][0];
+	reco_track_daughter_vtx_inCCInclusiveTPC = event.reco_track_daughter_vtx_inCCInclusiveTPC[itrk][0];
+	reco_track_daughter_end_inTPC = event.reco_track_daughter_end_inTPC[itrk][0];
+	reco_track_daughter_end_in5cmTPC = event.reco_track_daughter_end_in5cmTPC[itrk][0];
+	reco_track_daughter_end_inCCInclusiveTPC = event.reco_track_daughter_end_inCCInclusiveTPC[itrk][0];
  
 	
       //}
