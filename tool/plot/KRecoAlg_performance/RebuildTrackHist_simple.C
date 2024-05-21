@@ -1,4 +1,4 @@
-#include "RebuildTrackHist.h"
+#include "RebuildTrackHist_simple.h"
 
 void Initialise()
 {
@@ -24,15 +24,15 @@ void Initialise()
   reco_old_true_length_pi=0;
 }
 
-void RebuildTrackHist()
+void RebuildTrackHist_simple()
 {
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/track_tuple/refine_debug_2.root", "test2.pdf", "3pl");
   //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
-  RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/tool/track_tuple/rootfile/refine_debug_2.root", "test.pdf", "3pl", "IsK", true);
+  RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora/tool/track_tuple/rootfile/refine_debug_2.root", "test.pdf", "3pl", "IsK", true);
 
 }
 
-void RebuildTrackHist(TString input_name, TString output_name, TString pl, TString mode, bool IsHybrid)
+void RebuildTrackHist_simple(TString input_name, TString output_name, TString pl, TString mode, bool IsHybrid)
 {
   TGaxis::SetMaxDigits(3);
   gErrorIgnoreLevel = kWarning;
@@ -169,10 +169,10 @@ void LoadTree(TFile *f, TString pl, TTree * &t){
   t->SetBranchAddress("true_dau_muon_phi", &true_dau_muon_phi);
   t->SetBranchAddress("true_dau_pip_theta", &true_dau_pip_theta);
   t->SetBranchAddress("true_dau_pip_phi", &true_dau_pip_phi);
-  t->SetBranchAddress("", &);
-  t->SetBranchAddress("", &);
-  t->SetBranchAddress("", &);
-
+  //t->SetBranchAddress("", &);
+  //t->SetBranchAddress("", &);
+  //t->SetBranchAddress("", &);
+  
   if(true_kaon_end_process==0){
     Double_t true_dau_muon_dir_x = true_dau_muon_end_x - true_dau_muon_start_x;
     Double_t true_dau_muon_dir_y = true_dau_muon_end_y - true_dau_muon_start_y;

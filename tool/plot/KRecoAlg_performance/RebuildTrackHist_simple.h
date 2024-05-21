@@ -14,7 +14,7 @@ void Initialise();
 //void GeneratePlots(TFile *f, TString pl, TCanvas* &c, TString output_name);
 void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name);
 //void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name);
-void RebuildTrackHist(TString input_name, TString output_name, TString pl, TString mode, bool IsHybrid);
+void RebuildTrackHist_simple(TString input_name, TString output_name, TString pl, TString mode, bool IsHybrid);
 void LoadTree(TFile *f, TString pl, TTree* &t);
 void SetHistos();
 void SetHistosStyle();
@@ -74,7 +74,7 @@ TVector3 reco_muon_dir;
 TVector3 reco_pip_dir;
 */
 
-loat_t true_dau_muon_end_x, true_dau_muon_end_y, true_dau_muon_end_z, true_dau_muon_start_x, true_dau_muon_start_y, true_dau_muon_start_z, true_dau_pip_end_x, true_dau_pip_end_y, true_dau_pip_end_z, true_dau_pip_start_x, true_dau_pip_start_y, true_dau_pip_start_z, true_dau_muon_theta, true_dau_muon_phi, true_dau_pip_theta, true_dau_pip_phi;
+Float_t true_dau_muon_end_x, true_dau_muon_end_y, true_dau_muon_end_z, true_dau_muon_start_x, true_dau_muon_start_y, true_dau_muon_start_z, true_dau_pip_end_x, true_dau_pip_end_y, true_dau_pip_end_z, true_dau_pip_start_x, true_dau_pip_start_y, true_dau_pip_start_z, true_dau_muon_theta, true_dau_muon_phi, true_dau_pip_theta, true_dau_pip_phi;
 
 TH1D * h_track_dau_ln_pr;
 TH1D * h_track_dau_ln_pi;
