@@ -660,8 +660,8 @@ best_peak_z_true = event.best_peak_z_true[itrk];
 	
       //}
       
-      if(reco_track_daughter_end_in5cmTPC == false) continue;
-      if(reco_track_daughter_length<0) continue;
+      //if(reco_track_daughter_end_in5cmTPC == false) continue;
+      //if(reco_track_daughter_length<0) continue;
 
 
       /*
