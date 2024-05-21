@@ -11,10 +11,11 @@
 #include <string.h>
 
 void Initialise();
-void GeneratePlots(TFile *f, TString pl, TCanvas* &c, TString output_name);
-void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name);
-void RebuildTrackHist(TString input_name, TString output_name, TString pl);
-void LoadTree(TFile *f, TString pl, TTree *t);
+//void GeneratePlots(TFile *f, TString pl, TCanvas* &c, TString output_name);
+void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name);
+//void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name);
+void RebuildTrackHist(TString input_name, TString output_name, TString pl, TString mode, bool IsHybrid);
+void LoadTree(TFile *f, TString pl, TTree* &t);
 void SetHistos();
 void SetHistosStyle();
 void FillHybridTrackLength();
@@ -24,6 +25,8 @@ void FillPl2PID();
 void Fill3PlPID();
 void FillPrimaryTrack();
 void AddStackHistos();
+void AddLegend();
+void DrawHistos(TCanvas* &c,TString output_name);
 
 // Cuts
 TString output_pdf_trk = "chi2_trk.pdf";
@@ -37,7 +40,10 @@ int n4 = 0;
 double n5=0;
 
 int nentry=0;
-
+int reco_true_length_mu;
+int reco_true_length_pi;
+int reco_old_true_length_mu;
+int reco_old_true_length_pi;
 
   Float_t true_dau_pip_length;
   Float_t true_dau_muon_length;
@@ -122,12 +128,12 @@ TH1D * h_track_llrka_pi;
 TH1D * h_track_llrka_mu;
 TH1D * h_track_llrka_ot;
 
-TH1D * h_track_dau_llr_ka;
+TH1D * h_track_dau_llr_sh;
 TH1D * h_track_dau_llr_pr;
 TH1D * h_track_dau_llr_pi;
 TH1D * h_track_dau_llr_mu;
 TH1D * h_track_dau_llr_ot;
-TH1D * h_track_dau_llrka_ka;
+TH1D * h_track_dau_llrka_sh;
 TH1D * h_track_dau_llrka_pr;
 TH1D * h_track_dau_llrka_pi;
 TH1D * h_track_dau_llrka_mu;
@@ -142,18 +148,23 @@ TH1D * h_track_dau_chi2pi_pi;
 TH1D * h_track_dau_chi2pi_mu;
 TH1D * h_track_dau_chi2pi_sh;
 TH1D * h_track_dau_chi2pi_ot;
+TH1D * h_track_dau_chi2mu_pr;
+TH1D * h_track_dau_chi2mu_pi;
+TH1D * h_track_dau_chi2mu_mu;
+TH1D * h_track_dau_chi2mu_sh;
+TH1D * h_track_dau_chi2mu_ot;
 TH1D * h_track_dau_ln_pr;
 TH1D * h_track_dau_ln_pi;
 TH1D * h_track_dau_ln_mu;
 TH1D * h_track_dau_ln_sh;
 TH1D * h_track_dau_ln_ot;
 
-TH1D * h_track_dau_old_llr_ka;
+TH1D * h_track_dau_old_llr_sh;
 TH1D * h_track_dau_old_llr_pr;
 TH1D * h_track_dau_old_llr_pi;
 TH1D * h_track_dau_old_llr_mu;
 TH1D * h_track_dau_old_llr_ot;
-TH1D * h_track_dau_old_llrka_ka;
+TH1D * h_track_dau_old_llrka_sh;
 TH1D * h_track_dau_old_llrka_pr;
 TH1D * h_track_dau_old_llrka_pi;
 TH1D * h_track_dau_old_llrka_mu;
@@ -168,6 +179,11 @@ TH1D * h_track_dau_old_chi2pi_pi;
 TH1D * h_track_dau_old_chi2pi_mu;
 TH1D * h_track_dau_old_chi2pi_sh;
 TH1D * h_track_dau_old_chi2pi_ot;
+TH1D * h_track_dau_old_chi2mu_pr;
+TH1D * h_track_dau_old_chi2mu_pi;
+TH1D * h_track_dau_old_chi2mu_mu;
+TH1D * h_track_dau_old_chi2mu_sh;
+TH1D * h_track_dau_old_chi2mu_ot;
 TH1D * h_track_dau_old_ln_pr;
 TH1D * h_track_dau_old_ln_pi;
 TH1D * h_track_dau_old_ln_mu;
@@ -198,10 +214,12 @@ TH1D * h_reco_track_daughter_vtx_distance;
   THStack * s_chi2mu_dau_old = new THStack();
   THStack * s_trkln_dau_old = new THStack();
 
+/*
   THStack * s_braggka = new THStack();
   THStack * s_braggpr = new THStack();
   THStack * s_braggpi = new THStack();
   THStack * s_braggmu = new THStack();
+*/
 
 TLegend * l_ka;
 TLegend * l_pr;

@@ -1,7 +1,5 @@
 #include "RebuildTrackHist.h"
 
-
-
 void Initialise()
 {
   gStyle->SetCanvasColor(0);
@@ -18,22 +16,30 @@ void Initialise()
   gStyle->SetOptFit(112);
   gStyle->SetFillStyle(4000);
   gStyle->SetLineWidth(3);
+
+  nentry=0;
+  reco_true_length_mu=0;
+  reco_true_length_pi=0;
+  reco_old_true_length_mu=0;
+  reco_old_true_length_pi=0;
 }
 
 void RebuildTrackHist()
 {
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/track_tuple/refine_debug_2.root", "test2.pdf", "3pl");
-  RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/tool/track_tuple/rootfile/refine_debug_2.root", "test.pdf", "3pl");
+  //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
+  RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/tool/track_tuple/rootfile/refine_debug_2.root", "test.pdf", "3pl", "IsK", true);
 
 }
 
-void RebuildTrackHist(TString input_name, TString output_name, TString pl)
+void RebuildTrackHist(TString input_name, TString output_name, TString pl, TString mode, bool IsHybrid)
 {
   TGaxis::SetMaxDigits(3);
   gErrorIgnoreLevel = kWarning;
 
   //output from PreCutHistos
   //TFile * f = new TFile("/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/TMVA/Jun28/TMVA_all_pl2.root");
+
   TFile * f = new TFile(input_name);
 
   Initialise;
@@ -42,22 +48,101 @@ void RebuildTrackHist(TString input_name, TString output_name, TString pl)
   c->SetFillStyle(4000);
   gStyle->SetOptStat(0);
   c->Print(Form("%s[", output_name.Data()));
+
   //c->Print(Form("%s[", output_name.Data()));
 
-  GeneratePlots(f, pl, c, output_name);
+  GeneratePlots(f, pl, mode, IsHybrid, c, output_name);
   
   c->Print(Form("%s]", output_name.Data()));
   //c->Print(Form("%s]", output_name.Data()));
 
 }
 
-void GeneratePlots(TFile *f, TString pl, TCanvas* &c, TString output_name)
+void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name)
 {
-  DrawChi2(f, "ka", "pr", pl, "track", c, output_name);
+
+  TTree * t;
+
+  LoadTree(f, pl, t);
+  SetHistos();
+  SetHistosStyle();
+
+  cout << "nentry: " << nentry << endl;
+  for(int ientry=0; ientry<nentry; ++ientry){
+
+    t->GetEntry(ientry);
+    //if( fname.Contains("7Nov") || (fname.Contains("TMVA") && BDT>0.32)){
+    FillPrimaryTrack();
+    
+    //if(reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length))
+    //add true track length 
+
+
+    if(mode=="All"){	  
+      FillOldTrackLength();
+      if(IsHybrid) FillHybridTrackLength();
+      else FillRebuiltTrackLength();
+    }
+    else if(mode=="IsK"){
+      if(reco_track_true_pdg==321){
+	FillOldTrackLength();
+	if(IsHybrid) FillHybridTrackLength();
+	else FillRebuiltTrackLength();
+      }
+    }
+    else if(mode=="NotK"){
+      if(reco_track_true_pdg!=321){
+	FillOldTrackLength();
+	if(IsHybrid) FillHybridTrackLength();
+	else FillRebuiltTrackLength();
+	
+      }
+    }
+    
+    if(pl=="pl2") FillPl2PID();
+    else if(pl=="3pl") Fill3PlPID();
+    
+  }
+
+  AddStackHistos();
+  AddLegend();  
+  DrawHistos(c, output_name);
+
+  cout << "n0: " << n0 << ", " << "n1: " << n1 << ", " << "n2: " << n2 << ", " << "n3: " << n3 << ", " << "n4: " << n4 << ", " << "n5: " << n5 << endl;
+
+  cout << "h_track_dau_ln_pr: " << h_track_dau_ln_pr->GetEntries() << endl;
+  cout << "h_track_dau_ln_pi: " << h_track_dau_ln_pi->GetEntries() << endl;
+  cout << "h_track_dau_ln_mu: " << h_track_dau_ln_mu->GetEntries() << endl;
+  cout << "h_track_dau_ln_sh: " << h_track_dau_ln_sh->GetEntries() << endl;
+  cout << "h_track_dau_ln_ot: " << h_track_dau_ln_ot->GetEntries() << endl;
+
+  cout << "h_track_dau_old_ln_pr: " << h_track_dau_old_ln_pr->GetEntries() << endl;
+  cout << "h_track_dau_old_ln_pi: " << h_track_dau_old_ln_pi->GetEntries() << endl;
+  cout << "h_track_dau_old_ln_mu: " << h_track_dau_old_ln_mu->GetEntries() << endl;
+  cout << "h_track_dau_old_ln_sh: " << h_track_dau_old_ln_sh->GetEntries() << endl;
+  cout << "h_track_dau_old_ln_ot: " << h_track_dau_old_ln_ot->GetEntries() << endl;
+
+  cout << "reco_old_true_length_mu: " << reco_old_true_length_mu << endl;
+  cout << "reco_old_true_length_pi: " << reco_old_true_length_pi << endl;
+  cout << "reco_true_length_mu: " << reco_true_length_mu << endl;
+  cout << "reco_true_length_pi: " << reco_true_length_pi << endl;
+
+  delete h_track_chi2ka_ka;
+  delete h_track_chi2ka_pr;
+  delete h_track_chi2ka_pi;
+  delete h_track_chi2ka_mu;
+  delete h_track_chi2ka_ot;
+  delete h_track_chi2pr_ka;
+  delete h_track_chi2pr_pr;
+  delete h_track_chi2pr_pi;
+  delete h_track_chi2pr_mu;
+  delete h_track_chi2pr_ot;
+  delete s_chi2ka;
+  delete s_chi2pr;
 }
 
 
-void LoadTree(TFile *f, TString pl, TTree * t){
+void LoadTree(TFile *f, TString pl, TTree * &t){
 
   TString fname(f->GetName());
 
@@ -144,7 +229,7 @@ void LoadTree(TFile *f, TString pl, TTree * t){
 }
 
 //void Draw(TFile *f, TString var, double scale, int dencut, bool print)
-viod SetHistos(){
+void SetHistos(){
 
   h_track_chi2ka_ka = new TH1D("BDT_track_kaka", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_chi2ka_pr = new TH1D("BDT_track_kapr", "; BDT Response; Number of Events", 50, 0, 100);
@@ -182,6 +267,7 @@ viod SetHistos(){
   h_track_dau_llrka_sh = new TH1D("BDT_track_dau_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
   h_track_dau_llrka_ot = new TH1D("BDT_track_dau_llrot", "; BDT Response; Number of Events", 50, -1, 1);
 
+  
   h_track_dau_chi2pr_pr = new TH1D("BDT_track_dau_prpr", "; BDT Response; Number of Events", 50, 0, 150);
   h_track_dau_chi2pr_pi = new TH1D("BDT_track_dau_prpi", "; BDT Response; Number of Events", 50, 0, 150);
   h_track_dau_chi2pr_mu = new TH1D("BDT_track_dau_prmu", "; BDT Response; Number of Events", 50, 0, 150);
@@ -199,6 +285,7 @@ viod SetHistos(){
   h_track_dau_chi2mu_mu = new TH1D("BDT_track_dau_mumu", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_dau_chi2mu_sh = new TH1D("BDT_track_dau_mush", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_dau_chi2mu_ot = new TH1D("BDT_track_dau_muot", "; BDT Response; Number of Events", 50, 0, 100);
+  
 
   h_track_dau_ln_pr = new TH1D("track_dau_ln_pr", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_dau_ln_pi = new TH1D("track_dau_ln_pi", "; BDT Response; Number of Events", 50, 0, 100);
@@ -220,6 +307,7 @@ viod SetHistos(){
   h_track_dau_old_llrka_sh = new TH1D("BDT_track_dau_old_llrsh", "; BDT Response; Number of Events", 50, -1, 1);
   h_track_dau_old_llrka_ot = new TH1D("BDT_track_dau_old_llrot", "; BDT Response; Number of Events", 50, -1, 1);
 
+  
   h_track_dau_old_chi2pr_pr = new TH1D("BDT_track_dau_old_prpr", "; BDT Response; Number of Events", 50, 0, 150);
   h_track_dau_old_chi2pr_pi = new TH1D("BDT_track_dau_old_prpi", "; BDT Response; Number of Events", 50, 0, 150);
   h_track_dau_old_chi2pr_mu = new TH1D("BDT_track_dau_old_prmu", "; BDT Response; Number of Events", 50, 0, 150);
@@ -237,6 +325,7 @@ viod SetHistos(){
   h_track_dau_old_chi2mu_mu = new TH1D("BDT_track_dau_old_mumu", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_dau_old_chi2mu_sh = new TH1D("BDT_track_dau_old_mush", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_dau_old_chi2mu_ot = new TH1D("BDT_track_dau_old_muot", "; BDT Response; Number of Events", 50, 0, 100);
+  
 
   h_track_dau_old_ln_pr = new TH1D("track_dau_old_ln_pr", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_dau_old_ln_pi = new TH1D("track_dau_old_ln_pi", "; BDT Response; Number of Events", 50, 0, 100);
@@ -280,6 +369,7 @@ viod SetHistos(){
 }
 
 void SetHistosStyle(){
+  
   h_track_chi2ka_ka->SetLineColor(kBlue);
   h_track_chi2ka_pr->SetLineColor(kRed);
   h_track_chi2ka_pi->SetLineColor(TColor::GetColorDark(kGreen));
@@ -396,8 +486,7 @@ void SetHistosStyle(){
   h_track_dau_old_ln_pi->SetFillColorAlpha(TColor::GetColorDark(kGreen), 0.5);
   h_track_dau_old_ln_mu->SetFillColorAlpha(kCyan, 0.3);
 
-
-  
+  /*
   h_reco_track_Bragg_fwd_ka_pl2_ka->SetLineColor(kBlue);
   h_reco_track_Bragg_fwd_ka_pl2_pr->SetLineColor(kRed);
   h_reco_track_Bragg_fwd_ka_pl2_pi->SetLineColor(TColor::GetColorDark(kGreen));
@@ -445,259 +534,10 @@ void SetHistosStyle(){
   h_reco_track_Bragg_fwd_mu_pl2_pi->SetLineWidth(3);
   h_reco_track_Bragg_fwd_mu_pl2_mu->SetLineWidth(3);
   h_reco_track_Bragg_fwd_mu_pl2_ot->SetLineWidth(3);
-
-}
-
-void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name)
-{
-
-  LoadTree(TFile *f, TString pl, TTree* t);
-
-  for(int ientry=0; ientry<nentry; ++ientry){
-  //for(int ientry=0; ientry<9526; ++ientry){
-    t->GetEntry(ientry);
-    //if( fname.Contains("7Nov") || (fname.Contains("TMVA") && BDT>0.32)){
-
-    FillPrimaryTrack();
-    
-
-	    //if(reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length))
-	    //add true track length 
-
-
-    if(mode=="All"){	  
-      FillOldTrackLength();
-      if(IsHybrid) FillHybridTrackLength();
-      else FillRebuiltTrackLength();
-    }
-    else if(mode=="IsK"){
-      if(reco_track_true_pdg==321){
-	FillOldTrackLength();
-	if(IsHybrid) FillHybridTrackLength();
-	else FillRebuiltTrackLength();
-      }
-    }
-    else if(mode=="NotK"){
-      if(reco_track_true_pdg!=321){
-	FillOldTrackLength();
-	if(IsHybrid) FillHybridTrackLength();
-	else FillRebuiltTrackLength();
-	
-      }
-    }
-    
-    if(pl=="pl2") FillPl2PID();
-    else if(pl=="3pl") Fill3PlPID();
-    
-  }
-
-  AddStackHistos();
-  AddLegend();  
-
-
-  if(trdau.Contains("tra")){
-    /*
-    h_chi2_trk_pr_ka->Draw("colz");
-    c->Print(output_name);
-
-    h_chi2_trk_pr_ka_sig->Draw("colz");
-    c->Print(output_name);
-
-    h_chi2_trk_pr_ka_bg->Draw("colz");
-    c->Print(output_name);
-
-    h_truek_trkln_chi2ka->Draw("colz");
-    c->Print(output_name);
-    */
-    /*
-    h_chi2_trk_pi_ka->Draw("colz");
-    c->Print(output_pdf_trk);
-    h_chi2_trk_mu_ka->Draw("colz");
-    c->Print(output_pdf_trk);
-    */
-
-    h_reco_track_daughter_vtx_distance->Draw();
-    h_reco_track_daughter_distance->Draw("same");
-    h_reco_track_length->Draw("same");
-    c->Print(output_name);
-
-
-    //s_chi2ka->Draw();
-    s_chi2ka->Draw("nostack");
-    l_pr->Draw();
-    c->Print(output_name);
-
-    //s_chi2pr->Draw();
-    s_chi2pr->Draw("nostack");
-    l_pr->Draw();
-    c->Print(output_name);
-
-    //s_llr->Draw();
-    s_llr->Draw("nostack");
-    l_pr->Draw();
-    c->Print(output_name);
-
-    //s_llrka->Draw();
-    s_llrka->Draw("nostack");
-    l_pr->Draw();
-    c->Print(output_name);
-
-    //s_chi2pr_dau->Draw();
-    s_chi2pr_dau->Draw("nostack");
-    //l_pr_dau->Draw();
-    c->Print(output_name);
-
-    //s_chi2pi_dau->Draw();
-    s_chi2pi_dau->Draw("nostack");
-    //l_pr_dau->Draw();
-    c->Print(output_name);
-
-    //s_chi2mu_dau->Draw();
-    s_chi2mu_dau->Draw("nostack");
-    //l_pr_dau->Draw();
-    c->Print(output_name);
-
-    //s_llr_dau->Draw();
-    s_llr_dau->Draw("nostack");
-    l_pr_dau2->Draw();
-    c->Print(output_name);
-
-    //s_llrka_dau->Draw();
-    s_llrka_dau->Draw("nostack");
-    l_pr_dau2->Draw();
-    c->Print(output_name);
-
-    //s_trkln_dau->Draw();
-    s_trkln_dau->SetMaximum(200.);
-    s_trkln_dau_old->SetMaximum(200.); 
-    s_trkln_dau->Draw("nostack");
-    l_pr_dau_ln->Draw();
-    c->Print(output_name);
-
-    //s_chi2pr_dau_old->Draw();
-    s_chi2pr_dau_old->Draw("nostack");
-    //l_pr_dau->Draw();
-    c->Print(output_name);
-
-    //s_chi2pi_dau_old->Draw();
-    s_chi2pi_dau_old->Draw("nostack");
-    //l_pr_dau->Draw();
-    c->Print(output_name);
-
-    //s_chi2mu_dau_old->Draw();
-    s_chi2mu_dau_old->Draw("nostack");
-    //l_pr_dau->Draw();
-    c->Print(output_name);
-
-    //s_llr_dau_old->Draw();
-    s_llr_dau_old->Draw("nostack");
-    l_pr_dau2->Draw();
-    c->Print(output_name);
-
-    //s_llrka_dau_old->Draw();
-    s_llrka_dau_old->Draw("nostack");
-    l_pr_dau2->Draw();
-    c->Print(output_name);
-
-    //s_trkln_dau_old->Draw();
-    s_trkln_dau_old->Draw("nostack");
-    l_pr_dau_ln->Draw();
-    c->Print(output_name);
-
-
-    /*
-    s_trkdis->Draw();
-    l_pr_dau->Draw();
-    c->Print(output_name);
-
-    s_daudis->Draw();
-    l_pr_dau->Draw();
-    c->Print(output_name);
-    */
-
-    //s_braggka->Draw();
-    s_braggka->Draw("nostack");
-    l_pr->Draw();
-    c->Print(output_name);
-
-    //s_braggpr->Draw();
-    s_braggpr->Draw("nostack");
-    l_pr->Draw();
-    c->Print(output_name);
-
-    //s_braggpi->Draw();
-    s_braggpi->Draw("nostack");
-    l_pr->Draw();
-    c->Print(output_name);
-
-    //s_braggmu->Draw();
-    s_braggmu->Draw("nostack");
-    l_pr->Draw();
-    c->Print(output_name);
-
-  }
-  else if(trdau.Contains("dau")){
-    /*
-    h_chi2_dau_pr_mu->Draw("colz");
-    c->Print(output_pdf_dau);
-    h_chi2_dau_pi_mu->Draw("colz");
-    c->Print(output_pdf_dau);
-    h_chi2_dau_ka_mu->Draw("colz");
-    c->Print(output_pdf_dau);
-    h_chi2_dau_pr_pi->Draw("colz");
-    c->Print(output_pdf_dau);
-    h_chi2_dau_pr_pi->Draw("colz");
-    c->Print(output_pdf_dau);
-    h_chi2_dau_mu_pi->Draw("colz");
-    c->Print(output_pdf_dau);
-    h_chi2_dau_ka_pi->Draw("colz");
-    c->Print(output_pdf_dau);
-    */
-  }
-  else{
-    cout << "No output pdf file found" << endl;
-  }
-
-  cout << "n0: " << n0 << ", " << "n1: " << n1 << ", " << "n2: " << n2 << ", " << "n3: " << n3 << ", " << "n4: " << n4 << ", " << "n5: " << n5 << endl;
-
-  cout << "h_track_dau_ln_pr: " << h_track_dau_ln_pr->GetEntries() << endl;
-  cout << "h_track_dau_ln_pi: " << h_track_dau_ln_pi->GetEntries() << endl;
-  cout << "h_track_dau_ln_mu: " << h_track_dau_ln_mu->GetEntries() << endl;
-  cout << "h_track_dau_ln_sh: " << h_track_dau_ln_sh->GetEntries() << endl;
-  cout << "h_track_dau_ln_ot: " << h_track_dau_ln_ot->GetEntries() << endl;
-
-  cout << "h_track_dau_old_ln_pr: " << h_track_dau_old_ln_pr->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_pi: " << h_track_dau_old_ln_pi->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_mu: " << h_track_dau_old_ln_mu->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_sh: " << h_track_dau_old_ln_sh->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_ot: " << h_track_dau_old_ln_ot->GetEntries() << endl;
-
-
-
-  /*
-  delete h_chi2_trk_pr_ka;
-  delete h_chi2_trk_pi_ka;
-  delete h_chi2_trk_mu_ka;
-  delete h_chi2_dau_pr_mu;
-  delete h_chi2_dau_pi_mu;
-  delete h_chi2_dau_ka_mu;
-  delete h_chi2_dau_pr_pi;
-  delete h_chi2_dau_ka_pi;
-  delete h_chi2_dau_mu_pi;
   */
-  delete h_track_chi2ka_ka;
-  delete h_track_chi2ka_pr;
-  delete h_track_chi2ka_pi;
-  delete h_track_chi2ka_mu;
-  delete h_track_chi2ka_ot;
-  delete h_track_chi2pr_ka;
-  delete h_track_chi2pr_pr;
-  delete h_track_chi2pr_pi;
-  delete h_track_chi2pr_mu;
-  delete h_track_chi2pr_ot;
-  delete s_chi2ka;
-  delete s_chi2pr;
+
 }
+
 
 void FillHybridTrackLength(){
   
@@ -712,9 +552,16 @@ void FillHybridTrackLength(){
       h_track_dau_ln_sh->Fill(reco_track_daughter_old_length);
     else if(reco_track_daughter_old_true_pdg!=-9999)
       h_track_dau_ln_ot->Fill(reco_track_daughter_old_length);
+
+    if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==211 && std::abs(reco_track_daughter_old_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
+    if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
+
   }
   else if(reco_track_daughter_old_length<40){
     
+    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
+    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
+
     if(reco_track_daughter_true_pdg==2212){
       h_track_dau_ln_pr->Fill(reco_track_daughter_length);
       //h_track_dis_ln_pr->Fill(reco_track_distance);
@@ -781,10 +628,17 @@ void FillOldTrackLength(){
     h_track_dau_old_llr_ot->Fill(reco_track_daughter_old_llrpid_3pl);
     h_track_dau_old_llrka_ot->Fill(reco_track_daughter_old_llrpid_k_3pl);
   }
+
+  if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==211 && std::abs(reco_track_daughter_old_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_old_true_length_pi++;
+  if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_old_true_length_mu++;
+
   
 }
 
 void FillRebuiltTrackLength(){
+
+    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
+    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
 
   if(reco_track_daughter_true_pdg==2212){
     h_track_dau_ln_pr->Fill(reco_track_daughter_length);
@@ -974,85 +828,38 @@ void FillPrimaryTrack(){
     if(reco_track_true_pdg==321){
       h_track_llr_ka->Fill(reco_track_llrpid_3pl);
       h_track_llrka_ka->Fill(reco_track_llrpid_k_3pl);
-      h_reco_track_Bragg_fwd_ka_pl2_ka->Fill(reco_track_Bragg_fwd_ka_pl2);
-      h_reco_track_Bragg_fwd_pr_pl2_ka->Fill(reco_track_Bragg_fwd_pr_pl2);
-      h_reco_track_Bragg_fwd_pi_pl2_ka->Fill(reco_track_Bragg_fwd_pi_pl2);
-      h_reco_track_Bragg_fwd_mu_pl2_ka->Fill(reco_track_Bragg_fwd_mu_pl2);
     }
-	else if(reco_track_true_pdg==13){
-	  h_track_llr_mu->Fill(reco_track_llrpid_3pl); 
-	  h_track_llrka_mu->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_mu->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_mu->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_mu->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_mu->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	else if(reco_track_true_pdg==211){
-	  h_track_llr_pi->Fill(reco_track_llrpid_3pl);
-	  h_track_llrka_pi->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_pi->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_pi->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_pi->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_pi->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	else if(reco_track_true_pdg==2212){
-	  h_track_llr_pr->Fill(reco_track_llrpid_3pl);
-	  h_track_llrka_pr->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_pr->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_pr->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_pr->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_pr->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	else{
-	  h_track_llr_ot->Fill(reco_track_llrpid_3pl); 
-	  h_track_llrka_ot->Fill(reco_track_llrpid_k_3pl);
-	  h_reco_track_Bragg_fwd_ka_pl2_ot->Fill(reco_track_Bragg_fwd_ka_pl2);
-	  h_reco_track_Bragg_fwd_pr_pl2_ot->Fill(reco_track_Bragg_fwd_pr_pl2);
-	  h_reco_track_Bragg_fwd_pi_pl2_ot->Fill(reco_track_Bragg_fwd_pi_pl2);
-	  h_reco_track_Bragg_fwd_mu_pl2_ot->Fill(reco_track_Bragg_fwd_mu_pl2);
-	}
-	
-	h_reco_track_length->Fill(reco_track_length);
-	h_reco_track_daughter_distance->Fill(reco_track_daughter_distance);
-	h_reco_track_daughter_vtx_distance->Fill(reco_track_daughter_vtx_distance);
-
-	if(true_kaon_end_process == 0) n0++; 
-	if(true_kaon_end_process == 1) n1++;
-	if(true_kaon_end_process == 2) n2++;
-	if(true_kaon_end_process == 3) n3++;
-	if(true_kaon_end_process == 4) n4++;
-	if(true_kaon_end_process == 5) n5++; 
-
+    else if(reco_track_true_pdg==13){
+      h_track_llr_mu->Fill(reco_track_llrpid_3pl); 
+      h_track_llrka_mu->Fill(reco_track_llrpid_k_3pl);
+    }
+    else if(reco_track_true_pdg==211){
+      h_track_llr_pi->Fill(reco_track_llrpid_3pl);
+      h_track_llrka_pi->Fill(reco_track_llrpid_k_3pl);
+    }
+    else if(reco_track_true_pdg==2212){
+      h_track_llr_pr->Fill(reco_track_llrpid_3pl);
+      h_track_llrka_pr->Fill(reco_track_llrpid_k_3pl);
+    }
+    else{
+      h_track_llr_ot->Fill(reco_track_llrpid_3pl); 
+      h_track_llrka_ot->Fill(reco_track_llrpid_k_3pl);
+    }
+    
+    h_reco_track_length->Fill(reco_track_length);
+    h_reco_track_daughter_distance->Fill(reco_track_daughter_distance);
+    h_reco_track_daughter_vtx_distance->Fill(reco_track_daughter_vtx_distance);
+    
+    if(true_kaon_end_process == 0) n0++; 
+    if(true_kaon_end_process == 1) n1++;
+    if(true_kaon_end_process == 2) n2++;
+    if(true_kaon_end_process == 3) n3++;
+    if(true_kaon_end_process == 4) n4++;
+    if(true_kaon_end_process == 5) n5++; 
+    
 }
 
 void AddStackHistos(){
-
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_pr);
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_ot);
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_ka);
-
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_mu);
-  s_braggka->Add(h_reco_track_Bragg_fwd_ka_pl2_pi);
-
-
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_pr);
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_ot);
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_ka);
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_mu);
-  s_braggpr->Add(h_reco_track_Bragg_fwd_pr_pl2_pi);
-
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_pr);
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_ot);
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_ka);
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_mu);
-  s_braggpi->Add(h_reco_track_Bragg_fwd_pi_pl2_pi);
-
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_pr);
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_ot);
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_ka);
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_mu);
-  s_braggmu->Add(h_reco_track_Bragg_fwd_mu_pl2_pi);
-
 
   s_chi2ka->Add(h_track_chi2ka_ka);
   s_chi2ka->Add(h_track_chi2ka_pr);
@@ -1162,7 +969,7 @@ void AddStackHistos(){
 
 }
 
-AddLegend(){
+void AddLegend(){
   l_ka = new TLegend(0.75,0.65,0.95,0.95);
   l_ka->AddEntry(h_track_chi2ka_ka, "True K^{+}"  , "f");
   l_ka->AddEntry(h_track_chi2ka_pr, "True p" , "f");
@@ -1202,4 +1009,96 @@ AddLegend(){
   h_reco_track_daughter_distance->SetLineColor(kBlue);
   h_reco_track_length->SetLineColor(kBlack);
 
+}
+
+void DrawHistos(TCanvas* &c,TString output_name){
+  
+  h_reco_track_daughter_vtx_distance->Draw();
+  h_reco_track_daughter_distance->Draw("same");
+  h_reco_track_length->Draw("same");
+  c->Print(output_name);
+  
+
+  //s_chi2ka->Draw();
+  s_chi2ka->Draw("nostack");
+  l_pr->Draw();
+  c->Print(output_name);
+  
+  //s_chi2pr->Draw();
+  s_chi2pr->Draw("nostack");
+  l_pr->Draw();
+  c->Print(output_name);
+  
+  //s_llr->Draw();
+  s_llr->Draw("nostack");
+  l_pr->Draw();
+  c->Print(output_name);
+  
+  //s_llrka->Draw();
+  s_llrka->Draw("nostack");
+  l_pr->Draw();
+  c->Print(output_name);
+  
+  //s_chi2pr_dau->Draw();
+  s_chi2pr_dau->Draw("nostack");
+  //l_pr_dau->Draw();
+  c->Print(output_name);
+  
+  //s_chi2pi_dau->Draw();
+  s_chi2pi_dau->Draw("nostack");
+  //l_pr_dau->Draw();
+  c->Print(output_name);
+  
+  //s_chi2mu_dau->Draw();
+  s_chi2mu_dau->Draw("nostack");
+  //l_pr_dau->Draw();
+  c->Print(output_name);
+  
+  //s_llr_dau->Draw();
+  s_llr_dau->Draw("nostack");
+  l_pr_dau2->Draw();
+  c->Print(output_name);
+  
+  //s_llrka_dau->Draw();
+  s_llrka_dau->Draw("nostack");
+  l_pr_dau2->Draw();
+  c->Print(output_name);
+  
+  //s_trkln_dau->Draw();
+  s_trkln_dau->SetMaximum(200.);
+  s_trkln_dau_old->SetMaximum(200.); 
+  s_trkln_dau->Draw("nostack");
+  l_pr_dau_ln->Draw();
+  c->Print(output_name);
+  
+  //s_chi2pr_dau_old->Draw();
+  s_chi2pr_dau_old->Draw("nostack");
+  //l_pr_dau->Draw();
+  c->Print(output_name);
+  
+  //s_chi2pi_dau_old->Draw();
+  s_chi2pi_dau_old->Draw("nostack");
+  //l_pr_dau->Draw();
+  c->Print(output_name);
+  
+  //s_chi2mu_dau_old->Draw();
+  s_chi2mu_dau_old->Draw("nostack");
+  //l_pr_dau->Draw();
+  c->Print(output_name);
+  
+  //s_llr_dau_old->Draw();
+  s_llr_dau_old->Draw("nostack");
+  l_pr_dau2->Draw();
+  c->Print(output_name);
+  
+  //s_llrka_dau_old->Draw();
+  s_llrka_dau_old->Draw("nostack");
+  l_pr_dau2->Draw();
+  c->Print(output_name);
+  
+  //s_trkln_dau_old->Draw();
+  s_trkln_dau_old->Draw("nostack");
+  l_pr_dau_ln->Draw();
+  c->Print(output_name);
+  
 }
