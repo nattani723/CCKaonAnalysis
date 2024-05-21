@@ -266,6 +266,61 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
   //Int_t           reco_track_true_pdg = -9999;
   //Int_t           reco_track_daughter_true_pdg = -9999;
 
+  Int_t n_recoRebDauTracks = -9999;
+  Float_t rebdautrack_length = -9999; 
+  Float_t rebdautracktrue_length = -9999; 
+  Float_t rebdautracktruedir_length = -9999; 
+  Float_t rebdautrack_pdg = -9999; 
+  Float_t best_peak_x = -9999; 
+  Float_t best_peak_y = -9999; 
+  Float_t best_peak_z = -9999; 
+  Float_t best_peak_x_true = -9999; 
+  Float_t best_peak_y_true = -9999; 
+  Float_t best_peak_z_true = -9999; 
+  Float_t true_dau_muon_end_x = -9999; 
+  Float_t true_dau_muon_end_y = -9999; 
+  Float_t true_dau_muon_end_z = -9999; 
+  Float_t true_dau_muon_start_x = -9999; 
+  Float_t true_dau_muon_start_y = -9999;
+  Float_t true_dau_muon_start_z = -9999; 
+  Float_t true_dau_pip_end_x = -9999; 
+  Float_t true_dau_pip_end_y = -9999; 
+  Float_t true_dau_pip_end_z = -9999; 
+  Float_t true_dau_pip_start_x = -9999; 
+  Float_t true_dau_pip_start_y = -9999;
+  Float_t true_dau_pip_start_z = -9999; 
+  Float_t true_dau_muon_theta = -9999; 
+  Float_t true_dau_muon_phi = -9999; 
+  Float_t true_dau_pip_theta = -9999;
+  Float_t true_dau_pip_phi = -9999; 
+
+outtree->Branch("",&,"/I");
+ outtree->Branch("rebdautrack_length",&rebdautrack_length,"rebdautrack_length/F");
+ outtree->Branch("rebdautracktrue_length",&rebdautracktrue_length,"rebdautracktrue_length/F");
+ outtree->Branch("rebdautracktruedir_length",&rebdautracktruedir_length,"rebdautracktruedir_length/F");
+ outtree->Branch("best_peak_x",&best_peak_x,"best_peak_x/F");
+ outtree->Branch("best_peak_y",&best_peak_y,"best_peak_y/F");
+ outtree->Branch("best_peak_z",&best_peak_z,"best_peak_z/F");
+ outtree->Branch("best_peak_x_true",&best_peak_x_true,"best_peak_x_true/F");
+ outtree->Branch("best_peak_y_true",&best_peak_y_true,"best_peak_y_true/F");
+ outtree->Branch("best_peak_z_true",&best_peak_z_true,"best_peak_z_true/F");
+ outtree->Branch("true_dau_muon_end_x",&true_dau_muon_end_x,"true_dau_muon_end_x/F");
+ outtree->Branch("true_dau_muon_end_y",&true_dau_muon_end_y,"true_dau_muon_end_y/F");
+ outtree->Branch("true_dau_muon_end_z",&true_dau_muon_end_z,"true_dau_muon_end_z/F");
+ outtree->Branch("true_dau_muon_start_x",&true_dau_muon_start_x,"true_dau_muon_start_x/F");
+ outtree->Branch("true_dau_muon_start_y",&true_dau_muon_start_y,"true_dau_muon_start_y/F");
+ outtree->Branch("true_dau_muon_start_z",&true_dau_muon_start_z,"true_dau_muon_start_z/F");
+ outtree->Branch("true_dau_pip_end_x",&true_dau_pip_end_x,"true_dau_pip_end_x/F");
+ outtree->Branch("true_dau_pip_end_y",&true_dau_pip_end_y,"true_dau_pip_end_y/F");
+ outtree->Branch("true_dau_pip_end_z",&true_dau_pip_end_z,"true_dau_pip_end_z/F");
+ outtree->Branch("true_dau_pip_start_x",&true_dau_pip_start_x,"true_dau_pip_start_x/F");
+ outtree->Branch("true_dau_pip_start_y",&true_dau_pip_start_y,"true_dau_pip_start_y/F");
+ outtree->Branch("true_dau_pip_start_z",&true_dau_pip_start_z,"true_dau_pip_start_z/F");
+ outtree->Branch("true_dau_muon_theta",&true_dau_muon_theta,"true_dau_muon_theta/F");
+ outtree->Branch("true_dau_muon_phi",&true_dau_muon_phi,"true_dau_muon_phi/F");
+ outtree->Branch("true_dau_pip_theta",&true_dau_pip_theta,"true_dau_pip_theta/F");
+ outtree->Branch("true_dau_pip_phi",&true_dau_pip_phi,"true_dau_pip_phi/F");
+ outtree->Branch("rebdautrack_pdg",&rebdautrack_pdg,"rebdautrack_pdg/F");
 
   outtree->Branch("true_nu_energy",&true_nu_energy,"true_nu_energy/F");
   outtree->Branch("true_kaon_p",&true_kaon_p,"true_kaon_p/F");
@@ -534,97 +589,33 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 */
 	//}
 
-      /*
-      if(event.reco_track_true_pdg[itrk]==321 && ( event.reco_track_daughter_true_pdg[itrk][0]==-13 || event.reco_track_daughter_true_pdg[itrk][0]==211)  && event.true_nu_vtx_inCCInclusiveTPC==true){
-	true_cut1++;
-	if(event.true_kaon_end_inCCInclusiveTPC==true){
-	  true_cut2++;
-	  if(event.true_kaon_daughter_end_in5cmTPC==true){
-	    true_cut3++;
-	  }
-	}    
-      }
-      */
-      /*
-      if(event.reco_track_true_pdg[itrk]==321 && ( event.reco_track_daughter_true_pdg[itrk][0]==-13 || event.reco_track_daughter_true_pdg[itrk][0]==211)  && event.reco_nu_vtx_inCCInclusiveTPC==true){
-	true_cut1++;
-	if(event.reco_track_end_inCCInclusiveTPC[itrk]==true){
-	  true_cut2++;
-	  if(event.reco_track_ndaughters[itrk]==1 && event.reco_track_daughter_end_in5cmTPC[itrk][0]==true){
-	    true_cut3++;
-	  }
-	}    
-      }
-      */
-
-      /*
-      if(event.reco_track_nhits2[itrk]>0){
-	if(event.reco_track_MIP_pl2[itrk]>0.06) continue;
-      }else{
-	if(event.reco_track_nhits0[itrk]>event.reco_track_nhits1[itrk]){
-	  if(event.reco_track_MIP_pl0[itrk]>0.06) continue;
-	}
-	else if(event.reco_track_MIP_pl1[itrk]>0.06) continue;
-      }
-      */
-
       if(event.reco_track_end_inCCInclusiveTPC[itrk]==false) continue;
+
+n_recoRebDauTracks = event.n_recoRebDauTracks[itrk];
+rebdautracktrue_length = event.rebdautracktrue_length[itrk];
+rebdautracktruedir_length = event.rebdautracktruedir_length[itrk];
+best_peak_x_true = event.best_peak_x_true[itrk];
+best_peak_y_true = event.best_peak_y_true[itrk];
+best_peak_z_true = event.best_peak_z_true[itrk];
 
 
       double max_dau_length = -1;
       int max_dau_length_index = -1;
-      
-      for (int idau=0;idau<event.reco_track_ndaughters[itrk];idau++) {
-	if(event.reco_track_daughter_length[itrk][idau]>max_dau_length){
-	  max_dau_length = event.reco_track_daughter_length[itrk][idau];
+
+      for (int idau=0;idau<event.n_recoRebDauTracks[itrk];idau++) {
+	if(event.rebdautrack_length[itrk][idau]>max_dau_length){
+	  max_dau_length = event.rebdautrack_length[itrk][idau];
 	  max_dau_length_index = idau;
 	}
       }
-      
-      //cout << event.reco_track_daughter_old_length[itrk][0] << endl;
-      //if(event.reco_track_daughter_old_length[itrk][0]>40){
-      if(event.reco_track_daughter_old_length[itrk][0]>0){
 
-	//if (event.reco_track_daughter_old_end_in5cmTPC[itrk][0]==false) continue;
-	reco_track_daughter_old_length = event.reco_track_daughter_old_length[itrk][0];
-	reco_track_daughter_old_distance = event.reco_track_daughter_old_distance[itrk][0];
-	reco_track_daughter_old_theta = event.reco_track_daughter_old_theta[itrk][0];
-	reco_track_daughter_old_phi = event.reco_track_daughter_old_phi[itrk][0];
-	
-	reco_track_daughter_old_chi2ka_pl0 = event.reco_track_daughter_old_chi2ka_pl0[itrk][0];
-	reco_track_daughter_old_chi2pr_pl0 = event.reco_track_daughter_old_chi2pr_pl0[itrk][0];
-	reco_track_daughter_old_chi2pi_pl0 = event.reco_track_daughter_old_chi2pi_pl0[itrk][0];
-	reco_track_daughter_old_chi2mu_pl0 = event.reco_track_daughter_old_chi2mu_pl0[itrk][0];
-	
-	reco_track_daughter_old_chi2ka_pl1 = event.reco_track_daughter_old_chi2ka_pl1[itrk][0];
-	reco_track_daughter_old_chi2pr_pl1 = event.reco_track_daughter_old_chi2pr_pl1[itrk][0];
-	reco_track_daughter_old_chi2pi_pl1 = event.reco_track_daughter_old_chi2pi_pl1[itrk][0];
-	reco_track_daughter_old_chi2mu_pl1 = event.reco_track_daughter_old_chi2mu_pl1[itrk][0];
-	
-	reco_track_daughter_old_chi2ka_pl2 = event.reco_track_daughter_old_chi2ka_pl2[itrk][0];
-	reco_track_daughter_old_chi2pr_pl2 = event.reco_track_daughter_old_chi2pr_pl2[itrk][0];
-	reco_track_daughter_old_chi2pi_pl2 = event.reco_track_daughter_old_chi2pi_pl2[itrk][0];
-	reco_track_daughter_old_chi2mu_pl2 = event.reco_track_daughter_old_chi2mu_pl2[itrk][0];
-	
-	reco_track_daughter_old_chi2ka_3pl = event.reco_track_daughter_old_chi2ka_3pl[itrk][0];
-	reco_track_daughter_old_chi2pr_3pl = event.reco_track_daughter_old_chi2pr_3pl[itrk][0];
-	reco_track_daughter_old_chi2pi_3pl = event.reco_track_daughter_old_chi2pi_3pl[itrk][0];
-	reco_track_daughter_old_chi2mu_3pl = event.reco_track_daughter_old_chi2mu_3pl[itrk][0];
-	
-	reco_track_daughter_old_llrpid_3pl = event.reco_track_daughter_old_llrpid_3pl[itrk][0];      
-	reco_track_daughter_old_llrpid_k_3pl = event.reco_track_daughter_old_llrpid_k_3pl[itrk][0];      
-	reco_track_daughter_old_true_pdg = event.reco_track_daughter_old_true_pdg[itrk][0];
-	
-	reco_track_daughter_old_vtx_inTPC = event.reco_track_daughter_old_vtx_inTPC[itrk][0];
-	reco_track_daughter_old_vtx_in5cmTPC = event.reco_track_daughter_old_vtx_in5cmTPC[itrk][0];
-	reco_track_daughter_old_vtx_inCCInclusiveTPC = event.reco_track_daughter_old_vtx_inCCInclusiveTPC[itrk][0];
-	reco_track_daughter_old_end_inTPC = event.reco_track_daughter_old_end_inTPC[itrk][0];
-	reco_track_daughter_old_end_in5cmTPC = event.reco_track_daughter_old_end_in5cmTPC[itrk][0];
-	reco_track_daughter_old_end_inCCInclusiveTPC = event.reco_track_daughter_old_end_inCCInclusiveTPC[itrk][0];	
-	
+	if(max_dau_length_index>=0){
+		rebdautrack_length = max_dau_length;
+		rebdautrack_pdg = event.rebdautrack_pdg[itrk][max_dau_length_index];
+		best_peak_x = event.best_peak_x[itrk][max_dau_length_index];
+		best_peak_y = event.best_peak_y[itrk][max_dau_length_index];
+		best_peak_z = event.best_peak_z[itrk][max_dau_length_index];
       }
-
-      else if(max_dau_length_index>=0){//retrieve rebuild track
 	
 	reco_track_daughter_length = event.reco_track_daughter_length[itrk][max_dau_length_index];
 	reco_track_daughter_distance = event.reco_track_daughter_distance[itrk][max_dau_length_index];
@@ -665,42 +656,7 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 	reco_track_daughter_end_inTPC = event.reco_track_daughter_end_inTPC[itrk][max_dau_length_index];
 	reco_track_daughter_end_in5cmTPC = event.reco_track_daughter_end_in5cmTPC[itrk][max_dau_length_index];
 	reco_track_daughter_end_inCCInclusiveTPC = event.reco_track_daughter_end_inCCInclusiveTPC[itrk][max_dau_length_index];
-      }
-	else{
-	  //cout << "no daughter track" << endl;
-	  reco_track_daughter_length = -9999;
-	  reco_track_daughter_distance = -9999;
-	  reco_track_daughter_vtx_distance = -9999;
-	  reco_track_daughter_theta = -9999;
-	  reco_track_daughter_phi = -9999;
-	  reco_angle_track_daughter = -9999;
-	  reco_track_daughter_chi2ka_pl0 = -9999;
-	  reco_track_daughter_chi2pr_pl0 = -9999;
-	  reco_track_daughter_chi2pi_pl0 = -9999;
-	  reco_track_daughter_chi2mu_pl0 = -9999;
-	  reco_track_daughter_chi2ka_pl1 = -9999;
-	  reco_track_daughter_chi2pr_pl1 = -9999;
-	  reco_track_daughter_chi2pi_pl1 = -9999;
-	  reco_track_daughter_chi2mu_pl1 = -9999;
-	  reco_track_daughter_chi2ka_pl2 = -9999;
-	  reco_track_daughter_chi2pr_pl2 = -9999;
-	  reco_track_daughter_chi2pi_pl2 = -9999;
-	  reco_track_daughter_chi2mu_pl2 = -9999;
-	  reco_track_daughter_chi2ka_3pl = -9999;
-	  reco_track_daughter_chi2pr_3pl = -9999;
-	  reco_track_daughter_chi2pi_3pl = -9999;
-	  reco_track_daughter_chi2mu_3pl = -9999;
-	  reco_track_daughter_llrpid_3pl = -9999;
-	  reco_track_daughter_llrpid_k_3pl = -9999;
-	  reco_track_daughter_true_pdg = -9999;
-	  reco_track_daughter_vtx_inTPC = false;
-	  reco_track_daughter_vtx_in5cmTPC = false;
-	  reco_track_daughter_vtx_inCCInclusiveTPC = false;
-	  reco_track_daughter_end_inTPC = false;
-	  reco_track_daughter_end_in5cmTPC = false;
-	  reco_track_daughter_end_inCCInclusiveTPC= false;
-	  
-	}
+ 
 	
       //}
       
@@ -765,6 +721,24 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
       reco_ccmu_true_pdg = event.reco_ccmu_true_pdg;
 
       true_kaon_end_process  = event.true_kaon_end_process;
+
+true_dau_muon_end_x = event.true_dau_muon_end_x;
+true_dau_muon_end_y = event.true_dau_muon_end_y;
+true_dau_muon_end_z = event.true_dau_muon_end_z;
+true_dau_muon_start_x = event.true_dau_muon_start_x;
+true_dau_muon_start_y = event.true_dau_muon_start_y;
+true_dau_muon_start_z = event.true_dau_muon_start_z;
+true_dau_pip_end_x = event.true_dau_pip_end_x;
+true_dau_pip_end_y = event.true_dau_pip_end_y;
+true_dau_pip_end_z = event.true_dau_pip_end_z;
+true_dau_pip_start_x = event.true_dau_pip_start_x;
+true_dau_pip_start_y = event.true_dau_pip_start_y;
+true_dau_pip_start_z = event.true_dau_pip_start_z;
+true_dau_muon_theta = event.true_dau_muon_theta;
+true_dau_muon_phi = event.true_dau_muon_phi;
+true_dau_pip_theta = event.true_dau_pip_theta;
+true_dau_pip_phi = event.true_dau_pip_phi;
+
       reco_track_nhits0 = event.reco_track_nhits0[itrk];
       reco_track_nhits1 = event.reco_track_nhits1[itrk];
       reco_track_nhits2 = event.reco_track_nhits2[itrk];
