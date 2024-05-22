@@ -24,7 +24,7 @@ void ConvertToTrackTuple_alg_precut_debug()
 
   TStopwatch clock;
 
-  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_debug.root", "rootfile/refine_debug_2.root");
+  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/CCKaonAnalyzerRebuild.root", "rootfile/test.root");
 
 
   cout << "Real time " << clock.RealTime() << " s" << endl << endl;
@@ -36,8 +36,8 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 {
 
   // Input files
-  TChain * t = new TChain("CCKaonAnalyzer/Event");
-  //TChain * t = new TChain("CCKaonAnalyzerRebuild/Event");
+  //TChain * t = new TChain("CCKaonAnalyzer/Event");
+  TChain * t = new TChain("CCKaonAnalyzerRebuild/Event");
 
   cout << "Input " << input_name << endl;
 
@@ -294,7 +294,7 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
   Float_t true_dau_pip_theta = -9999;
   Float_t true_dau_pip_phi = -9999; 
 
-outtree->Branch("n_recoRebDauTracks",&,"n_recoRebDauTracks/I");
+outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I");
  outtree->Branch("rebdautrack_length",&rebdautrack_length,"rebdautrack_length/F");
  outtree->Branch("rebdautracktrue_length",&rebdautracktrue_length,"rebdautracktrue_length/F");
  outtree->Branch("rebdautracktruedir_length",&rebdautracktruedir_length,"rebdautracktruedir_length/F");
@@ -559,10 +559,8 @@ outtree->Branch("n_recoRebDauTracks",&,"n_recoRebDauTracks/I");
     //if(event.true_kaon_end_process>=0) n_true_k++;
     //if(jentry%2 == 1) continue;
 
-
-    if (event.reco_nu_cc_filter==false) continue;    
-    if (event.reco_nu_vtx_inCCInclusiveTPC==false) continue;
-
+    //if (event.reco_nu_vtx_inCCInclusiveTPC==false) continue;
+    //if (event.reco_nu_cc_filter==false) continue;    
     
     if(event.true_nu_pdg==14 && event.true_nu_ccnc==0 && event.true_kaon_ke>=0 && event.true_nu_vtx_inCCInclusiveTPC==true){
       true_cut1++;
@@ -579,6 +577,7 @@ outtree->Branch("n_recoRebDauTracks",&,"n_recoRebDauTracks/I");
 
     // Loop over tracks 
     for (int itrk=0;itrk<event.reco_ntracks;itrk++) {
+    //for (int itrk=0;itrk<10;itrk++) {
 
       //if(event.run==5025 || event.subrun==134 || event.event==6738){
       /*
@@ -589,20 +588,27 @@ outtree->Branch("n_recoRebDauTracks",&,"n_recoRebDauTracks/I");
 */
 	//}
 
-      if(event.reco_track_end_inCCInclusiveTPC[itrk]==false) continue;
+      //if(event.reco_track_end_inCCInclusiveTPC[itrk]==false) continue;
 
-n_recoRebDauTracks = event.n_recoRebDauTracks[itrk];
-rebdautracktrue_length = event.rebdautracktrue_length[itrk];
-rebdautracktruedir_length = event.rebdautracktruedir_length[itrk];
-best_peak_x_true = event.best_peak_x_true[itrk];
-best_peak_y_true = event.best_peak_y_true[itrk];
-best_peak_z_true = event.best_peak_z_true[itrk];
+      //cout << "event.n_recoRebDauTracks[itrk]: " << event.n_recoRebDauTracks[itrk] << endl;
+
+      n_recoRebDauTracks = event.n_recoRebDauTracks[itrk];
+      rebdautracktrue_length = event.rebdautracktrue_length[itrk];
+      rebdautracktruedir_length = event.rebdautracktruedir_length[itrk];
+      best_peak_x_true = event.best_peak_x_true[itrk];
+      best_peak_y_true = event.best_peak_y_true[itrk];
+      best_peak_z_true = event.best_peak_z_true[itrk];
 
 
       double max_dau_length = -1;
       int max_dau_length_index = -1;
 
+      //if(event.rebdautrack_length[itrk][idau]!=-9999) 
+      if(n_recoRebDauTracks<=0) continue;
       for (int idau=0;idau<event.n_recoRebDauTracks[itrk];idau++) {
+
+	//cout << "itrk: " << itrk << ", idau: " << idau <<  ", event.rebdautrack_length[itrk][idau]: " << event.rebdautrack_length[itrk][idau] << endl;
+
 	if(event.rebdautrack_length[itrk][idau]>max_dau_length){
 	  max_dau_length = event.rebdautrack_length[itrk][idau];
 	  max_dau_length_index = idau;
@@ -610,11 +616,11 @@ best_peak_z_true = event.best_peak_z_true[itrk];
       }
 
 	if(max_dau_length_index>=0){
-		rebdautrack_length = max_dau_length;
-		rebdautrack_pdg = event.rebdautrack_pdg[itrk][max_dau_length_index];
-		best_peak_x = event.best_peak_x[itrk][max_dau_length_index];
-		best_peak_y = event.best_peak_y[itrk][max_dau_length_index];
-		best_peak_z = event.best_peak_z[itrk][max_dau_length_index];
+	  rebdautrack_length = max_dau_length;
+	  rebdautrack_pdg = event.rebdautrack_pdg[itrk][max_dau_length_index];
+	  best_peak_x = event.best_peak_x[itrk][max_dau_length_index];
+	  best_peak_y = event.best_peak_y[itrk][max_dau_length_index];
+	  best_peak_z = event.best_peak_z[itrk][max_dau_length_index];
       }
 	
 	reco_track_daughter_length = event.reco_track_daughter_length[itrk][0];
@@ -657,7 +663,6 @@ best_peak_z_true = event.best_peak_z_true[itrk];
 	reco_track_daughter_end_in5cmTPC = event.reco_track_daughter_end_in5cmTPC[itrk][0];
 	reco_track_daughter_end_inCCInclusiveTPC = event.reco_track_daughter_end_inCCInclusiveTPC[itrk][0];
  
-	
       //}
       
       //if(reco_track_daughter_end_in5cmTPC == false) continue;
@@ -790,6 +795,7 @@ true_dau_pip_phi = event.true_dau_pip_phi;
       reco_track_llrpid_3pl = event.reco_track_llrpid_3pl[itrk];
       reco_track_llrpid_k_3pl = event.reco_track_llrpid_k_3pl[itrk];
       reco_track_true_pdg = event.reco_track_true_pdg[itrk];
+      cout << "reco_track_true_pdg: " << reco_track_true_pdg << endl;
       
       true_nu_vtx_inCCInclusiveTPC = event.true_nu_vtx_inCCInclusiveTPC;
       true_kaon_end_inCCInclusiveTPC = event.true_kaon_end_inCCInclusiveTPC;
@@ -816,7 +822,6 @@ true_dau_pip_phi = event.true_dau_pip_phi;
       reco_track_P_end = event.reco_track_P_end[itrk];
 
 
-      
       outtree->Fill();
 
     }//end loop over tracks

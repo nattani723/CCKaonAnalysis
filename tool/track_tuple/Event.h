@@ -108,6 +108,12 @@ public :
    Float_t true_dau_pip_length;
    Float_t true_dau_muon_length;
 
+Int_t n_recoRebDauTracks[20];
+Float_t rebdautrack_length[20][10], rebdautracktrue_length[20], rebdautracktruedir_length[20], rebdautrack_pdg[20][10];
+Float_t best_peak_x[20][10], best_peak_y[20][10], best_peak_z[20][10], best_peak_x_true[10], best_peak_y_true[10], best_peak_z_true[10];
+Float_t true_dau_muon_end_x, true_dau_muon_end_y, true_dau_muon_end_z, true_dau_muon_start_x, true_dau_muon_start_y, true_dau_muon_start_z, true_dau_pip_end_x, true_dau_pip_end_y, true_dau_pip_end_z, true_dau_pip_start_x, true_dau_pip_start_y, true_dau_pip_start_z, true_dau_muon_theta, true_dau_muon_phi, true_dau_pip_theta, true_dau_pip_phi;
+
+
    Float_t         reco_track_distance[20];
    Int_t           reco_track_nhits0[20];
    Int_t           reco_track_nhits1[20];
@@ -372,6 +378,34 @@ public :
 
    TBranch        *b_true_dau_muon_length;
    TBranch        *b_true_dau_pip_length;
+
+   TBranch        *b_n_recoRebDauTracks;
+   TBranch        *b_rebdautrack_length;
+   TBranch        *b_rebdautracktrue_length;
+   TBranch        *b_rebdautracktruedir_length;
+   TBranch        *b_rebdautrack_pdg;
+   TBranch        *b_best_peak_x;
+   TBranch        *b_best_peak_y;
+   TBranch        *b_best_peak_z;
+   TBranch        *b_best_peak_x_true;
+   TBranch        *b_best_peak_y_true;
+   TBranch        *b_best_peak_z_true;
+   TBranch        *b_true_dau_muon_end_x;
+   TBranch        *b_true_dau_muon_end_y;
+   TBranch        *b_true_dau_muon_end_z;
+   TBranch        *b_true_dau_muon_start_x;
+   TBranch        *b_true_dau_muon_start_y;
+   TBranch        *b_true_dau_muon_start_z;
+   TBranch        *b_true_dau_pip_end_x;
+   TBranch        *b_true_dau_pip_end_y;
+   TBranch        *b_true_dau_pip_end_z;
+   TBranch        *b_true_dau_pip_start_x;
+   TBranch        *b_true_dau_pip_start_y;
+   TBranch        *b_true_dau_pip_start_z;
+   TBranch        *b_true_dau_muon_phi;
+   TBranch        *b_true_dau_muon_theta;
+   TBranch        *b_true_dau_pip_phi;
+   TBranch        *b_true_dau_pip_theta;
 
    TBranch        *b_reco_track_distance;   //!
    TBranch        *b_reco_track_nhits0;   //!
@@ -699,6 +733,36 @@ void Event::Init(TTree *tree)
 
    fChain->SetBranchAddress("true_dau_pip_length", &true_dau_pip_length, &b_true_dau_pip_length);
    fChain->SetBranchAddress("true_dau_muon_length", &true_dau_muon_length, &b_true_dau_muon_length);
+
+   fChain->SetBranchAddress("n_recoRebDauTracks", n_recoRebDauTracks, &b_n_recoRebDauTracks);
+   fChain->SetBranchAddress("rebdautrack_length", rebdautrack_length, &b_rebdautrack_length);
+   fChain->SetBranchAddress("rebdautracktrue_length", &rebdautracktrue_length, &b_rebdautracktrue_length);
+   fChain->SetBranchAddress("rebdautracktruedir_length", &rebdautracktruedir_length, &b_rebdautracktruedir_length);
+   fChain->SetBranchAddress("rebdautrack_pdg", &rebdautrack_pdg, &b_rebdautrack_pdg);
+   fChain->SetBranchAddress("best_peak_x", &best_peak_x, &b_best_peak_x);
+   fChain->SetBranchAddress("best_peak_y", &best_peak_y, &b_best_peak_y);
+   fChain->SetBranchAddress("best_peak_z", &best_peak_z, &b_best_peak_z);
+   fChain->SetBranchAddress("best_peak_y", &best_peak_y, &b_best_peak_y);
+   fChain->SetBranchAddress("best_peak_z", &best_peak_z, &b_best_peak_z);
+   fChain->SetBranchAddress("best_peak_x_true", &best_peak_x_true, &b_best_peak_x_true);
+   fChain->SetBranchAddress("best_peak_y_true", &best_peak_y_true, &b_best_peak_y_true);
+   fChain->SetBranchAddress("best_peak_z_true", &best_peak_z_true, &b_best_peak_z_true);
+   fChain->SetBranchAddress("true_dau_muon_end_x", &true_dau_muon_end_x, &b_true_dau_muon_end_x);
+   fChain->SetBranchAddress("true_dau_muon_end_y", &true_dau_muon_end_y, &b_true_dau_muon_end_y);
+   fChain->SetBranchAddress("true_dau_muon_end_z", &true_dau_muon_end_z, &b_true_dau_muon_end_z);
+   fChain->SetBranchAddress("true_dau_muon_start_x", &true_dau_muon_start_x, &b_true_dau_muon_start_x);
+   fChain->SetBranchAddress("true_dau_muon_start_y", &true_dau_muon_start_y, &b_true_dau_muon_start_y);
+   fChain->SetBranchAddress("true_dau_muon_start_z", &true_dau_muon_start_z, &b_true_dau_muon_start_z);
+   fChain->SetBranchAddress("true_dau_pip_end_x", &true_dau_pip_end_x, &b_true_dau_pip_end_x);
+   fChain->SetBranchAddress("true_dau_pip_end_y", &true_dau_pip_end_y, &b_true_dau_pip_end_y);
+   fChain->SetBranchAddress("true_dau_pip_end_z", &true_dau_pip_end_z, &b_true_dau_pip_end_z);
+   fChain->SetBranchAddress("true_dau_pip_start_x", &true_dau_pip_start_x, &b_true_dau_pip_start_x);
+   fChain->SetBranchAddress("true_dau_pip_start_y", &true_dau_pip_start_y, &b_true_dau_pip_start_y);
+   fChain->SetBranchAddress("true_dau_pip_start_z", &true_dau_pip_start_z, &b_true_dau_pip_start_z);
+   fChain->SetBranchAddress("true_dau_muon_theta", &true_dau_muon_theta, &b_true_dau_muon_theta);
+   fChain->SetBranchAddress("true_dau_muon_phi", &true_dau_muon_phi, &b_true_dau_muon_phi);
+   fChain->SetBranchAddress("true_dau_pip_theta", &true_dau_pip_theta, &b_true_dau_pip_theta);
+   fChain->SetBranchAddress("true_dau_pip_phi", &true_dau_pip_phi, &b_true_dau_pip_phi);
 
    fChain->SetBranchAddress("reco_track_distance", reco_track_distance, &b_reco_track_distance);
    fChain->SetBranchAddress("reco_track_nhits0", reco_track_nhits0, &b_reco_track_nhits0);
