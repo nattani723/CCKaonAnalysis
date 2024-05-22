@@ -28,7 +28,7 @@ void RebuildTrackHist_simple()
 {
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/track_tuple/refine_debug_2.root", "test2.pdf", "3pl");
   //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
-  RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora/tool/track_tuple/rootfile/refine_debug_2.root", "test.pdf", "3pl", "IsK", true);
+  RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora//CCKaonAnalysis/tool/track_tuple/rootfile/test.root", "a.pdf", "3pl", "IsK", true);
 
 }
 
@@ -75,8 +75,9 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
     FillPrimaryTrack();
     
     //if(reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length))
-    //add true track length 
+    //add true track length
 
+    if(reco_track_true_pdg!=321) continue;
     FillTrackLength();
     FillRebuildTrackLength();
     
@@ -173,25 +174,6 @@ void LoadTree(TFile *f, TString pl, TTree * &t){
   //t->SetBranchAddress("", &);
   //t->SetBranchAddress("", &);
   
-  if(true_kaon_end_process==0){
-    Double_t true_dau_muon_dir_x = true_dau_muon_end_x - true_dau_muon_start_x;
-    Double_t true_dau_muon_dir_y = true_dau_muon_end_y - true_dau_muon_start_y;
-    Double_t true_dau_muon_dir_z = true_dau_muon_end_z - true_dau_muon_start_z;
-    //true_dau_muon_dir.SetXYZ(true_dau_muon_dir_x, true_dau_muon_dir_y, true_dau_muon_dir_z);
-    true_dau_dir.SetMagThetaPhi(1, true_dau_muon_theta, true_dau_muon_phi);
-    cheat_dir.SetXYZ(best_peak_x_true, best_peak_y_true, best_peak_z_true);
-    reco_dir.SetXYZ(best_peak_x, best_peak_y, best_peak_z);
-  }
-  if(true_kaon_end_process==1){
-    Double_t true_dau_pip_dir_x = true_dau_pip_end_x - true_dau_pip_start_x;
-    Double_t true_dau_pip_dir_y = true_dau_pip_end_y - true_dau_pip_start_y;
-    Double_t true_dau_pip_dir_z = true_dau_pip_end_z - true_dau_pip_start_z;
-    true_dau_dir.SetXYZ(true_dau_pip_dir_x, true_dau_pip_dir_y, true_dau_pip_dir_z);
-    //true_dau_pip_dir.SetMagThetaPhi(1, event.true_dau_pip_theta, event.true_dau_pip_phi);
-    cheat_dir.SetXYZ(best_peak_x_true, best_peak_y_true, best_peak_z_true);
-    reco_dir.SetXYZ(best_peak_x, best_peak_y, best_peak_z);
-  }
-
 }
 
 //void Draw(TFile *f, TString var, double scale, int dencut, bool print)
@@ -437,6 +419,37 @@ void FillOldTrackLength(){
 }
 
 void FillRebuildTrackLength(){ 
+
+  //cout << "rebdautrack_pdg: " << rebdautrack_pdg << endl;
+  //cout << "rebdautrack_length: " << rebdautrack_length << endl;
+
+  if(true_kaon_end_process==0){
+    Double_t true_dau_muon_dir_x = true_dau_muon_end_x - true_dau_muon_start_x;
+    Double_t true_dau_muon_dir_y = true_dau_muon_end_y - true_dau_muon_start_y;
+    Double_t true_dau_muon_dir_z = true_dau_muon_end_z - true_dau_muon_start_z;
+    //true_dau_muon_dir.SetXYZ(true_dau_muon_dir_x, true_dau_muon_dir_y, true_dau_muon_dir_z);
+    true_dau_dir.SetMagThetaPhi(1, true_dau_muon_theta, true_dau_muon_phi);
+    cheat_dir.SetXYZ(best_peak_x_true, best_peak_y_true, best_peak_z_true);
+    reco_dir.SetXYZ(best_peak_x, best_peak_y, best_peak_z);
+    //cout << "true_dau_muon_dirx: " << true_dau_muon_dir_x << " " << true_dau_muon_dir_y << " " << true_dau_muon_dir_z << endl;
+    //cout << "best_peak_x, y, z: " << best_peak_x << " " << best_peak_y << " " << best_peak_z << endl;
+    //cout << "best_peak_x_true, y, z: " << best_peak_x_true << " " << best_peak_y_true << " " << best_peak_z_true <<endl;
+  }
+  if(true_kaon_end_process==1){
+    Double_t true_dau_pip_dir_x = true_dau_pip_end_x - true_dau_pip_start_x;
+    Double_t true_dau_pip_dir_y = true_dau_pip_end_y - true_dau_pip_start_y;
+    Double_t true_dau_pip_dir_z = true_dau_pip_end_z - true_dau_pip_start_z;
+    true_dau_dir.SetXYZ(true_dau_pip_dir_x, true_dau_pip_dir_y, true_dau_pip_dir_z);
+    //true_dau_pip_dir.SetMagThetaPhi(1, event.true_dau_pip_theta, event.true_dau_pip_phi);
+    cheat_dir.SetXYZ(best_peak_x_true, best_peak_y_true, best_peak_z_true);
+    reco_dir.SetXYZ(best_peak_x, best_peak_y, best_peak_z);
+  }
+
+
+  if(true_kaon_end_process==0 || true_kaon_end_process==1){
+    //cout << "true_dau_dir.Angle(reco_dir): " << true_dau_dir.Angle(reco_dir) << endl;
+    //cout << "true_dau_dir.Angle(cheat_dir): " << true_dau_dir.Angle(cheat_dir) << endl;
+  }
 
   if(rebdautrack_pdg==2212){
     h_track_rebdau_ln_pr->Fill(rebdautrack_length);
