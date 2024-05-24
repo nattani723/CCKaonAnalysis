@@ -32,5 +32,4 @@ sites
 *.app
 
 *.root
-*.pdf
 lib/*

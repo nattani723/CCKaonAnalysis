@@ -25,13 +25,13 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       const double POT = 1e21; // POT to scale samples to
       const int Mode = kFHC;
 
-      SelectionParameters P = P_FHC_Tune_325_NoBDT;
+      SelectionParameters P = P_FHC_K_NOBDT_TEST;
 
       // Setup selection manager. Set POT to scale sample to
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      M.ImportBDTWeights(P.p_BDTCutBDT_WeightsDir);
+      //M.ImportBDTWeights(P.p_BDTCutBDT_WeightsDir);
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -388,8 +388,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      E.SetFile("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
-      M.AddSample("AssocK","AssocK",E.GetPOT());//need to change
+      E.SetFile("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
+      M.AddSample("AssocK","AssocK",POT());//need to change
+
+      M.UseFluxWeight(false);
+      M.UseGenWeight(false);
 
       for(int i=0;i<E.GetNEvents();i++){
         
@@ -705,6 +708,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          Efficiency_DaughterFV->FillWeighted(passed_DaughterFV,e.Weight,0.5);
          if(passed_DaughterFV) h_Selected_DaughterFV->Fill(0.5,e.Weight);
 
+	 /*
          // Decay Selector
          h_Q2_BDTCut->Fill(Q2,e.Weight);
          Efficiency_Q2_BDTCut->FillWeighted(passed_BDTCut,e.Weight,Q2);
@@ -802,6 +806,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          h_DaughterTrackLength->Fill(0.5,e.Weight);
          Efficiency_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,0.5);
          if(passed_DaughterTrackLength) h_Selected_DaughterTrackLength->Fill(0.5,e.Weight);
+	 */
 
       }
 
@@ -879,6 +884,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayPionMomentum_DaughterFV,h_SelectedDecayPionMomentum_DaughterFV,Efficiency_DecayPionMomentum_DaughterFV,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_DaughterFV",Mode,POT);
       DrawEfficiencyPlot(h_DaughterFV,h_Selected_DaughterFV,Efficiency_DaughterFV,";;Events",label + "_DaughterFV",Mode,POT);
 
+      /*
       // Track Selector BDT
       DrawEfficiencyPlot(h_Q2_BDTCut,h_SelectedQ2_BDTCut,Efficiency_Q2_BDTCut,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_BDTCut",Mode,POT);
       DrawEfficiencyPlot(h_NuE_BDTCut,h_SelectedNuE_BDTCut,Efficiency_NuE_BDTCut,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_BDTCut",Mode,POT);
@@ -907,6 +913,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayMuonMomentum_DaughterTrackLength,h_SelectedDecayMuonMomentum_DaughterTrackLength,Efficiency_DecayMuonMomentum_DaughterTrackLength,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayMuonMomentum_DaughterTrackLength",Mode,POT);
       DrawEfficiencyPlot(h_DecayPionMomentum_DaughterTrackLength,h_SelectedDecayPionMomentum_DaughterTrackLength,Efficiency_DecayPionMomentum_DaughterTrackLength,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_DaughterTrackLength",Mode,POT);
       DrawEfficiencyPlot(h_DaughterTrackLength,h_Selected_DaughterTrackLength,Efficiency_DaughterTrackLength,";;Events",label + "_DaughterTrackLength",Mode,POT);
+      */
 
    }
 

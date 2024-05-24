@@ -140,8 +140,8 @@ class EventAssembler {
 
       // Systematics
       vector<string>* SysDials=0;
-      vector<vector<double>>* SysWeights=0;
-      //vector<vector<vector<double>>>* SysWeights=0;
+      //vector<vector<double>>* SysWeights=0;
+      vector<vector<vector<double>>>* SysWeights=0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
