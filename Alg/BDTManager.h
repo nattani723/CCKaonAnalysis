@@ -34,7 +34,7 @@ class BDTManager {
 
       std::string fMode;
 
-      bool SetVariables(RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle);
+      bool SetVariables(const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle);
 
       // Training trees
 
@@ -76,8 +76,9 @@ class BDTManager {
 
       void SetupBDT(std::string WeightsDir="",std::string alg="BDT");
       void SetAlg(std::string alg);
-      double GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate);
+      //double GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate);
       double CalculateScore(Event &e);
+      double CalculateScore(Event &e, const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle);
 
 };
 

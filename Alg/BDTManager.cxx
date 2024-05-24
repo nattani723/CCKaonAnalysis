@@ -93,7 +93,7 @@ void BDTManager::SetupTrainingTrees(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void BDTManager::FillTree(const Event &e, const RecoParticle &PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle){
+void BDTManager::FillTree(const Event &e, const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle){
 
    // Check in the right running mode first
    assert(fMode == "Train");
@@ -103,7 +103,7 @@ void BDTManager::FillTree(const Event &e, const RecoParticle &PrimaryKaonTrackPa
 
    if( t_Signal == nullptr || t_Background == nullptr ){ std::cout << "Trees not setup, exiting" << std::endl; return; }
 
-   if(!SetVariables(RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle)) continue;
+   if(!SetVariables(PrimaryKaonTrackParticle, DaughterTrackParticle)) return;
 
    //if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) t_Signal->Fill();
    if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
@@ -114,7 +114,7 @@ void BDTManager::FillTree(const Event &e, const RecoParticle &PrimaryKaonTrackPa
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-bool BDTManager::SetVariables(RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle){
+bool BDTManager::SetVariables(const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle){
 
    // Catch default dEdX fills
   /*
@@ -211,7 +211,21 @@ void BDTManager::SetAlg(std::string alg){
 
 double BDTManager::CalculateScore(Event &e){
   
-  if(!SetVariables(e)) return -1.0;
+  //if(!SetVariables(e)) return -1.0;
+
+  double score = reader->EvaluateMVA("BDT method");
+
+  e.BDTScore = score;
+
+  return score;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+double BDTManager::CalculateScore(Event &e, const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle){
+  
+  if(!SetVariables(PrimaryKaonTrackParticle, DaughterTrackParticle)) return -1.0;
 
   double score = reader->EvaluateMVA("BDT method");
 
