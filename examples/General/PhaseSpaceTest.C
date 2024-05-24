@@ -287,7 +287,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TEfficiency* Efficiency_DaughterFV = new TEfficiency("eff_DaughterFV",";;Selected/All",1,0,1.0);
 
       // BDT Cut //
-
+      /*
       TH1D *h_Q2_BDTCut = new TH1D("h_Q2_BDTCut","",60,0,3.0);
       TH1D *h_SelectedQ2_BDTCut = new TH1D("h_SelectedQ2_BDTCut","",60,0,3.0);
       TEfficiency* Efficiency_Q2_BDTCut = new TEfficiency("Q2_eff_BDTCut",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
@@ -385,11 +385,12 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_DaughterTrackLength = new TH1D("h_DaughterTrackLength","",1,0,1.0);
       TH1D *h_Selected_DaughterTrackLength = new TH1D("h_Selected_DaughterTrackLength","",1,0,1.0);
       TEfficiency* Efficiency_DaughterTrackLength = new TEfficiency("eff_DaughterTrackLength",";;Selected/All",1,0,1.0);
+      */
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      E.SetFile("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
-      M.AddSample("AssocK","AssocK",POT());//need to change
+      E.SetFile("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root", "KAON");
+      M.AddSample("AssocK","AssocK",POT);//need to change
 
       M.UseFluxWeight(false);
       M.UseGenWeight(false);
@@ -451,16 +452,17 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
          }
 
-         bool passed_FV=false, passed_NuCCFilter=false, passed_NDaughterTrack=false, passed_DaughterFV=false, passed_BDTCut=false;
+         bool passed_FV=false, passed_NuCCFilter=false, passed_NDaughterTrack=false, passed_DaughterFV=false, passed_BDTCut=false, passed_All=false;
          //bool passed_DaughterTrackLength=false;
 
          passed_FV = M.FiducialVolumeCut(e);
          if(passed_FV) passed_NuCCFilter = M.NuCCInclusiveFilter(e);
          if(passed_NuCCFilter) passed_NDaughterTrack = M.DaughterTrackCut(e);
          if(passed_NDaughterTrack) passed_DaughterFV = M.DaughterFiducialVolumeCut(e);
-         if(passed_DaughterFV) passed_BDTCut = M.BDTCut(e);
+         //if(passed_DaughterFV) passed_BDTCut = M.BDTCut(e);
          //if(passed_BDTCut) passed_DaughterTrackLength = M.DaughterTrackLengthCut(e);
 
+	 passed_All = passed_DaughterFV;
          //passed_All = passed_AngleCut;
 
          // Entire Selection         
@@ -813,6 +815,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       //close the event assembler
       E.Close();
 
+      /*
       // Entire Selection
       DrawEfficiencyPlot(h_Q2_All,h_SelectedQ2_All,Efficiency_Q2_All,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_All",Mode,POT);
       DrawEfficiencyPlot(h_NuE_All,h_SelectedNuE_All,Efficiency_NuE_All,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_All",Mode,POT);
@@ -883,6 +886,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayMuonMomentum_DaughterFV,h_SelectedDecayMuonMomentum_DaughterFV,Efficiency_DecayMuonMomentum_DaughterFV,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayMuonMomentum_DaughterFV",Mode,POT);
       DrawEfficiencyPlot(h_DecayPionMomentum_DaughterFV,h_SelectedDecayPionMomentum_DaughterFV,Efficiency_DecayPionMomentum_DaughterFV,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_DaughterFV",Mode,POT);
       DrawEfficiencyPlot(h_DaughterFV,h_Selected_DaughterFV,Efficiency_DaughterFV,";;Events",label + "_DaughterFV",Mode,POT);
+      */
 
       /*
       // Track Selector BDT
