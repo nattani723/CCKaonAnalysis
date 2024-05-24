@@ -28,7 +28,8 @@ void RebuildTrackHist()
 {
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/track_tuple/refine_debug_2.root", "test2.pdf", "3pl");
   //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
-  RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/tool/track_tuple/rootfile/refine_debug_2.root", "test.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/tool/track_tuple/rootfile/refine_debug_2.root", "test.pdf", "3pl", "IsK", true);
+  RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track.root", "test.pdf", "3pl", "IsK", true);
 
 }
 
