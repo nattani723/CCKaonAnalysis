@@ -318,7 +318,7 @@ Float_t true_dau_muon_end_y, true_dau_muon_end_z, true_dau_muon_start_x, true_da
    TBranch        *b_true_kaon_costheta;   //!
    TBranch        *b_true_kaon_phi;   //!
 
-  TBranch        *b_true_dau_muon_end_x;
+   TBranch        *b_true_dau_muon_end_x;
    TBranch        *b_true_dau_muon_end_y;
    TBranch        *b_true_dau_muon_end_z;
    TBranch        *b_true_dau_muon_start_x;
@@ -664,7 +664,6 @@ void Event::Init(TTree *tree)
    fChain->SetBranchAddress("true_nu_vtx_in5cmTPC", &true_nu_vtx_in5cmTPC, &b_true_nu_vtx_in5cmTPC);
    fChain->SetBranchAddress("true_nu_vtx_inCCInclusiveTPC", &true_nu_vtx_inCCInclusiveTPC, &b_true_nu_vtx_inCCInclusiveTPC);
    fChain->SetBranchAddress("true_dau_muon_end_x", &true_dau_muon_end_x, &b_true_dau_muon_end_x);
-   fChain->SetBranchStatus("true_dau_muon_end_x", 1);
    fChain->SetBranchAddress("true_dau_muon_end_y", &true_dau_muon_end_y, &b_true_dau_muon_end_y);
    fChain->SetBranchAddress("true_dau_muon_end_z", &true_dau_muon_end_z, &b_true_dau_muon_end_z);
    fChain->SetBranchAddress("true_dau_muon_start_x", &true_dau_muon_start_x, &b_true_dau_muon_start_x);

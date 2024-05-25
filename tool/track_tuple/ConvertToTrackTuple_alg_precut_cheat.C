@@ -24,7 +24,8 @@ void ConvertToTrackTuple_alg_precut_cheat()
 
   TStopwatch clock;
 
-  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/parset1_CCKaonAnalyzer_debug.root", "rootfile/assok_refined_KrecoAlg_track_debug.root");
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test2.root", "rootfile/test.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test3.root", "rootfile/assok_refined_KrecoAlg_track_debug3.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/CCKaonAnalyzer_debug.root", "rootfile/assok_refined_KrecoAlg_track.root");
 
 
@@ -294,6 +295,12 @@ void ConvertToTrackTuple_alg_precut_cheat(TString input_name, TString output_nam
   Float_t true_dau_muon_phi = -9999; 
   Float_t true_dau_pip_theta = -9999;
   Float_t true_dau_pip_phi = -9999; 
+  Float_t reco_track_end_x = -9999;
+  Float_t reco_track_end_y = -9999;
+  Float_t reco_track_end_z = -9999;
+  Float_t true_kaon_end_x = -9999;
+  Float_t true_kaon_end_y = -9999;
+  Float_t true_kaon_end_z = -9999;
 
 outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I");
  outtree->Branch("rebdautrack_length",&rebdautrack_length,"rebdautrack_length/F");
@@ -321,6 +328,12 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
  outtree->Branch("true_dau_muon_phi",&true_dau_muon_phi,"true_dau_muon_phi/F");
  outtree->Branch("true_dau_pip_theta",&true_dau_pip_theta,"true_dau_pip_theta/F");
  outtree->Branch("true_dau_pip_phi",&true_dau_pip_phi,"true_dau_pip_phi/F");
+ outtree->Branch("true_kaon_end_x",&true_kaon_end_x,"true_kaon_end_x/F");
+ outtree->Branch("true_kaon_end_y",&true_kaon_end_y,"true_kaon_end_y/F");
+ outtree->Branch("true_kaon_end_z",&true_kaon_end_z,"true_kaon_end_z/F");
+ outtree->Branch("reco_track_end_x",&reco_track_end_x,"reco_track_end_x/F");
+ outtree->Branch("reco_track_end_y",&reco_track_end_y,"reco_track_end_y/F");
+ outtree->Branch("reco_track_end_z",&reco_track_end_z,"reco_track_end_z/F");
  outtree->Branch("rebdautrack_pdg",&rebdautrack_pdg,"rebdautrack_pdg/F");
 
   outtree->Branch("true_nu_energy",&true_nu_energy,"true_nu_energy/F");
@@ -534,7 +547,9 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
   Int_t true_cut3 = 0;
 
   //event.GetEntry(evt[ev]);
+  //for (Long64_t jentry=0; jentry<300; jentry++) {
   for (Long64_t jentry=0; jentry<nentries; jentry++) {
+
    
     event.GetEntry(jentry);
     if(nentries>=10){
@@ -542,6 +557,8 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
 	cout << int(100.*jentry/nentries) << " %" << endl;
       }
     }
+    //cout << "true_nu_energy: " << event.true_nu_energy << endl;
+    cout << "true_dau_muon_end_x: " << event.true_dau_muon_end_x << endl; 
 
 
 
@@ -729,22 +746,26 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
 
       true_kaon_end_process  = event.true_kaon_end_process;
 
-true_dau_muon_end_x = event.true_dau_muon_end_x;
-true_dau_muon_end_y = event.true_dau_muon_end_y;
-true_dau_muon_end_z = event.true_dau_muon_end_z;
-true_dau_muon_start_x = event.true_dau_muon_start_x;
-true_dau_muon_start_y = event.true_dau_muon_start_y;
-true_dau_muon_start_z = event.true_dau_muon_start_z;
-true_dau_pip_end_x = event.true_dau_pip_end_x;
-true_dau_pip_end_y = event.true_dau_pip_end_y;
-true_dau_pip_end_z = event.true_dau_pip_end_z;
-true_dau_pip_start_x = event.true_dau_pip_start_x;
-true_dau_pip_start_y = event.true_dau_pip_start_y;
-true_dau_pip_start_z = event.true_dau_pip_start_z;
-true_dau_muon_theta = event.true_dau_muon_theta;
-true_dau_muon_phi = event.true_dau_muon_phi;
-true_dau_pip_theta = event.true_dau_pip_theta;
-true_dau_pip_phi = event.true_dau_pip_phi;
+      true_kaon_end_x = event.true_kaon_end_x;
+      true_kaon_end_y = event.true_kaon_end_y;
+      true_kaon_end_z = event.true_kaon_end_z;
+      cout << "true_dau_muon_end_x: " << event.true_dau_muon_end_x << endl;
+      true_dau_muon_end_x = event.true_dau_muon_end_x;
+      true_dau_muon_end_y = event.true_dau_muon_end_y;
+      true_dau_muon_end_z = event.true_dau_muon_end_z;
+      true_dau_muon_start_x = event.true_dau_muon_start_x;
+      true_dau_muon_start_y = event.true_dau_muon_start_y;
+      true_dau_muon_start_z = event.true_dau_muon_start_z;
+      true_dau_pip_end_x = event.true_dau_pip_end_x;
+      true_dau_pip_end_y = event.true_dau_pip_end_y;
+      true_dau_pip_end_z = event.true_dau_pip_end_z;
+      true_dau_pip_start_x = event.true_dau_pip_start_x;
+      true_dau_pip_start_y = event.true_dau_pip_start_y;
+      true_dau_pip_start_z = event.true_dau_pip_start_z;
+      true_dau_muon_theta = event.true_dau_muon_theta;
+      true_dau_muon_phi = event.true_dau_muon_phi;
+      true_dau_pip_theta = event.true_dau_pip_theta;
+      true_dau_pip_phi = event.true_dau_pip_phi;
 
       reco_track_nhits0 = event.reco_track_nhits0[itrk];
       reco_track_nhits1 = event.reco_track_nhits1[itrk];
@@ -755,6 +776,10 @@ true_dau_pip_phi = event.true_dau_pip_phi;
       reco_track_length = event.reco_track_length[itrk];
       reco_track_theta = event.reco_track_theta[itrk];
       reco_track_phi = event.reco_track_phi[itrk];
+
+      reco_track_end_x = event.reco_track_end_x[itrk];
+      reco_track_end_y = event.reco_track_end_y[itrk];
+      reco_track_end_z = event.reco_track_end_z[itrk];
       
       reco_track_log_bragg_peak = log(event.reco_track_MIP_pl2[itrk]/event.reco_track_Bragg_fwd_pr_pl2[itrk]);
       reco_track_Bragg_fwd_ka_pl0 = event.reco_track_Bragg_fwd_ka_pl0[itrk];
