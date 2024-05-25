@@ -270,9 +270,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_SelectedMuonBeamPhi_DaughterFV = new TH1D("h_SelectedMuonBeamPhi_DaughterFV","",60,-3.1415,3.1415);
       TEfficiency* Efficiency_MuonBeamPhi_DaughterFV = new TEfficiency("MuonBeamPhi_eff_DaughterFV",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_KaonMomentum_DaughterFV = new TH1D("h_TrueKaonMomentum_DaughterFV","",60,0.0,2.0);
-      TH1D *h_SelectedKaonMomentum_DaughterFV = new TH1D("h_SelectedKaonMomentum_DaughterFV","",60,0.0,2.0);
-      TEfficiency* Efficiency_KaonMomentum_DaughterFV = new TEfficiency("KaonMomentum_eff_DaughterFV",";True K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
+      TH1D *h_KaonMomentum_DaughterFV = new TH1D("h_TrueKaonMomentum_DaughterFV","",20,0.0,2.0);
+      TH1D *h_SelectedKaonMomentum_DaughterFV = new TH1D("h_SelectedKaonMomentum_DaughterFV","",20,0.0,2.0);
+      TEfficiency* Efficiency_KaonMomentum_DaughterFV = new TEfficiency("KaonMomentum_eff_DaughterFV",";True K^{+} Momentum (GeV/c);Selected/All",20,0.0,2.0);
 
       TH1D *h_DecayMuonMomentum_DaughterFV = new TH1D("h_TrueDecayMuonMomentum_DaughterFV","",60,0.3,1.5);
       TH1D *h_SelectedDecayMuonMomentum_DaughterFV = new TH1D("h_SelectedDecayMuonMomentum_DaughterFV","",60,0.3,1.5);
@@ -390,7 +390,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       E.SetFile("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root", "KAON");
-      M.AddSample("AssocK","AssocK",POT);//need to change
+      M.AddSample("AssocKaon","AssocKaon",POT);//need to change
 
       M.UseFluxWeight(false);
       M.UseGenWeight(false);
@@ -407,9 +407,15 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          M.SetSignal(e);
 
          if(!e.EventIsSignal) continue;
+         //if(!e.EventHasKaonPScatter) continue;
 
          // Calculate Q2
          double Q2 = -1;
+
+	 if (!(e.Neutrino.size() > 0 && e.Lepton.size() > 0)){
+	   continue;
+	   std::cout << "THIS EVENT DOES NOT HAVE NEUTRINO NOR LEPTON" << std::endl;
+	 }
 
          TLorentzVector Nu4Momentum(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz,e.Neutrino.at(0).E);
          TLorentzVector Muon4Momentum(e.Lepton.at(0).Px,e.Lepton.at(0).Py,e.Lepton.at(0).Pz,e.Lepton.at(0).E);
@@ -442,15 +448,14 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          double KaonMomentum = e.PrimaryKaonP.at(0).ModMomentum;
          double DecayMuonMomentum,DecayPionMomentum=-1.0;
 
-         if(e.KaonPDecay_NuMuP.size() == 2 || e.KaonPDecay_PiPPi0.size() == 2){
-
-            if(e.KaonPDecay_NuMuP.at(0).PDG == -13) DecayMuonMomentum = e.KaonPDecay_NuMuP.at(0).ModMomentum;   
-            if(e.KaonPDecay_PiPPi0.at(0).PDG == 211) DecayPionMomentum = e.KaonPDecay_PiPPi0.at(0).ModMomentum;
-
-            if(e.KaonPDecay_NuMuP.at(1).PDG == -13) DecayMuonMomentum = e.KaonPDecay_NuMuP.at(1).ModMomentum;   
-            if(e.KaonPDecay_PiPPi0.at(1).PDG == 211) DecayPionMomentum = e.KaonPDecay_PiPPi0.at(1).ModMomentum;           
-
-         }
+	 if(e.KaonPDecay_NuMuP.size() == 2){
+	   if(e.KaonPDecay_NuMuP.at(0).PDG == -13) DecayMuonMomentum = e.KaonPDecay_NuMuP.at(0).ModMomentum;
+	   if(e.KaonPDecay_NuMuP.at(1).PDG == -13) DecayMuonMomentum = e.KaonPDecay_NuMuP.at(1).ModMomentum;
+	 }
+	 else if(e.KaonPDecay_PiPPi0.size() == 2){
+	   if(e.KaonPDecay_PiPPi0.at(0).PDG == 211) DecayPionMomentum = e.KaonPDecay_PiPPi0.at(0).ModMomentum;
+	   if(e.KaonPDecay_PiPPi0.at(1).PDG == 211) DecayPionMomentum = e.KaonPDecay_PiPPi0.at(1).ModMomentum;
+	 }
 
          bool passed_FV=false, passed_NuCCFilter=false, passed_NDaughterTrack=false, passed_DaughterFV=false, passed_BDTCut=false, passed_All=false;
          //bool passed_DaughterTrackLength=false;
@@ -465,7 +470,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 	 passed_All = passed_DaughterFV;
          //passed_All = passed_AngleCut;
 
-         // Entire Selection         
+         // Entire Selection
          h_Q2_All->Fill(Q2,e.Weight);
          Efficiency_Q2_All->FillWeighted(passed_All,e.Weight,Q2);
          if(Q2 > 0 && passed_All) h_SelectedQ2_All->Fill(Q2,e.Weight);
@@ -815,8 +820,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       //close the event assembler
       E.Close();
 
-      /*
+      
       // Entire Selection
+      std::cout << "h_Q2_All->GetEntries(): " << h_Q2_All->GetEntries() << ", h_SelectedQ2_All->GetEntries(): "<< h_SelectedQ2_All->GetEntries()  << std::endl;
       DrawEfficiencyPlot(h_Q2_All,h_SelectedQ2_All,Efficiency_Q2_All,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_All",Mode,POT);
       DrawEfficiencyPlot(h_NuE_All,h_SelectedNuE_All,Efficiency_NuE_All,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_All",Mode,POT);
       DrawEfficiencyPlot(h_MuonKE_All,h_SelectedMuonKE_All,Efficiency_MuonKE_All,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_All",Mode,POT);
@@ -886,7 +892,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayMuonMomentum_DaughterFV,h_SelectedDecayMuonMomentum_DaughterFV,Efficiency_DecayMuonMomentum_DaughterFV,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayMuonMomentum_DaughterFV",Mode,POT);
       DrawEfficiencyPlot(h_DecayPionMomentum_DaughterFV,h_SelectedDecayPionMomentum_DaughterFV,Efficiency_DecayPionMomentum_DaughterFV,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_DaughterFV",Mode,POT);
       DrawEfficiencyPlot(h_DaughterFV,h_Selected_DaughterFV,Efficiency_DaughterFV,";;Events",label + "_DaughterFV",Mode,POT);
-      */
+      
 
       /*
       // Track Selector BDT
