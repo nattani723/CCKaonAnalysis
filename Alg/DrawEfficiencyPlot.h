@@ -15,9 +15,9 @@
 using std::string;
 using std::vector;
 
-const double _EPSILON_ = 1e-5;
+//const double _EPSILON_ = 1e-5;
 
-namespace HypPlot {
+//namespace HypPlot {
 
    bool DrawWatermark = true;
 
@@ -168,8 +168,10 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
 // chi2ndof = chi2 and degrees of freedom if applicable
 // data_v list of x positions of individual data events (used for signal box plots only)
 
- void DrawEfficiencyPlot(TH1D * h_All, TH1D * h_Selected, TEfficiency * Efficiency, string label, int Mode, double POT)
+ void DrawEfficiencyPlot(TH1D * h_All, TH1D * h_Selected, TEfficiency * Efficiency, string title, string label, int Mode, double POT)
  {
+
+   std::string plotdir = "PhaseSpacePlots";
 
    const int nbins = h_All->GetNbinsX();
 
@@ -181,7 +183,7 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
    p_legend->SetTopMargin(0.1);
    p_plot->SetTopMargin(0.01);
 
-   THStack *hs = new THStack("hs",h_All->GetTitle());
+   THStack *hs = new THStack("hs",title.c_str());
 
    // Create the empty legend
    TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
@@ -189,567 +191,151 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
    int ncols = 2;
    l->SetNColumns(ncols);
 
-   h_All->SetLineColor(kBlack);
-   h_Selected->SetLineColor(kBlack);
-   h_All->SetLineColor(kBlack);
+   //TH1D* h_Eff = (TH1D*)Efficiency->GetCopyPassedHisto();
+   TH1D* h_Eff = (TH1D*)h_All->Clone("h_Eff");
+   h_Eff->Reset(); 
+   h_Eff->SetTitle("Efficiency");
 
- }
- //void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof,std::vector<double> data_v={}){
+   TH1D *h_PassedSignal = (TH1D*)Efficiency->GetPassedHistogram();
+   TH1D *h_TotalSignal = (TH1D*)Efficiency->GetTotalHistogram();
 
-   bool drawchi2 = chi2ndof.second != 0;
- 
-   assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
-   for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
-   if(hasdata && h_data == nullptr) throw std::invalid_argument("DrawEfficiencyPlot::DrawHistogram: hasdata flag set to true but data histogram is nullptr, exiting");
-
-   const int nbins = hist_v.at(0)->GetNbinsX();
-
-   // Set the bin labels
-   if(binlabels.size()){
-      for(int i=1;i<nbins+1;i++){
-         for(size_t i_h=0;i_h<hist_v.size();i_h++) 
-            hist_v.at(i_h)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-         h_errors->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-         if(hasdata) h_data->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-      }
-   }
-
-   // Setup the canvas
-   TCanvas *c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
-   TPad *p_plot = new TPad("p_plot","p_plot",0,0,1,Single_PadSplit);
-   TPad *p_legend = new TPad("p_legend","p_legend",0,Single_PadSplit,1,1);
-   p_legend->SetBottomMargin(0);
-   p_legend->SetTopMargin(0.1);
-   p_plot->SetTopMargin(0.01);
-
-   THStack *hs = new THStack("hs",hist_v.at(0)->GetTitle());
-
-   // Create the empty legend
-   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-   l->SetBorderSize(0);
-   const int nhists = hist_v.size() + static_cast<int>(hasdata);
-   int ncols = 2;
-   if(nhists > 4) ncols = 3;
-   if(nhists > 6) ncols = 4;
-   if(nhists > 12) ncols = 5;
-   l->SetNColumns(ncols);
-
-   for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
-      hist_v.at(i_h)->SetFillColor(colors.at(i_h));
-      hs->Add(hist_v.at(i_h),"HIST");
-      if(hasdata) l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
-      else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"F");
-   }
-
-   if(hasdata){
-      h_data->SetLineWidth(1);
-      h_data->SetLineColor(1);
-      h_data->SetMarkerStyle(20);
-      h_data->SetMarkerColor(1);
-      l->AddEntry(h_data,("Data = "+ to_string_with_precision(h_data->Integral(),1)).c_str(),"P");
-   }
-
-   // Create the "MicroBooNE" watermark
-   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.005);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetTextFont(62);
-
-   if(!hasdata && !data_v.size()) l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-   else if(run.size() == 1) l_Watermark->SetHeader(("MicroBooNE Run " + std::to_string(run.at(0)) + ", Preliminary").c_str());
-   else if(run.size() == 2) l_Watermark->SetHeader(("MicroBooNE Runs " + std::to_string(run.at(0)) + " + " + std::to_string(run.at(1)) + ", Preliminary").c_str());
-   else throw std::invalid_argument("DrawEfficiencyPlot::DrawHistogram: Currently maximum of two running periods supported");
-/*
-   if(!hasdata && !data_v.size()) l_Watermark->SetHeader("MicroBooNE Simulation","R");
-   else if(run.size() == 1) l_Watermark->SetHeader(("MicroBooNE Run " + std::to_string(run.at(0))).c_str());
-   else if(run.size() == 2) l_Watermark->SetHeader(("MicroBooNE Runs " + std::to_string(run.at(0)) + " + " + std::to_string(run.at(1))).c_str());
-   else throw std::invalid_argument("DrawEfficiencyPlot::DrawHistogram: Currently maximum of two running periods supported");
-*/
-
-   // Create the POT label
-   //TLegend *l_POT = new TLegend(0.54,0.815,0.885,0.900);
-   TLegend *l_POT,*l_POT2;
-   if(DrawWatermark) l_POT = new TLegend(0.54,0.815,0.885,0.900);
-   else l_POT = new TLegend(0.54,0.900,0.885,0.985);
-   l_POT->SetBorderSize(0);
-   l_POT->SetMargin(0.005);
-   l_POT->SetTextAlign(32);
-   if(DrawWatermark) l_POT2 = new TLegend(0.536,0.735,0.886,0.815,NULL,"brNDC");
-   else l_POT2 = new TLegend(0.536,0.815,0.886,0.900,NULL,"brNDC");
-   //TLegend *l_POT2 = new TLegend(0.54,0.735,0.89,0.815,NULL,"brNDC");
-   l_POT2->SetBorderSize(0);
-   l_POT2->SetMargin(0.005);
-   l_POT2->SetTextAlign(32);
-
-   // Chi2
-   TLegend *l_Chi2 = new TLegend(0.12,0.900,0.36,0.985);
-   l_Chi2->SetBorderSize(0);
-   l_Chi2->SetMargin(0.005);
-   l_Chi2->SetTextAlign(12);
-   l_Chi2->SetTextSize(0.05);
-   l_Chi2->SetHeader(("#chi^{2}/ndof = " + to_string_with_precision(chi2ndof.first,1) + "/" + std::to_string(chi2ndof.second)).c_str());
-
-   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-
-   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-
-   // Setup the axis titles etc
-   h_errors->SetTitle(hs->GetTitle());
-   h_errors->SetFillStyle(3253);
-   h_errors->SetFillColor(1);
-   h_errors->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
-   h_errors->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
-   h_errors->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
-   h_errors->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
-   h_errors->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
-   h_errors->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
-   if(binlabels.size()) h_errors->GetXaxis()->SetLabelSize(Single_TextLabelSize);
-
-   // Draw everything
-   p_legend->Draw();
-   p_legend->cd();
-   l->Draw();
-   c->cd();
-   p_plot->Draw();
-   p_plot->cd();
-
-   h_errors->Draw("E2");
-   hs->Draw("HIST same");
-   h_errors->Draw("E2 same");
-   if(hasdata) h_data->Draw("E0 P0 same");
-   double maximum = GetHistMaxError(h_errors);
-   if(hasdata) maximum = std::max(maximum,GetHistMaxError(h_data));
-   h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
-   h_errors->SetStats(0);
-
-   // Draw the data graph if required
-   TGraph* g_data1;
-   TGraph* g_data2;
-   if(data_v.size()){
-      std::vector<double> c_height1(data_v.size(),maximum*0.039);
-      std::vector<double> c_height2(data_v.size(),maximum*0.075);
-      TGraph* g_data1 = new TGraph(data_v.size(),&(data_v[0]),&(c_height1[0]));
-      TGraph* g_data2 = new TGraph(data_v.size(),&(data_v[0]),&(c_height2[0]));
-      g_data1->SetMarkerStyle(23);
-      g_data1->SetMarkerSize(3);
-      g_data2->SetMarkerStyle(2);
-      g_data2->SetMarkerSize(3);
-      g_data1->Draw("P same");   
-      g_data2->Draw("P same");   
-      l->AddEntry(g_data1,"Events","P"); 
-   }
-
-   p_plot->RedrawAxis();
-
-   // Draw the various legends, labels etc.
-   if(POT.size() > 0) l_POT->Draw();
-   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
-      l_POT2->Draw();
-      h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.4);
-   }
-   if(DrawWatermark) l_Watermark->Draw();
-   if(hasdata && drawchi2) l_Chi2->Draw();
-
-   c->cd();
-   system(("mkdir -p " + plotdir).c_str());
-   c->Print((plotdir + "/" + label + ".png").c_str());
-   c->Print((plotdir + "/" + label + ".pdf").c_str());
-   c->Print((plotdir + "/" + label + ".C").c_str());
-   c->Clear();
-   c->Close();
-
-   // Draw the ratio and get chi2 if there is data
-   if(hasdata){
-
-      // Setup split canvas
-      TCanvas *c2 = new TCanvas("c2","c2",Dual_CanvasX,Dual_CanvasY);
-      TPad *p_ratio2 = new TPad("p_ratio2","p_ratio2",0,0.0,1,Dual_PadSplitLow);
-      TPad *p_plot2 = new TPad("p_plot2","p_plot2",0,Dual_PadSplitLow,1,Dual_PadSplitHigh);
-      TPad *p_legend2 = new TPad("p_legend2","p_plot2",0,Dual_PadSplitHigh,1,1);
-      p_legend2->SetBottomMargin(0);
-      p_legend2->SetTopMargin(0.1);
-      p_ratio2->SetTopMargin(0.005);
-      p_plot2->SetTopMargin(0.01);
-      p_plot2->SetBottomMargin(0.02);
-      p_ratio2->SetGrid(0,1);
-      p_ratio2->SetBottomMargin(0.22);
-      p_legend2->Draw();
-      p_legend2->cd();
-      l->Draw();
-      c2->cd();
-      p_plot2->Draw();
-      p_plot2->cd();
-
-      h_errors->GetXaxis()->SetLabelSize(Dual_MainXaxisLabelSize);
-      h_errors->GetYaxis()->SetLabelSize(Dual_MainYaxisLabelSize);
-      h_errors->GetXaxis()->SetTitleSize(Dual_MainXaxisTitleSize);
-      h_errors->GetYaxis()->SetTitleSize(Dual_MainYaxisTitleSize);
-      h_errors->GetYaxis()->SetTitleOffset(Dual_MainYaxisTitleOffset);
-
-      // Draw the main plot
-      h_errors->Draw("E2");
-      hs->Draw("HIST same");    
-      h_errors->Draw("E2 same");
-      h_data->Draw("e0 same");
-
-      // Draw the various legends, labels etc.
-      if(POT.size() > 0) l_POT->Draw();
-      if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();
-      if(DrawWatermark) l_Watermark->Draw();
-      if(drawchi2) l_Chi2->Draw();
-
-      // Make the raio plot
-      TH1D *h_errors_ratio = (TH1D*)h_errors->Clone("h_errors_ratio");
-      TH1D* h_data_ratio = (TH1D*)h_data->Clone("h_data_ratio");
-
-      std::pair<double,double> minmax = {1.0,1.0};
-
-      for(int i=1;i<h_errors_ratio->GetNbinsX()+1;i++){
-
-         double pred = h_errors->GetBinContent(i);
-         double mc_error = h_errors->GetBinError(i)/pred;
-         double data_ratio = h_data->GetBinContent(i)/pred;
-         double data_ratio_error = h_data->GetBinError(i)/pred;
-
-         h_errors_ratio->SetBinContent(i,1.0);
-
-         if(pred > 0){
-            h_errors_ratio->SetBinError(i,mc_error);            
-            h_data_ratio->SetBinContent(i,data_ratio);
-            h_data_ratio->SetBinError(i,data_ratio_error);            
-            minmax.first = std::min(minmax.first,std::min(1-mc_error,data_ratio-data_ratio_error));
-            minmax.second = std::max(minmax.second,std::max(1+mc_error,data_ratio+data_ratio_error));                          
-         }
-         else{
-            h_errors_ratio->SetBinError(i,0.0); 
-            h_data_ratio->SetBinContent(i,1.0); 
-            h_data_ratio->SetBinError(i,0.0); 
-         }
-      }
-
-      // Draw the ratio plot
-      c2->cd();
-      p_ratio2->Draw();
-      p_ratio2->cd();
-      h_errors_ratio->Draw("E2");
-      h_errors_ratio->GetYaxis()->SetRangeUser(0.95*minmax.first,1.05*minmax.second);
-
-      h_errors_ratio->SetStats(0);
-      //h_errors_ratio->GetXaxis()->SetTitle(hist_v.at(0)->GetXaxis()->GetTitle());
-      h_errors_ratio->GetYaxis()->SetTitle("Data/MC");
-
-      h_errors_ratio->GetXaxis()->SetTitleSize(Dual_RatioXaxisTitleSize);
-      h_errors_ratio->GetYaxis()->SetTitleSize(Dual_RatioYaxisTitleSize);
-      h_errors_ratio->GetXaxis()->SetTitleOffset(Dual_RatioXaxisTitleOffset);
-      h_errors_ratio->GetYaxis()->SetTitleOffset(Dual_RatioYaxisTitleOffset);
-      h_errors_ratio->GetXaxis()->SetLabelSize(Dual_RatioXaxisLabelSize);
-      h_errors_ratio->GetYaxis()->SetLabelSize(Dual_RatioYaxisLabelSize);
-      if(binlabels.size()){
-         h_errors_ratio->GetXaxis()->SetLabelOffset(0.02);
-         h_errors_ratio->GetXaxis()->SetLabelSize(Dual_TextLabelSize);
-      }
-
-      h_data_ratio->Draw("E0 same");
-      p_plot2->RedrawAxis();
-
-      c2->Print((plotdir + "/" + label + "_Ratio.pdf").c_str());
-      c2->Print((plotdir + "/" + label + "_Ratio.png").c_str());
-      c2->Print((plotdir + "/" + label + "_Ratio.C").c_str());
-      c2->Close();
-   }
-
-   c->Close();
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-// Draw a stack of histograms
-// If you anto to include systematic uncertainties in the MC, make sure they're already included
-// in the error of h_errors
-// Inputs:
-// hist_v = the stack of histograms you want to draw
-// captions = list of what should be added to the legend for each histogram
-// plotdir = the directory to write the plots into
-// label = label to be added the front of the plot
-// mode = FHC/RHC/BNB
-// run = 1,3 or 13 (for 1+3)
-// POT = the POT used 
-// signalscale = scaling for the signal
-// colors = list of colors for the histograms
-// binlabels = bin labels
-
-void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale){
-
-   assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
-   for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
-
-   const int nbins = hist_v.at(0)->GetNbinsX();
-
-   // Setup the canvas
-   TCanvas *c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
-   TPad *p_plot = new TPad("p_plot","p_plot",0,0,1,Single_PadSplit);
-   TPad *p_legend = new TPad("p_legend","p_legend",0,Single_PadSplit,1,1);
-   p_legend->SetBottomMargin(0);
-   p_legend->SetTopMargin(0.1);
-   p_plot->SetTopMargin(0.01);
-
-   // Create the empty legend
-   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-   l->SetBorderSize(0);
-   const int nhists = 1;
-   int ncols = 2;
-   l->SetNColumns(ncols);
-
-   // Create the "MicroBooNE" watermark
-   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.005);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetTextFont(62);
-
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
- 
-   // Create the POT label
-   //TLegend *l_POT = new TLegend(0.54,0.815,0.885,0.900);
-   TLegend *l_POT,*l_POT2;
-   if(DrawWatermark) l_POT = new TLegend(0.54,0.815,0.885,0.900);
-   else l_POT = new TLegend(0.54,0.900,0.885,0.985);
-   l_POT->SetBorderSize(0);
-   l_POT->SetMargin(0.005);
-   l_POT->SetTextAlign(32);
-   if(DrawWatermark) l_POT2 = new TLegend(0.536,0.735,0.886,0.815,NULL,"brNDC");
-   else l_POT2 = new TLegend(0.536,0.815,0.886,0.900,NULL,"brNDC");
-   //TLegend *l_POT2 = new TLegend(0.54,0.735,0.89,0.815,NULL,"brNDC");
-   l_POT2->SetBorderSize(0);
-   l_POT2->SetMargin(0.005);
-   l_POT2->SetTextAlign(32);
-
-   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-
-   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-
-   // Draw everything
-   p_legend->Draw();
-   p_legend->cd();
-   l->Draw();
-   c->cd();
-   p_plot->Draw();
-   p_plot->cd();
-
+   //std::cout << "h_TotalSignal: " << h_TotalSignal->GetNbinsX() << std::endl;
    
-   for(size_t i_h=0;i_h<hist_v.size();i_h++){
-   //for(size_t i_h=1;i_h<2;i_h++){
-
-     if(hist_v.at(i_h) == nullptr) {
-       std::cerr << "Error: Histogram at index " << i_h << " is null." << std::endl;
-       continue;
-     }
- 
-     std::string histname = label + EventType::SigBG.at(i_h);
-     hist_v.at(i_h)->SetStats(0);
-     hist_v.at(i_h)->Draw("COLZ");
-     if(i_h==0) p_plot->RedrawAxis();
-
-     // Draw the various legends, labels etc.
-     /*
-     if(POT.size() > 0) l_POT->Draw();
-     if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
-       l_POT2->Draw();
-     }
-     if(DrawWatermark) l_Watermark->Draw();
-     */
-     
-     c->cd();
-     system(("mkdir -p " + plotdir).c_str());
-     c->Print((plotdir + "/" + histname + ".png").c_str());
-     c->Print((plotdir + "/" + histname + ".pdf").c_str());
-     c->Print((plotdir + "/" + histname + ".C").c_str());
-     c->Clear();
-
-   }
-   
-   c->Close();
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-// Draw a stack of histograms (No Stack mode)
-
-void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof,std::vector<double> data_v={}){
-
-   bool drawchi2 = chi2ndof.second != 0;
- 
-   assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
-   for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
-   if(hasdata && h_data == nullptr) throw std::invalid_argument("DrawEfficiencyPlot::DrawHistogram: hasdata flag set to true but data histogram is nullptr, exiting");
-
-   const int nbins = hist_v.at(0)->GetNbinsX();
-
-   // Set the bin labels
-   if(binlabels.size()){
-      for(int i=1;i<nbins+1;i++){
-         for(size_t i_h=0;i_h<hist_v.size();i_h++) 
-            hist_v.at(i_h)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-         h_errors->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-         if(hasdata) h_data->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-      }
+   for(int i_c=0; i_c<h_Eff->GetNbinsX()+1;i_c++){
+     //std::cout << "Efficiency->GetEfficiency(i_c+1): " << Efficiency->GetEfficiency(i_c+1) << std::endl;
+     //h_Eff->Fill(i_c, Efficiency->GetEfficiency(i_c+1));
+     double eff = Efficiency->GetEfficiency(i_c+1);
+     double eff_err_up = Efficiency->GetEfficiencyErrorUp(i_c+1);
+     double eff_err_low = Efficiency->GetEfficiencyErrorLow(i_c+1);
+     h_Eff->SetBinContent(i_c, eff);
+     h_Eff->SetBinError(i_c, eff_err_up);
    }
 
-   // Setup the canvas
-   TCanvas *c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
-   TPad *p_plot = new TPad("p_plot","p_plot",0,0,1,Single_PadSplit);
-   TPad *p_legend = new TPad("p_legend","p_legend",0,Single_PadSplit,1,1);
-   p_legend->SetBottomMargin(0);
-   p_legend->SetTopMargin(0.1);
-   p_plot->SetTopMargin(0.01);
-
-   THStack *hs = new THStack("hs",hist_v.at(0)->GetTitle());
-
-   // Create the empty legend
-   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-   l->SetBorderSize(0);
-   const int nhists = hist_v.size() + static_cast<int>(hasdata);
-   int ncols = 2;
-   if(nhists > 4) ncols = 3;
-   if(nhists > 6) ncols = 4;
-   if(nhists > 12) ncols = 5;
-   l->SetNColumns(ncols);
-
-   double maximum=0;
-   
-   for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
-      hist_v.at(i_h)->SetLineColor(colors.at(i_h));
-      hs->Add(hist_v.at(i_h),"HIST");
-      maximum = GetHistMaxError(hist_v.at(i_h));
-      if(hasdata) l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
-      else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"F");
-   }
-
-   if(hasdata){
-      h_data->SetLineWidth(1);
-      h_data->SetLineColor(1);
-      h_data->SetMarkerStyle(20);
-      h_data->SetMarkerColor(1);
-      l->AddEntry(h_data,("Data = "+ to_string_with_precision(h_data->Integral(),1)).c_str(),"P");
-   }
-
-   // Create the "MicroBooNE" watermark
-   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.005);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetTextFont(62);
-
-   if(!hasdata && !data_v.size()) l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-   else if(run.size() == 1) l_Watermark->SetHeader(("MicroBooNE Run " + std::to_string(run.at(0)) + ", Preliminary").c_str());
-   else if(run.size() == 2) l_Watermark->SetHeader(("MicroBooNE Runs " + std::to_string(run.at(0)) + " + " + std::to_string(run.at(1)) + ", Preliminary").c_str());
-   else throw std::invalid_argument("DrawEfficiencyPlot::DrawHistogram: Currently maximum of two running periods supported");
-
-
-   // Create the POT label
-   //TLegend *l_POT = new TLegend(0.54,0.815,0.885,0.900);
-   TLegend *l_POT,*l_POT2;
-   if(DrawWatermark) l_POT = new TLegend(0.54,0.815,0.885,0.900);
-   else l_POT = new TLegend(0.54,0.900,0.885,0.985);
-   l_POT->SetBorderSize(0);
-   l_POT->SetMargin(0.005);
-   l_POT->SetTextAlign(32);
-   if(DrawWatermark) l_POT2 = new TLegend(0.536,0.735,0.886,0.815,NULL,"brNDC");
-   else l_POT2 = new TLegend(0.536,0.815,0.886,0.900,NULL,"brNDC");
-   //TLegend *l_POT2 = new TLegend(0.54,0.735,0.89,0.815,NULL,"brNDC");
-   l_POT2->SetBorderSize(0);
-   l_POT2->SetMargin(0.005);
-   l_POT2->SetTextAlign(32);
-
-   // Chi2
-   TLegend *l_Chi2 = new TLegend(0.12,0.900,0.36,0.985);
-   l_Chi2->SetBorderSize(0);
-   l_Chi2->SetMargin(0.005);
-   l_Chi2->SetTextAlign(12);
-   l_Chi2->SetTextSize(0.05);
-   l_Chi2->SetHeader(("#chi^{2}/ndof = " + to_string_with_precision(chi2ndof.first,1) + "/" + std::to_string(chi2ndof.second)).c_str());
-
-   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-
-   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-
-   // Setup the axis titles etc
-   h_errors->SetTitle(hs->GetTitle());
-   h_errors->SetFillStyle(3253);
-   h_errors->SetFillColor(1);
-   h_errors->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
-   h_errors->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
-   h_errors->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
-   h_errors->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
-   h_errors->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
-   h_errors->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
-   if(binlabels.size()) h_errors->GetXaxis()->SetLabelSize(Single_TextLabelSize);
-
-   // Draw everything
-   p_legend->Draw();
-   p_legend->cd();
-   l->Draw();
-   c->cd();
-   p_plot->Draw();
-   p_plot->cd();
-
-   //h_errors->Draw("E2");
-   hs->Draw("HIST, nostack,e");
-   //h_errors->Draw("E2 same");
-   if(hasdata) h_data->Draw("E0 P0 same");
-   hs->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
    /*
-   double maximum = GetHistMaxError(h_errors);
-   if(hasdata) maximum = std::max(maximum,GetHistMaxError(h_data));
-   h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
-   h_errors->SetStats(0);
+   TH1D* h_Ratio = (TH1D*)h_Selected->Clone("h_Ratio");
+   h_Ratio->Divide(h_All);
+   h_Ratio->SetTitle("Selected/All");
    */
 
-   // Draw the data graph if required
-   TGraph* g_data1;
-   TGraph* g_data2;
-   if(data_v.size()){
-      std::vector<double> c_height1(data_v.size(),maximum*0.039);
-      std::vector<double> c_height2(data_v.size(),maximum*0.075);
-      TGraph* g_data1 = new TGraph(data_v.size(),&(data_v[0]),&(c_height1[0]));
-      TGraph* g_data2 = new TGraph(data_v.size(),&(data_v[0]),&(c_height2[0]));
-      g_data1->SetMarkerStyle(23);
-      g_data1->SetMarkerSize(3);
-      g_data2->SetMarkerStyle(2);
-      g_data2->SetMarkerSize(3);
-      g_data1->Draw("P same");   
-      g_data2->Draw("P same");   
-      l->AddEntry(g_data1,"Events","P"); 
+   TH1D *h_Ratio = (TH1D*)h_All->Clone("h_Ratio");
+   h_Ratio->SetTitle("Selected/All");
+
+   for (int i = 1; i <= h_All->GetNbinsX(); ++i) {
+     double N = h_Selected->GetBinContent(i);
+     double D = h_All->GetBinContent(i);
+     double sigma_N = h_Selected->GetBinError(i);
+     double sigma_D = h_All->GetBinError(i);
+
+     if (D != 0) {  // To avoid division by zero
+       double R = N / D;
+       double sigma_R = R * sqrt((sigma_N / N) * (sigma_N / N) + (sigma_D / D) * (sigma_D / D));
+       h_Ratio->SetBinContent(i, R);
+       h_Ratio->SetBinError(i, sigma_R);
+     } else {
+       h_Ratio->SetBinContent(i, 0);
+       h_Ratio->SetBinError(i, 0);
+     }
    }
+
+   h_All->SetLineColor(kBlack);
+   h_All->SetLineWidth(2);
+
+   h_Selected->SetLineColor(kBlue);
+   h_Selected->SetLineWidth(2);
+
+   h_Eff->SetLineColor(kRed);
+   h_Eff->SetLineWidth(2);
+   h_Eff->SetMarkerColor(kRed);
+   h_Eff->SetMarkerStyle(20);
+   //h_Eff->SetMarkerSize(2.0);
+
+   h_Ratio->SetLineColor(kRed);
+   h_Ratio->SetLineWidth(2);
+   h_Ratio->SetMarkerColor(kRed);
+   h_Ratio->SetMarkerStyle(20);
+   //h_Ratio->SetMarkerSize(2.0);
+
+   l->AddEntry(h_All,"All Events","l");
+   l->AddEntry(h_Selected,"Selected Events","l");
+   l->AddEntry(h_Eff,"Selected/All","l");
+   l->SetTextSize(0.2);
+
+   // Create the "MicroBooNE" watermark
+   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.005);
+   l_Watermark->SetTextAlign(32);
+   l_Watermark->SetTextSize(0.05);
+   l_Watermark->SetTextFont(62);
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+
+
+   // Create the POT label
+   //TLegend *l_POT = new TLegend(0.54,0.815,0.885,0.900);
+   TLegend *l_POT,*l_POT2;
+   if(DrawWatermark) l_POT = new TLegend(0.54,0.815,0.885,0.900);
+   else l_POT = new TLegend(0.54,0.900,0.885,0.985);
+   l_POT->SetBorderSize(0);
+   l_POT->SetMargin(0.005);
+   l_POT->SetTextAlign(32);
+   if(DrawWatermark) l_POT2 = new TLegend(0.536,0.735,0.886,0.815,NULL,"brNDC");
+   else l_POT2 = new TLegend(0.536,0.815,0.886,0.900,NULL,"brNDC");
+   //TLegend *l_POT2 = new TLegend(0.54,0.735,0.89,0.815,NULL,"brNDC");
+   l_POT2->SetBorderSize(0);
+   l_POT2->SetMargin(0.005);
+   l_POT2->SetTextAlign(32);
+
+
+   if(Mode == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(Mode == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(Mode == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+
+   /*
+   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   */
+
+
+   // Draw everything
+   p_legend->Draw();
+   p_legend->cd();
+   l->Draw();
+   c->cd();
+   p_plot->Draw();
+   p_plot->cd();
+
+   h_All->SetTitle(title.c_str());
+   hs->Add(h_All,"");
+   hs->Add(h_Selected,"");
+   hs->Draw("nostack, e");
+   //gPad->Update();
+   c->Modified();
+   c->Update();
+
+   Float_t rightmax = 1.1;
+   //Float_t rightmax = 1.1 * h_Eff->GetMaximum();
+   Float_t scale = gPad->GetUymax()/rightmax;
+   h_Ratio->Scale(scale);
+   h_Ratio->SetStats(0);
+   h_Ratio->Draw("same, ep");
+
+   //draw an axis on the right side
+   TGaxis*axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(),
+                            gPad->GetUxmax(),gPad->GetUymax(),
+                            0,rightmax,510,"+L");
+   axis->SetLineColor(kRed);
+   axis->SetLabelColor(kRed);
+   axis->SetTitle("Selected/All");
+   axis->SetTitleColor(kRed);
+   axis->Draw();
 
    p_plot->RedrawAxis();
 
    // Draw the various legends, labels etc.
-   if(POT.size() > 0) l_POT->Draw();
-   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
-      l_POT2->Draw();
-      h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.4);
-   }
+   l_POT->Draw();
    if(DrawWatermark) l_Watermark->Draw();
-   if(hasdata && drawchi2) l_Chi2->Draw();
+
 
    c->cd();
    system(("mkdir -p " + plotdir).c_str());
@@ -759,488 +345,8 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    c->Clear();
    c->Close();
 
-   // Draw the ratio and get chi2 if there is data
-   if(hasdata){
+ }
 
-      // Setup split canvas
-      TCanvas *c2 = new TCanvas("c2","c2",Dual_CanvasX,Dual_CanvasY);
-      TPad *p_ratio2 = new TPad("p_ratio2","p_ratio2",0,0.0,1,Dual_PadSplitLow);
-      TPad *p_plot2 = new TPad("p_plot2","p_plot2",0,Dual_PadSplitLow,1,Dual_PadSplitHigh);
-      TPad *p_legend2 = new TPad("p_legend2","p_plot2",0,Dual_PadSplitHigh,1,1);
-      p_legend2->SetBottomMargin(0);
-      p_legend2->SetTopMargin(0.1);
-      p_ratio2->SetTopMargin(0.005);
-      p_plot2->SetTopMargin(0.01);
-      p_plot2->SetBottomMargin(0.02);
-      p_ratio2->SetGrid(0,1);
-      p_ratio2->SetBottomMargin(0.22);
-      p_legend2->Draw();
-      p_legend2->cd();
-      l->Draw();
-      c2->cd();
-      p_plot2->Draw();
-      p_plot2->cd();
-
-      h_errors->GetXaxis()->SetLabelSize(Dual_MainXaxisLabelSize);
-      h_errors->GetYaxis()->SetLabelSize(Dual_MainYaxisLabelSize);
-      h_errors->GetXaxis()->SetTitleSize(Dual_MainXaxisTitleSize);
-      h_errors->GetYaxis()->SetTitleSize(Dual_MainYaxisTitleSize);
-      h_errors->GetYaxis()->SetTitleOffset(Dual_MainYaxisTitleOffset);
-
-      // Draw the main plot
-      h_errors->Draw("E2");
-      hs->Draw("HIST same");    
-      h_errors->Draw("E2 same");
-      h_data->Draw("e0 same");
-
-      // Draw the various legends, labels etc.
-      if(POT.size() > 0) l_POT->Draw();
-      if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();
-      if(DrawWatermark) l_Watermark->Draw();
-      if(drawchi2) l_Chi2->Draw();
-
-      // Make the raio plot
-      TH1D *h_errors_ratio = (TH1D*)h_errors->Clone("h_errors_ratio");
-      TH1D* h_data_ratio = (TH1D*)h_data->Clone("h_data_ratio");
-
-      std::pair<double,double> minmax = {1.0,1.0};
-
-      for(int i=1;i<h_errors_ratio->GetNbinsX()+1;i++){
-
-         double pred = h_errors->GetBinContent(i);
-         double mc_error = h_errors->GetBinError(i)/pred;
-         double data_ratio = h_data->GetBinContent(i)/pred;
-         double data_ratio_error = h_data->GetBinError(i)/pred;
-
-         h_errors_ratio->SetBinContent(i,1.0);
-
-         if(pred > 0){
-            h_errors_ratio->SetBinError(i,mc_error);            
-            h_data_ratio->SetBinContent(i,data_ratio);
-            h_data_ratio->SetBinError(i,data_ratio_error);            
-            minmax.first = std::min(minmax.first,std::min(1-mc_error,data_ratio-data_ratio_error));
-            minmax.second = std::max(minmax.second,std::max(1+mc_error,data_ratio+data_ratio_error));                          
-         }
-         else{
-            h_errors_ratio->SetBinError(i,0.0); 
-            h_data_ratio->SetBinContent(i,1.0); 
-            h_data_ratio->SetBinError(i,0.0); 
-         }
-      }
-
-      // Draw the ratio plot
-      c2->cd();
-      p_ratio2->Draw();
-      p_ratio2->cd();
-      h_errors_ratio->Draw("E2");
-      h_errors_ratio->GetYaxis()->SetRangeUser(0.95*minmax.first,1.05*minmax.second);
-
-      h_errors_ratio->SetStats(0);
-      //h_errors_ratio->GetXaxis()->SetTitle(hist_v.at(0)->GetXaxis()->GetTitle());
-      h_errors_ratio->GetYaxis()->SetTitle("Data/MC");
-
-      h_errors_ratio->GetXaxis()->SetTitleSize(Dual_RatioXaxisTitleSize);
-      h_errors_ratio->GetYaxis()->SetTitleSize(Dual_RatioYaxisTitleSize);
-      h_errors_ratio->GetXaxis()->SetTitleOffset(Dual_RatioXaxisTitleOffset);
-      h_errors_ratio->GetYaxis()->SetTitleOffset(Dual_RatioYaxisTitleOffset);
-      h_errors_ratio->GetXaxis()->SetLabelSize(Dual_RatioXaxisLabelSize);
-      h_errors_ratio->GetYaxis()->SetLabelSize(Dual_RatioYaxisLabelSize);
-      if(binlabels.size()){
-         h_errors_ratio->GetXaxis()->SetLabelOffset(0.02);
-         h_errors_ratio->GetXaxis()->SetLabelSize(Dual_TextLabelSize);
-      }
-
-      h_data_ratio->Draw("E0 same");
-      p_plot2->RedrawAxis();
-
-      c2->Print((plotdir + "/" + label + "_Ratio.pdf").c_str());
-      c2->Print((plotdir + "/" + label + "_Ratio.png").c_str());
-      c2->Print((plotdir + "/" + label + "_Ratio.C").c_str());
-      c2->Close();
-   }
-
-   c->Close();
-
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-// Draw a stack of histograms
-// If you anto to include systematic uncertainties in the MC, make sure they're already included
-// in the error of h_errors
-// Inputs:
-// hist_v = the stack of histograms you want to draw (including data if applicable)
-// h_errors = the total MC prediction with uncertainties
-// captions = list of what should be added to the legend for each histogram
-// plotdir = the directory to write the plots into
-// label = label to be added the front of the plot
-// mode = FHC/RHC/BNB
-// run = 1,3 or 13 (for 1+3)
-// POT = the POT used 
-// signalscale = scaling for the signal
-// binlabels = bin labels
-
-void DrawHistogramSys(vector<TH1D*> hist_v,TH1D* h_cv,string plotdir,string label,string type,string dialname,vector<int> mode,vector<int> run,vector<double> POT,vector<string> binlabels){
-
-   assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
-   for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
-
-   // Set the bin labels
-   if(binlabels.size())
-      for(size_t i_u=0;i_u<hist_v.size();i_u++)
-         for(int i=1;i<h_cv->GetNbinsX()+1;i++) hist_v.at(i_u)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-
-   // Setup the canvas and pads
-   TCanvas *c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
-   TPad *p_plot = new TPad("pad1","pad1",0,0,1,Single_PadSplit);
-   TPad *p_legend = new TPad("pad2","pad2",0,Single_PadSplit,1,1);
-   p_legend->SetBottomMargin(0);
-   p_legend->SetTopMargin(0.1);
-   p_plot->SetTopMargin(0.01);
-
-   std::string title = ";" + string(h_cv->GetXaxis()->GetTitle()) + ";" + string(h_cv->GetYaxis()->GetTitle());
-   THStack *hs = new THStack("hs",title.c_str());
-
-   // Setup the legend
-   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-   l->SetBorderSize(0);
-   l->SetNColumns(2);
-   l->AddEntry(h_cv,"Central Value","L");
-
-   // Prepare the histograms and add the right information to the legend
-   double maximum = 0.0;
-   for(size_t i=0;i<hist_v.size();i++){
-      if(hist_v.size() > 2){
-         hist_v.at(i)->SetLineColor(kGreen);
-         if(i == 0) l->AddEntry(hist_v.at(0),"Variations","L");
-      }
-      else if(hist_v.size() == 1){
-         hist_v.at(i)->SetLineColor(kRed);
-         l->AddEntry(hist_v.at(0),"Alternative Model","L");
-      }
-      else if(hist_v.size() == 2 && i == 0){
-         hist_v.at(i)->SetLineColor(kRed);
-         l->AddEntry(hist_v.at(i),"- 1 #sigma","L");
-      }
-      else if(hist_v.size() == 2 && i == 1){
-         hist_v.at(i)->SetLineColor(kBlue); 
-         l->AddEntry(hist_v.at(i),"+ 1 #sigma","L");
-      }
-      hs->Add(hist_v.at(i));
-      if(GetHistMax(hist_v.at(i)) > maximum) maximum = GetHistMax(hist_v.at(i));
-   }
-
-   // Prepare the CV histogram
-   if(GetHistMax(h_cv) > maximum) maximum = GetHistMax(h_cv);
-   h_cv->SetLineColor(1);
-   h_cv->SetLineWidth(2);
-   h_cv->SetFillColor(0);
-   h_cv->SetMaximum(maximum*1.25);
-   hs->Add(h_cv);
-
-   // Create the "MicroBooNE" watermark
-   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.005);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetTextFont(62);
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-
-   // Create the POT label
-   TLegend *l_POT = new TLegend(0.54,0.820,0.89,0.900);
-   l_POT->SetBorderSize(0);
-   l_POT->SetMargin(0.005);
-   l_POT->SetTextAlign(32);
-   TLegend *l_POT2 = new TLegend(0.54,0.74,0.89,0.82,NULL,"brNDC");
-   l_POT2->SetBorderSize(0);
-   l_POT2->SetMargin(0.005);
-   l_POT2->SetTextAlign(32);
-
-   p_legend->Draw();
-   p_legend->cd();
-   l->Draw();
-   c->cd();
-   p_plot->Draw();
-   p_plot->cd();
-
-   hs->Draw("HIST nostack");
-   hs->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
-   hs->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
-   hs->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
-   hs->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
-   hs->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
-   hs->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
-
-   h_cv->Draw("HIST same");
-
-   // Draw the various legends, labels etc.
-   if(POT.size() > 0) l_POT->Draw();
-   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
-      l_POT2->Draw();
-      h_cv->SetMaximum(maximum*1.35);
-   }
-   if(DrawWatermark) l_Watermark->Draw();
-
-   // If using text labels on the bins
-   if(binlabels.size()){
-      for(int i=1;i<h_cv->GetNbinsX()+1;i++) hs->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-      hs->GetXaxis()->SetLabelSize(Single_TextLabelSize);
-   }
-
-   p_plot->Update(); 
-
-   system(("mkdir -p " + plotdir).c_str());
-   c->Print((plotdir + "/" + label + "_Sys_" + type + "_" +  dialname + ".png").c_str());
-   c->Print((plotdir + "/" + label + "_Sys_" + type + "_" +  dialname + ".pdf").c_str());
-   c->Print((plotdir + "/" + label + "_Sys_" + type + "_" +  dialname + ".C").c_str());
-   c->Close();
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vector<string> captions,std::string plotdir,std::string label){
-
-   assert(dials.size() == captions.size());
-
-   // Get the covairance matrices and calculate the total covariance of the dials
-   std::vector<TH2D*> h_FCov_v(dials.size(),nullptr);
-   f->GetObject(("FCov_All_" + dials.at(0)).c_str(),h_FCov_v[0]);
-   TH2D* h_FCov = (TH2D*)h_FCov_v.at(0)->Clone("h_FCov");
-   for(size_t i_s=1;i_s<dials.size();i_s++){
-      f->GetObject(("FCov_All_" + dials.at(i_s)).c_str(),h_FCov_v[i_s]);
-      h_FCov->Add(h_FCov_v.at(i_s));      
-   }
-
-   // Calculate the fractional error of each dial
-   std::vector<TH1D*> h_FracError_v(dials.size(),nullptr);
-   for(size_t i_s=0;i_s<dials.size();i_s++){
-      h_FracError_v[i_s] = (TH1D*)h_template->Clone(("h_FE_" + dials.at(i_s)).c_str());
-      for(int i_b=1;i_b<h_template->GetNbinsX()+1;i_b++) h_FracError_v.at(i_s)->SetBinContent(i_b,sqrt(h_FCov_v.at(i_s)->GetBinContent(i_b,i_b)));
-      h_FracError_v.at(i_s)->SetLineColor(GoodLineColors[i_s+1]);
-      h_FracError_v.at(i_s)->SetFillStyle(0);
-   }
-
-   // Calculate the total fractional error
-   TH1D* h_FracError = (TH1D*)h_template->Clone("h_FracError");
-   h_FracError->Reset();
-  
-   double max = 0;  
-   for(int i_b=1;i_b<h_template->GetNbinsX()+1;i_b++){
-      h_FracError->SetBinContent(i_b,sqrt(h_FCov->GetBinContent(i_b,i_b)));
-      max = std::max(max,h_FracError->GetBinContent(i_b));
-   }
-
-   // Setup canvas    
-   TCanvas* c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
-   TPad *p_plot = new TPad("p_plot","p_plot",0,0,1,Single_PadSplit);
-   TPad *p_legend = new TPad("p_legend","p_legend",0,Single_PadSplit,1,1);
-   p_legend->SetBottomMargin(0);
-   p_legend->SetTopMargin(0.1);
-   p_plot->SetTopMargin(0.01);
-
-   // Create the "MicroBooNE" watermark
-   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.005);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetTextFont(62);
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-
-   // Draw the beamline plot
-   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-   l->SetBorderSize(0);
-
-   const int nhists = dials.size()+1;
-   int ncols = 3;
-   if(nhists > 6) ncols = 4;
-   if(nhists > 12) ncols = 5;
-   l->SetNColumns(ncols);
-
-   // Draw everything
-   p_legend->Draw();
-   p_legend->cd();
-   l->Draw();
-   c->cd();
-   p_plot->Draw();
-   p_plot->cd();
-
-   h_FracError->SetLineColor(GoodLineColors[0]);
-   h_FracError->SetLineWidth(3);
-   h_FracError->SetLineStyle(2);
-   h_FracError->SetFillStyle(0);
-   h_FracError->GetYaxis()->SetTitle("Frac. Unc.");
-   h_FracError->GetYaxis()->SetRangeUser(0.0,1.15*max);
-   h_FracError->Draw("HIST");
-   
-   for(size_t i_s=0;i_s<dials.size();i_s++){
-      h_FracError_v[i_s]->SetLineColor(GoodLineColors[i_s+1]);
-      h_FracError_v[i_s]->SetLineWidth(2);
-      l->AddEntry(h_FracError_v.at(i_s),captions.at(i_s).c_str(),"L");    
-      h_FracError_v[i_s]->Draw("HIST same");
-   }
-
-   l->AddEntry(h_FracError,"Total","L");
-   h_FracError->Draw("HIST same");
-
-   if(DrawWatermark) l_Watermark->Draw();
-
-   p_plot->RedrawAxis();
-      
-   system(("mkdir -p " + plotdir).c_str());
-   c->Print((plotdir + "/" + label + "_SysBreakdown.pdf").c_str());
-   c->Print((plotdir + "/" + label + "_SysBreakdown.C").c_str());
-   c->Print((plotdir + "/" + label + "_SysBreakdown.png").c_str());
-   c->Close();
-
-   DrawMatrix(h_FCov,h_FCov,label+"_FCov",plotdir,true,true);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string name,vector<int> mode,vector<double> POT){
-
-   TH1D* h_Before = (TH1D*)Efficiency->GetTotalHistogram()->Clone("h_Before");
-   TH1D* h_After = (TH1D*)Efficiency->GetPassedHistogram()->Clone("h_After");
-
-   TCanvas *c = new TCanvas("c1","c1",Single_CanvasX,Single_CanvasY);
-   TPad *p_plot = new TPad("pad1","pad1",0,0,1,Single_PadSplit);
-   TPad *p_legend = new TPad("pad2","pad2",0,Single_PadSplit,1,1);
-   p_legend->SetBottomMargin(0);
-   p_legend->SetTopMargin(0.1);
-   p_plot->SetTopMargin(0.01);
-
-   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-   l->SetBorderSize(0);
-   l->SetNColumns(2);
-
-   // Create the "MicroBooNE" watermark
-   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.005);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetTextFont(62);
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-
-   // Create the POT label
-   TLegend *l_POT = new TLegend(0.54,0.820,0.89,0.900);
-   l_POT->SetBorderSize(0);
-   l_POT->SetMargin(0.005);
-   l_POT->SetTextAlign(32);
-   TLegend *l_POT2 = new TLegend(0.54,0.74,0.89,0.82,NULL,"brNDC");
-   l_POT2->SetBorderSize(0);
-   l_POT2->SetMargin(0.005);
-   l_POT2->SetTextAlign(32);
-
-   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-
-   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-
-   THStack *hs = new THStack("hs",title.c_str());
-
-   h_Before->SetLineWidth(2);
-   h_Before->SetLineColor(1);
-   hs->Add(h_Before);
-   h_After->SetLineWidth(2);
-   h_After->SetLineColor(3);
-   hs->Add(h_After);
-
-   // Draw everything
-   p_legend->Draw();
-   p_legend->cd();
-   l->Draw();
-   c->cd();
-   p_plot->Draw();
-   p_plot->cd();
-
-   hs->Draw("nostack E0");
-   hs->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
-   hs->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
-   hs->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
-   hs->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
-   hs->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
-   hs->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
-
-   hs->SetMaximum(1.25*hs->GetMaximum("nostack"));
-   if(POT.size() > 1) hs->SetMaximum(hs->GetMaximum("nostack")*1.5);
-
-   p_plot->Update(); 
-
-   // Calculate the efficiencies and their uncertainties
-   Efficiency->SetConfidenceLevel(0.68);
-   Efficiency->SetStatisticOption(TEfficiency::kBUniform);
-   Efficiency->SetPosteriorMode();
-
-   std::vector<double> Efficiency_X;
-   std::vector<double> Efficiency_CV;
-   std::vector<double> Efficiency_Low;
-   std::vector<double> Efficiency_High;
-
-   // Decide on a limit for the RH y axis
-   double effmax = 0.0;
-   for(size_t i=1;i<h_Before->GetNbinsX()+1;i++)
-        effmax = std::max(effmax,Efficiency->GetEfficiency(i)+Efficiency->GetEfficiencyErrorUp(i));
-
-   int binmax = h_Before->GetMaximumBin();
-   Float_t rightmax = 1.2*effmax;
-   if(POT.size() > 1) rightmax = 1.5*effmax;
-   double scale = p_plot->GetUymax()/rightmax;
-
-   for(size_t i=1;i<h_Before->GetNbinsX()+1;i++){
-      if(std::isnan(Efficiency->GetEfficiency(i))) continue;
-      Efficiency_X.push_back(h_Before->GetBinCenter(i));
-      Efficiency_CV.push_back(Efficiency->GetEfficiency(i)*scale);
-      Efficiency_Low.push_back(Efficiency->GetEfficiencyErrorLow(i)*scale);
-      Efficiency_High.push_back(Efficiency->GetEfficiencyErrorUp(i)*scale);
-   }
-
-   TGraphAsymmErrors *g_Efficiency = new  TGraphAsymmErrors(Efficiency_X.size(),&(Efficiency_X[0]),&(Efficiency_CV[0]),0,0,&(Efficiency_Low[0]),&(Efficiency_High[0]));
-   g_Efficiency->SetLineColor(kRed);
-   g_Efficiency->SetMarkerStyle(5);
-   g_Efficiency->SetMarkerSize(2);
-   g_Efficiency->SetMarkerColor(kRed);
-   g_Efficiency->SetLineWidth(2);
-
-   // Create the new axis object
-   TGaxis *axis = new TGaxis(p_plot->GetUxmax(),p_plot->GetUymin(),p_plot->GetUxmax(),p_plot->GetUymax(),0,rightmax,510,"+L");
-   axis->SetTitleColor(kRed);
-   axis->SetLabelColor(kRed);
-   axis->SetTitleSize(Single_YaxisTitleSize);
-   axis->SetTitleOffset(0.9*Single_YaxisTitleOffset);
-   axis->SetLabelSize(Single_YaxisLabelSize);
-   axis->SetTitle("Efficiency");
-   axis->Draw();
-
-   l->AddEntry(h_Before,"All Events","L");
-   l->AddEntry(g_Efficiency,"Efficiency","P");
-   l->AddEntry(h_After,"Selected","L");
-
-   g_Efficiency->Draw("P same");
-
-   // Draw the various legends, labels etc.
-   if(POT.size() > 0) l_POT->Draw();
-   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();   
-   if(DrawWatermark) l_Watermark->Draw();
-
-   p_plot->Update(); 
-
-   system("mkdir -p Plots/");
-   c->Print(("Plots/Efficiency_" + name + "_Ratio.pdf").c_str());
-   c->Print(("Plots/Efficiency_" + name + "_Ratio.png").c_str());
-   c->Print(("Plots/Efficiency_" + name + "_Ratio.C").c_str());
-   c->Close();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-};
+ //};
 
 #endif

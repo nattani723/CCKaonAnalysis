@@ -24,8 +24,8 @@ void ConvertToTrackTuple_alg_precut_cheat()
 
   TStopwatch clock;
 
-  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug.root", "rootfile/assok_refined_KrecoAlg_track.root");
-  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/CCKaonAnalyzer_debug.root", "rootfile/assok_refined_KrecoAlg_track.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/parset1_CCKaonAnalyzer_debug.root", "rootfile/assok_refined_KrecoAlg_track_debug.root");
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/CCKaonAnalyzer_debug.root", "rootfile/assok_refined_KrecoAlg_track.root");
 
 
   cout << "Real time " << clock.RealTime() << " s" << endl << endl;
