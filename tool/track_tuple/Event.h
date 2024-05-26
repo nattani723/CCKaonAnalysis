@@ -57,9 +57,6 @@ public :
    Float_t         true_kaon_end_x;
    Float_t         true_kaon_end_y;
    Float_t         true_kaon_end_z;
-   Float_t         reco_track_end_x[20];
-   Float_t         reco_track_end_y[20];
-   Float_t         reco_track_end_z[20];
    Bool_t          true_kaon_end_inTPC;
    Bool_t          true_kaon_end_in5cmTPC;
    Bool_t          true_kaon_end_inCCInclusiveTPC;
@@ -111,9 +108,13 @@ public :
    Float_t true_dau_pip_length;
    Float_t true_dau_muon_length;
 
+   Float_t         reco_track_end_x[20];
+   Float_t         reco_track_end_y[20];
+   Float_t         reco_track_end_z[20];
+
 Int_t n_recoRebDauTracks[20];
 Float_t rebdautrack_length[20][10], rebdautracktrue_length[20], rebdautracktruedir_length[20], rebdautrack_pdg[20][10];
-Float_t best_peak_x[20][10], best_peak_y[20][10], best_peak_z[20][10], best_peak_x_true[10], best_peak_y_true[10], best_peak_z_true[10];
+Float_t best_peak_x[20][10], best_peak_y[20][10], best_peak_z[20][10], best_peak_x_true[20], best_peak_y_true[20], best_peak_z_true[20];
  Float_t true_dau_muon_end_x;
 Float_t true_dau_muon_end_y, true_dau_muon_end_z, true_dau_muon_start_x, true_dau_muon_start_y, true_dau_muon_start_z, true_dau_pip_end_x, true_dau_pip_end_y, true_dau_pip_end_z, true_dau_pip_start_x, true_dau_pip_start_y, true_dau_pip_start_z, true_dau_muon_theta, true_dau_muon_phi, true_dau_pip_theta, true_dau_pip_phi;
 
@@ -157,7 +158,7 @@ Float_t true_dau_muon_end_y, true_dau_muon_end_z, true_dau_muon_start_x, true_da
    Float_t         reco_track_Bragg_fwd_pr_pl2[20];
    Float_t         reco_track_Bragg_fwd_pi_pl2[20];
    Float_t         reco_track_Bragg_fwd_mu_pl2[20];
-   Float_t         reco_track_vtx_distance[20];
+   //Float_t         reco_track_vtx_distance[20];
 
    Float_t         true_length[10];
    Float_t         true_p[10];
@@ -458,7 +459,7 @@ Float_t true_dau_muon_end_y, true_dau_muon_end_z, true_dau_muon_start_x, true_da
    TBranch        *b_reco_track_MIP_pl0;   //!
    TBranch        *b_reco_track_MIP_pl1;   //!
    TBranch        *b_reco_track_MIP_pl2;   //!
-   TBranch        *b_reco_track_vtx_distance;   //!
+   //TBranch        *b_reco_track_vtx_distance;   //!
    TBranch        *b_reco_track_daughter_MIP_pl0;   //!
    TBranch        *b_reco_track_daughter_MIP_pl1;   //!
    TBranch        *b_reco_track_daughter_MIP_pl2;   //!
@@ -664,7 +665,7 @@ void Event::Init(TTree *tree)
    fChain->SetBranchAddress("true_nu_vtx_in5cmTPC", &true_nu_vtx_in5cmTPC, &b_true_nu_vtx_in5cmTPC);
    fChain->SetBranchAddress("true_nu_vtx_inCCInclusiveTPC", &true_nu_vtx_inCCInclusiveTPC, &b_true_nu_vtx_inCCInclusiveTPC);
    fChain->SetBranchAddress("true_dau_muon_end_x", &true_dau_muon_end_x, &b_true_dau_muon_end_x);
-   fChain->SetBranchStatus("true_dau_muon_end_x", 1);
+   //fChain->SetBranchStatus("true_dau_muon_end_x", 1);
    fChain->SetBranchAddress("true_dau_muon_end_y", &true_dau_muon_end_y, &b_true_dau_muon_end_y);
    fChain->SetBranchAddress("true_dau_muon_end_z", &true_dau_muon_end_z, &b_true_dau_muon_end_z);
    fChain->SetBranchAddress("true_dau_muon_start_x", &true_dau_muon_start_x, &b_true_dau_muon_start_x);
@@ -818,7 +819,7 @@ void Event::Init(TTree *tree)
    fChain->SetBranchAddress("reco_track_MIP_pl0", reco_track_MIP_pl0, &b_reco_track_MIP_pl0);
    fChain->SetBranchAddress("reco_track_MIP_pl1", reco_track_MIP_pl1, &b_reco_track_MIP_pl1);
    fChain->SetBranchAddress("reco_track_MIP_pl2", reco_track_MIP_pl2, &b_reco_track_MIP_pl2);
-   fChain->SetBranchAddress("reco_track_vtx_distance", reco_track_vtx_distance, &b_reco_track_vtx_distance);
+   //fChain->SetBranchAddress("reco_track_vtx_distance", reco_track_vtx_distance, &b_reco_track_vtx_distance);
    fChain->SetBranchAddress("reco_track_daughter_MIP_pl0", reco_track_daughter_MIP_pl0, &b_reco_track_daughter_MIP_pl0);
    fChain->SetBranchAddress("reco_track_daughter_MIP_pl1", reco_track_daughter_MIP_pl1, &b_reco_track_daughter_MIP_pl1);
    fChain->SetBranchAddress("reco_track_daughter_MIP_pl2", reco_track_daughter_MIP_pl2, &b_reco_track_daughter_MIP_pl2);

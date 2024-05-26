@@ -68,40 +68,11 @@ void ConvertToTrackTuple_alg_precut_cheat(TString input_name, TString output_nam
   Int_t   true_kaon_ndaughters = -1;
   Int_t   true_kaon_end_process = -1;
 
-  Int_t   reco_track_nhits0 = 0;
-  Int_t   reco_track_nhits1 = 0;
-  Int_t   reco_track_nhits2 = 0;
-  
   Float_t reco_track_distance = -9999;
-  //Float_t reco_track_vtx_distance = -9999;
   Float_t reco_track_length = -9999;
   Float_t reco_track_theta = -9999;
   Float_t reco_track_phi = -9999;
 
-  Float_t reco_track_chi2ka_pl0 = -9999;
-  Float_t reco_track_chi2pr_pl0 = -9999;
-  Float_t reco_track_chi2pi_pl0 = -9999;
-  Float_t reco_track_chi2mu_pl0 = -9999;
-  
-  Float_t reco_track_chi2ka_pl1 = -9999;
-  Float_t reco_track_chi2pr_pl1 = -9999;
-  Float_t reco_track_chi2pi_pl1 = -9999;
-  Float_t reco_track_chi2mu_pl1 = -9999;
-  
-  Float_t reco_track_chi2ka_pl2 = -9999;
-  Float_t reco_track_chi2pr_pl2 = -9999;
-  Float_t reco_track_chi2pi_pl2 = -9999;
-  Float_t reco_track_chi2mu_pl2 = -9999;  
-     
-  Float_t reco_track_chi2ka_3pl = -9999;
-  Float_t reco_track_chi2pr_3pl = -9999;
-  Float_t reco_track_chi2pi_3pl = -9999;
-  Float_t reco_track_chi2mu_3pl = -9999;
-  
-  Float_t reco_track_llrpid_3pl = -9999;  
-  Float_t reco_track_llrpid_k_3pl = -9999;  
-  Int_t   reco_track_true_pdg = -9999;
-  
   Bool_t  reco_track_vtx_inTPC = 0;
   Bool_t  reco_track_vtx_in5cmTPC = 0;
   Bool_t  reco_track_vtx_inCCInclusiveTPC = 0;
@@ -114,72 +85,13 @@ void ConvertToTrackTuple_alg_precut_cheat(TString input_name, TString output_nam
   Bool_t  reco_track_true_end_inCCInclusiveTPC = 0;
   
   
-  Float_t reco_track_ndaughters_old = 0;  
-  Float_t reco_track_daughter_old_distance = -9999;
-  Float_t reco_track_daughter_old_true_pdg = -9999;
-  Float_t reco_track_daughter_old_length = -9999;
-  Float_t reco_track_daughter_old_theta = -9999;
-  Float_t reco_track_daughter_old_phi = -9999;
-  Float_t reco_track_daughter_old_chi2ka_pl0 = -9999;
-  Float_t reco_track_daughter_old_chi2pr_pl0 = -9999;
-  Float_t reco_track_daughter_old_chi2pi_pl0 = -9999;
-  Float_t reco_track_daughter_old_chi2mu_pl0 = -9999;
-  
-  Float_t reco_track_daughter_old_chi2ka_pl1 = -9999;
-  Float_t reco_track_daughter_old_chi2pr_pl1 = -9999;
-  Float_t reco_track_daughter_old_chi2pi_pl1 = -9999;
-  Float_t reco_track_daughter_old_chi2mu_pl1 = -9999;
-  
-  Float_t reco_track_daughter_old_chi2ka_pl2 = -9999;
-  Float_t reco_track_daughter_old_chi2pr_pl2 = -9999;
-  Float_t reco_track_daughter_old_chi2pi_pl2 = -9999;
-  Float_t reco_track_daughter_old_chi2mu_pl2 = -9999;
-  
-  Float_t reco_track_daughter_old_chi2ka_3pl = -9999;
-  Float_t reco_track_daughter_old_chi2pr_3pl = -9999;
-  Float_t reco_track_daughter_old_chi2pi_3pl = -9999;
-  Float_t reco_track_daughter_old_chi2mu_3pl = -9999;  
-  Float_t reco_track_daughter_old_llrpid_3pl = -9999;
-  Float_t reco_track_daughter_old_llrpid_k_3pl = -9999;
-  
-  Bool_t  reco_track_daughter_old_vtx_inTPC = 0;
-  Bool_t  reco_track_daughter_old_vtx_in5cmTPC = 0;
-  Bool_t  reco_track_daughter_old_vtx_inCCInclusiveTPC = 0;
-  Bool_t  reco_track_daughter_old_end_inTPC = 0;
-  Bool_t  reco_track_daughter_old_end_in5cmTPC = 0;
-  Bool_t  reco_track_daughter_old_end_inCCInclusiveTPC = 0;
-
-
   Float_t reco_track_ndaughters = 0;  
   Float_t reco_track_daughter_length = -9999;
   Float_t reco_track_daughter_distance = -9999;
   Float_t reco_track_daughter_vtx_distance = -9999;
   Float_t reco_track_daughter_theta = -9999;
   Float_t reco_track_daughter_phi = -9999;
-  
-  Float_t reco_track_daughter_chi2ka_pl0 = -9999;
-  Float_t reco_track_daughter_chi2pr_pl0 = -9999;
-  Float_t reco_track_daughter_chi2pi_pl0 = -9999;
-  Float_t reco_track_daughter_chi2mu_pl0 = -9999;
-  
-  Float_t reco_track_daughter_chi2ka_pl1 = -9999;
-  Float_t reco_track_daughter_chi2pr_pl1 = -9999;
-  Float_t reco_track_daughter_chi2pi_pl1 = -9999;
-  Float_t reco_track_daughter_chi2mu_pl1 = -9999;
-  
-  Float_t reco_track_daughter_chi2ka_pl2 = -9999;
-  Float_t reco_track_daughter_chi2pr_pl2 = -9999;
-  Float_t reco_track_daughter_chi2pi_pl2 = -9999;
-  Float_t reco_track_daughter_chi2mu_pl2 = -9999;
-  
-  Float_t reco_track_daughter_chi2ka_3pl = -9999;
-  Float_t reco_track_daughter_chi2pr_3pl = -9999;
-  Float_t reco_track_daughter_chi2pi_3pl = -9999;
-  Float_t reco_track_daughter_chi2mu_3pl = -9999;
-  
-  Float_t reco_track_daughter_llrpid_3pl = -9999;
-  Float_t reco_track_daughter_llrpid_k_3pl = -9999;
-  Float_t reco_track_daughter_true_pdg = -9999;
+    Float_t reco_track_daughter_true_pdg = -9999;
   
   Bool_t  reco_track_daughter_vtx_inTPC = 0;
   Bool_t  reco_track_daughter_vtx_in5cmTPC = 0;
@@ -191,34 +103,9 @@ void ConvertToTrackTuple_alg_precut_cheat(TString input_name, TString output_nam
   Bool_t  reco_track_daughter_true_end_inTPC = 0;
   Bool_t  reco_track_daughter_true_end_in5cmTPC = 0;
   Bool_t  reco_track_daughter_true_end_inCCInclusiveTPC = 0;
-  //Bool+y
-
-  Float_t reco_track_Bragg_fwd_ka_pl0 = -9999;
-  Float_t reco_track_Bragg_fwd_pr_pl0 = -9999;
-  Float_t reco_track_Bragg_fwd_pi_pl0 = -9999;
-  Float_t reco_track_Bragg_fwd_mu_pl0 = -9999;
-  Float_t reco_track_Bragg_fwd_ka_pl1 = -9999;
-  Float_t reco_track_Bragg_fwd_pr_pl1 = -9999;
-  Float_t reco_track_Bragg_fwd_pi_pl1 = -9999;
-  Float_t reco_track_Bragg_fwd_mu_pl1 = -9999;
-  Float_t reco_track_Bragg_fwd_ka_pl2 = -9999;
-  Float_t reco_track_Bragg_fwd_pr_pl2 = -9999;
-  Float_t reco_track_Bragg_fwd_pi_pl2 = -9999;
-  Float_t reco_track_Bragg_fwd_mu_pl2 = -9999;
-  Float_t reco_track_MIP_pl0 = -9999;
-  Float_t reco_track_MIP_pl1 = -9999;
-  Float_t reco_track_MIP_pl2 = -9999;
-   
-  Float_t reco_track_braggLLH = -9999;
-   
-  Float_t reco_angle_track_daughter = -9999;
-  Float_t reco_track_log_bragg_peak = -9999;
+  
   
   Float_t reco_nu_ndaughters = -9999;
-  
-  Float_t reco_track_delta_dEdx_pl0 = -9999;
-  Float_t reco_track_delta_dEdx_pl1 = -9999;
-  Float_t reco_track_delta_dEdx_pl2 = -9999;
 
 
   Float_t         true_nu_energy = -9999;
@@ -249,18 +136,6 @@ void ConvertToTrackTuple_alg_precut_cheat(TString input_name, TString output_nam
   Int_t true_kaon_daughter_end_in5cmTPC = -9999;
   Int_t true_kaon_end_inCCInclusiveTPC = -9999;
   Int_t true_nu_vtx_inCCInclusiveTPC = -9999;
-
-  Float_t reco_track_kin0 = -9999;
-  Float_t reco_track_kin1 = -9999;
-  Float_t reco_track_kin2 = -9999;
-
-  Float_t reco_track_P_vtx = -9999;  // track.VertexMomentum
-  Float_t reco_track_P_str = -9999;  // track.StartMomentum()
-  Float_t reco_track_P_end = -9999;  // track.EndMomentum();
-
-  Int_t n_true_k=0;
-  //Int_t           reco_track_true_pdg = -9999;
-  //Int_t           reco_track_daughter_true_pdg = -9999;
 
   Int_t n_recoRebDauTracks = -9999;
   Float_t rebdautrack_length = -9999; 
@@ -427,6 +302,9 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
   outtree->Branch("reco_track_end_in5cmTPC",&reco_track_end_in5cmTPC,"reco_track_end_in5cmTPC/O");
   outtree->Branch("reco_track_end_inCCInclusiveTPC",&reco_track_end_inCCInclusiveTPC,"reco_track_end_inCCInclusiveTPC/O");
   
+  outtree->Branch("reco_track_true_vtx_inTPC",&reco_track_true_vtx_inTPC,"reco_track_true_vtx_inTPC/O");
+  outtree->Branch("reco_track_true_vtx_in5cmTPC",&reco_track_true_vtx_in5cmTPC,"reco_track_true_vtx_in5cmTPC/O");
+  outtree->Branch("reco_track_true_vtx_inCCInclusiveTPC",&reco_track_true_vtx_inCCInclusiveTPC,"reco_track_true_vtx_inCCInclusiveTPC/O");
   outtree->Branch("reco_track_true_end_inTPC",&reco_track_true_end_inTPC,"reco_track_true_end_inTPC/O");
   outtree->Branch("reco_track_true_end_in5cmTPC",&reco_track_true_end_in5cmTPC,"reco_track_true_end_in5cmTPC/O");
   outtree->Branch("reco_track_true_end_inCCInclusiveTPC",&reco_track_true_end_inCCInclusiveTPC,"reco_track_true_end_inCCInclusiveTPC/O");
@@ -470,6 +348,9 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
   outtree->Branch("reco_track_daughter_end_in5cmTPC",&reco_track_daughter_end_in5cmTPC,"reco_track_daughter_end_in5cmTPC/O");
   outtree->Branch("reco_track_daughter_end_inCCInclusiveTPC",&reco_track_daughter_end_inCCInclusiveTPC,"reco_track_daughter_end_inCCInclusiveTPC/O");
   
+  outtree->Branch("reco_track_daughter_true_vtx_inTPC",&reco_track_daughter_true_vtx_inTPC,"reco_track_daughter_true_vtx_inTPC/O");
+  outtree->Branch("reco_track_daughter_true_vtx_in5cmTPC",&reco_track_daughter_true_vtx_in5cmTPC,"reco_track_daughter_true_vtx_in5cmTPC/O");
+  outtree->Branch("reco_track_daughter_true_vtx_inCCInclusiveTPC",&reco_track_daughter_true_vtx_inCCInclusiveTPC,"reco_track_daughter_true_vtx_inCCInclusiveTPC/O");
   outtree->Branch("reco_track_daughter_true_end_inTPC",&reco_track_daughter_true_end_inTPC,"reco_track_daughter_true_end_inTPC/O");
   outtree->Branch("reco_track_daughter_true_end_in5cmTPC",&reco_track_daughter_true_end_in5cmTPC,"reco_track_daughter_true_end_in5cmTPC/O");
   outtree->Branch("reco_track_daughter_true_end_inCCInclusiveTPC",&reco_track_daughter_true_end_inCCInclusiveTPC,"reco_track_daughter_true_end_inCCInclusiveTPC/O");
