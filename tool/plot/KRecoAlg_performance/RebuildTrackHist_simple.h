@@ -62,9 +62,12 @@ Int_t n_recoRebDauTracks;
 Float_t rebdautrack_length, rebdautracktrue_length, rebdautracktruedir_length, rebdautrack_pdg;
 Float_t best_peak_x, best_peak_y, best_peak_z, best_peak_x_true, best_peak_y_true, best_peak_z_true;
 
+Double_t reco_vtx;
 TVector3 true_dau_dir;
 TVector3 cheat_dir;
 TVector3 reco_dir;
+TVector3 initvec(-9999,-9999,-9999);
+TVector3 initvec0(0,0,0);
 /*
 TVector3 true_dau_muon_dir;
 TVector3 true_dau_pip_dir;
@@ -75,6 +78,7 @@ TVector3 reco_pip_dir;
 */
 
 Float_t true_dau_muon_end_x, true_dau_muon_end_y, true_dau_muon_end_z, true_dau_muon_start_x, true_dau_muon_start_y, true_dau_muon_start_z, true_dau_pip_end_x, true_dau_pip_end_y, true_dau_pip_end_z, true_dau_pip_start_x, true_dau_pip_start_y, true_dau_pip_start_z, true_dau_muon_theta, true_dau_muon_phi, true_dau_pip_theta, true_dau_pip_phi;
+Float_t true_kaon_end_x, true_kaon_end_y, true_kaon_end_z, reco_track_end_x, reco_track_end_y, reco_track_end_z;
 
 TH1D * h_track_dau_ln_pr;
 TH1D * h_track_dau_ln_pi;
@@ -107,6 +111,12 @@ TH1D * h_track_rebdau_cheat_dir_ln_mu;
 TH1D * h_track_rebdau_cheat_dir_ln_sh;
 TH1D * h_track_rebdau_cheat_dir_ln_ot;
 
+TH1D * h_vtx_dis_ka;
+TH1D * h_vtx_dis_pr;
+TH1D * h_vtx_dis_pi;
+TH1D * h_vtx_dis_mu;
+TH1D * h_vtx_dis_ot;
+
 TH1D * h_peak_dir_pr;
 TH1D * h_peak_dir_pi;
 TH1D * h_peak_dir_mu;
@@ -131,6 +141,7 @@ THStack * s_trkln_rebdau_cheat = new THStack();
 THStack * s_trkln_rebdau_cheat_dir = new THStack();
 THStack * s_peak_dir = new THStack();
 THStack * s_peak_dir_cheat = new THStack();
+THStack * s_vtx_dis = new THStack();
 
 /*
   THStack * s_braggka = new THStack();
@@ -140,6 +151,6 @@ THStack * s_peak_dir_cheat = new THStack();
 */
 
 TLegend * l_pr_dau_ln;
-
+TLegend * l_ka;
 
 //how to store PDG

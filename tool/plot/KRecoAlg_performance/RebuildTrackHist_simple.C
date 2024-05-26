@@ -28,7 +28,7 @@ void RebuildTrackHist_simple()
 {
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/track_tuple/refine_debug_2.root", "test2.pdf", "3pl");
   //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
-  RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora//CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track.root", "debug.pdf", "3pl", "IsK", true);
+  RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora//CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track_debug3.root", "debug3.pdf", "3pl", "IsK", true);
 
 }
 
@@ -67,7 +67,7 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
   SetHistos();
   SetHistosStyle();
 
-  cout << "nentry: " << nentry << endl;
+  //cout << "nentry: " << nentry << endl;
   for(int ientry=0; ientry<nentry; ++ientry){
 
     t->GetEntry(ientry);
@@ -77,7 +77,7 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
     //if(reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length))
     //add true track length
 
-    //if(reco_track_true_pdg!=321) continue;
+    if(reco_track_true_pdg!=321) continue;
     FillTrackLength();
     FillRebuildTrackLength();
     
@@ -86,24 +86,6 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
   AddStackHistos();
   AddLegend();  
   DrawHistos(c, output_name);
-
-  cout << "h_track_dau_ln_pr: " << h_track_dau_ln_pr->GetEntries() << endl;
-  cout << "h_track_dau_ln_pi: " << h_track_dau_ln_pi->GetEntries() << endl;
-  cout << "h_track_dau_ln_mu: " << h_track_dau_ln_mu->GetEntries() << endl;
-  cout << "h_track_dau_ln_sh: " << h_track_dau_ln_sh->GetEntries() << endl;
-  cout << "h_track_dau_ln_ot: " << h_track_dau_ln_ot->GetEntries() << endl;
-
-  cout << "h_track_dau_old_ln_pr: " << h_track_dau_old_ln_pr->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_pi: " << h_track_dau_old_ln_pi->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_mu: " << h_track_dau_old_ln_mu->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_sh: " << h_track_dau_old_ln_sh->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_ot: " << h_track_dau_old_ln_ot->GetEntries() << endl;
-
-  cout << "reco_old_true_length_mu: " << reco_old_true_length_mu << endl;
-  cout << "reco_old_true_length_pi: " << reco_old_true_length_pi << endl;
-  cout << "reco_true_length_mu: " << reco_true_length_mu << endl;
-  cout << "reco_true_length_pi: " << reco_true_length_pi << endl;
-
 }
 
 
@@ -154,6 +136,9 @@ void LoadTree(TFile *f, TString pl, TTree * &t){
   t->SetBranchAddress("best_peak_x_true", &best_peak_x_true);
   t->SetBranchAddress("best_peak_y_true", &best_peak_y_true);
   t->SetBranchAddress("best_peak_z_true", &best_peak_z_true);
+  t->SetBranchAddress("true_kaon_end_x", &true_kaon_end_x);
+  t->SetBranchAddress("true_kaon_end_y", &true_kaon_end_y);
+  t->SetBranchAddress("true_kaon_end_z", &true_kaon_end_z);
   t->SetBranchAddress("true_dau_muon_end_x", &true_dau_muon_end_x);
   t->SetBranchAddress("true_dau_muon_end_y", &true_dau_muon_end_y);
   t->SetBranchAddress("true_dau_muon_end_z", &true_dau_muon_end_z);
@@ -170,7 +155,9 @@ void LoadTree(TFile *f, TString pl, TTree * &t){
   t->SetBranchAddress("true_dau_muon_phi", &true_dau_muon_phi);
   t->SetBranchAddress("true_dau_pip_theta", &true_dau_pip_theta);
   t->SetBranchAddress("true_dau_pip_phi", &true_dau_pip_phi);
-  //t->SetBranchAddress("", &);
+  t->SetBranchAddress("reco_track_end_x", &reco_track_end_x);
+  t->SetBranchAddress("reco_track_end_y", &reco_track_end_y);
+  t->SetBranchAddress("reco_track_end_z", &reco_track_end_z);
   //t->SetBranchAddress("", &);
   //t->SetBranchAddress("", &);
   
@@ -211,6 +198,11 @@ void SetHistos(){
   h_track_rebdau_cheat_dir_ln_sh = new TH1D("track_rebdau_cheat_dir_ln_sh", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_rebdau_cheat_dir_ln_ot = new TH1D("track_rebdau_cheat_dir_ln_ot", "; BDT Response; Number of Events", 50, 0, 100);
 
+  h_vtx_dis_ka = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
+  h_vtx_dis_pr = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
+  h_vtx_dis_pi = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
+  h_vtx_dis_mu = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
+  h_vtx_dis_ot = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
 
   h_peak_dir_pr = new TH1D("peak_dir_pr", "; true_pip_pin_theta; Number of Events", 30, 0, 3.14);
   h_peak_dir_pi = new TH1D("peak_dir_pi", "; true_pip_pin_theta; Number of Events", 30, 0, 3.14);
@@ -306,6 +298,12 @@ void SetHistosStyle(){
   h_track_rebdau_cheat_dir_ln_ot->SetLineWidth(2);
   h_track_rebdau_cheat_dir_ln_pi->SetFillColorAlpha(TColor::GetColorDark(kGreen), 0.5);
   h_track_rebdau_cheat_dir_ln_mu->SetFillColorAlpha(kCyan, 0.3);
+
+  h_vtx_dis_ka->SetLineColor(kBlue);
+  h_vtx_dis_pr->SetLineColor(kRed);
+  h_vtx_dis_pi->SetLineColor(TColor::GetColorDark(kGreen));
+  h_vtx_dis_mu->SetLineColor(kCyan);
+  h_vtx_dis_ot->SetLineColor(kBlack);
 
   h_peak_dir_pr->SetLineColor(kRed);
   h_peak_dir_pi->SetLineColor(TColor::GetColorDark(kGreen));
@@ -423,15 +421,28 @@ void FillRebuildTrackLength(){
   //cout << "rebdautrack_pdg: " << rebdautrack_pdg << endl;
   //cout << "rebdautrack_length: " << rebdautrack_length << endl;
 
+  reco_vtx=-1;
+  true_dau_dir=initvec;
+  cheat_dir=initvec;
+  reco_dir=initvec; 
+
+  //if(reco_track_true_pdg==321){
+    Double_t dis_x = true_kaon_end_x - reco_track_end_x;
+    Double_t dis_y = true_kaon_end_y - reco_track_end_y;
+    Double_t dis_z = true_kaon_end_z - reco_track_end_z;
+    reco_vtx = sqrt( dis_x*dis_x + dis_y*dis_y + dis_z*dis_z);
+    //}
+
   if(true_kaon_end_process==0){
+    //cout << "true_dau_muon_end_x: " << true_dau_muon_end_x << ", true_dau_muon_start_x: " << true_dau_muon_start_x << endl;
     Double_t true_dau_muon_dir_x = true_dau_muon_end_x - true_dau_muon_start_x;
     Double_t true_dau_muon_dir_y = true_dau_muon_end_y - true_dau_muon_start_y;
     Double_t true_dau_muon_dir_z = true_dau_muon_end_z - true_dau_muon_start_z;
-    //true_dau_muon_dir.SetXYZ(true_dau_muon_dir_x, true_dau_muon_dir_y, true_dau_muon_dir_z);
+    //true_dau_dir.SetXYZ(true_dau_muon_dir_x, true_dau_muon_dir_y, true_dau_muon_dir_z);
     true_dau_dir.SetMagThetaPhi(1, true_dau_muon_theta, true_dau_muon_phi);
     cheat_dir.SetXYZ(best_peak_x_true, best_peak_y_true, best_peak_z_true);
     reco_dir.SetXYZ(best_peak_x, best_peak_y, best_peak_z);
-    //cout << "true_dau_muon_dirx: " << true_dau_muon_dir_x << " " << true_dau_muon_dir_y << " " << true_dau_muon_dir_z << endl;
+    //cout << "true_dau_muon_dirx: " << true_dau_muon_dir_x << endl;
     //cout << "best_peak_x, y, z: " << best_peak_x << " " << best_peak_y << " " << best_peak_z << endl;
     //cout << "best_peak_x_true, y, z: " << best_peak_x_true << " " << best_peak_y_true << " " << best_peak_z_true <<endl;
   }
@@ -440,16 +451,28 @@ void FillRebuildTrackLength(){
     Double_t true_dau_pip_dir_y = true_dau_pip_end_y - true_dau_pip_start_y;
     Double_t true_dau_pip_dir_z = true_dau_pip_end_z - true_dau_pip_start_z;
     true_dau_dir.SetXYZ(true_dau_pip_dir_x, true_dau_pip_dir_y, true_dau_pip_dir_z);
-    //true_dau_pip_dir.SetMagThetaPhi(1, event.true_dau_pip_theta, event.true_dau_pip_phi);
+    //true_dau_dir.SetMagThetaPhi(1, true_dau_pip_theta, true_dau_pip_phi);
     cheat_dir.SetXYZ(best_peak_x_true, best_peak_y_true, best_peak_z_true);
     reco_dir.SetXYZ(best_peak_x, best_peak_y, best_peak_z);
+    if(true_kaon_end_process==1&& reco_dir!=initvec&&true_dau_dir!=initvec && cheat_dir!=initvec) cout << cheat_dir.X() << " " << cheat_dir.Y() << " " << cheat_dir.Z() << endl;
   }
 
 
   if(true_kaon_end_process==0 || true_kaon_end_process==1){
-    //cout << "true_dau_dir.Angle(reco_dir): " << true_dau_dir.Angle(reco_dir) << endl;
-    //cout << "true_dau_dir.Angle(cheat_dir): " << true_dau_dir.Angle(cheat_dir) << endl;
+    if(true_dau_dir!=initvec && reco_dir!=initvec){
+      //cout << "true_dau_dir: " << true_dau_dir.X() << " " << true_dau_dir.Y() << " " << true_dau_dir.Z() << endl;
+      //cout << "reco_dir: " << reco_dir.X() << " " << reco_dir.Y() << " " << reco_dir.Z() << endl;
+      //cout << "true_dau_dir.Angle(reco_dir): " << true_dau_dir.Angle(reco_dir) << endl;
+    }
+    //if(true_dau_dir!=initvec && cheat_dir!=initvec) cout << "true_dau_dir.Angle(cheat_dir): " << true_dau_dir.Angle(cheat_dir) << endl;
   }
+
+  if(reco_track_true_pdg==321) h_vtx_dis_ka->Fill(reco_vtx);
+  if(reco_track_true_pdg==2212) h_vtx_dis_pr->Fill(reco_vtx);
+  if(reco_track_true_pdg==-13 || reco_track_true_pdg==13 ) h_vtx_dis_pi->Fill(reco_vtx);
+  if(reco_track_true_pdg==221 || reco_track_true_pdg==-221) h_vtx_dis_mu->Fill(reco_vtx);
+  else h_vtx_dis_ot->Fill(reco_vtx);
+
 
   if(rebdautrack_pdg==2212){
     h_track_rebdau_ln_pr->Fill(rebdautrack_length);
@@ -581,6 +604,12 @@ void AddStackHistos(){
   s_trkln_rebdau_cheat_dir->Add(h_track_rebdau_cheat_dir_ln_sh);
   s_trkln_rebdau_cheat_dir->Add(h_track_rebdau_cheat_dir_ln_ot);
 
+  s_vtx_dis->Add(h_vtx_dis_ka);
+  s_vtx_dis->Add(h_vtx_dis_pr);
+  s_vtx_dis->Add(h_vtx_dis_pi);
+  s_vtx_dis->Add(h_vtx_dis_mu);
+  s_vtx_dis->Add(h_vtx_dis_ot);
+
   s_peak_dir->Add(h_peak_dir_pr);
   s_peak_dir->Add(h_peak_dir_pi);
   s_peak_dir->Add(h_peak_dir_mu);
@@ -596,14 +625,14 @@ void AddStackHistos(){
 }
 
 void AddLegend(){
-  /*
+  
   l_ka = new TLegend(0.75,0.65,0.95,0.95);
-  l_ka->AddEntry(h_track_chi2ka_ka, "True K^{+}"  , "f");
-  l_ka->AddEntry(h_track_chi2ka_pr, "True p" , "f");
-  l_ka->AddEntry(h_track_chi2ka_pi, "True #pi^{+}"   , "f");
-  l_ka->AddEntry(h_track_chi2ka_mu, "True #mu^{-}"   , "f");
-  l_ka->AddEntry(h_track_chi2ka_ot, "Others"   , "f");
-  */
+  l_ka->AddEntry(h_vtx_dis_ka, "True K^{+}"  , "f");
+  l_ka->AddEntry(h_vtx_dis_pr, "True p" , "f");
+  l_ka->AddEntry(h_vtx_dis_pi, "True #pi^{+}"   , "f");
+  l_ka->AddEntry(h_vtx_dis_mu, "True #mu^{-}"   , "f");
+  l_ka->AddEntry(h_vtx_dis_ot, "Others"   , "f");
+  
 
   l_pr_dau_ln = new TLegend(0.75,0.65,0.95,0.95);
   l_pr_dau_ln->AddEntry(h_track_dau_ln_pr, "True p" , "f");
@@ -625,15 +654,8 @@ void DrawHistos(TCanvas* &c,TString output_name){
   h_reco_track_length->Draw("same");
   c->Print(output_name);
   
-  s_trkln_dau->SetMaximum(200.);
-  s_trkln_dau_old->SetMaximum(200.); 
-  s_trkln_dau->Draw("nostack");
-  l_pr_dau_ln->Draw();
-  c->Print(output_name);
-  
-  s_trkln_dau_old->Draw("nostack");
-  l_pr_dau_ln->Draw();
-  c->Print(output_name);
+  //s_trkln_dau->SetMaximum(200.);
+  //s_trkln_dau_old->SetMaximum(200.); 
 
   s_trkln_rebdau->Draw("nostack");
   l_pr_dau_ln->Draw();
@@ -653,6 +675,10 @@ void DrawHistos(TCanvas* &c,TString output_name){
 
   s_peak_dir_cheat->Draw("nostack");
   l_pr_dau_ln->Draw();
+  c->Print(output_name);
+
+  s_vtx_dis->Draw("nostack");
+  l_ka->Draw();
   c->Print(output_name);
 
 
