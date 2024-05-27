@@ -176,9 +176,18 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
    const int nbins = h_All->GetNbinsX();
 
    // Setup the canvas
+   /*
    TCanvas *c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
    TPad *p_plot = new TPad("p_plot","p_plot",0,0,1,Single_PadSplit);
    TPad *p_legend = new TPad("p_legend","p_legend",0,Single_PadSplit,1,1);
+   p_legend->SetBottomMargin(0);
+   p_legend->SetTopMargin(0.1);
+   p_plot->SetTopMargin(0.01);
+   */
+
+   TCanvas *c = new TCanvas("c","c",800,600);
+   TPad *p_plot = new TPad("pad1","pad1",0,0,1,0.85);
+   TPad *p_legend = new TPad("pad2","pad2",0,0.85,1,1);
    p_legend->SetBottomMargin(0);
    p_legend->SetTopMargin(0.1);
    p_plot->SetTopMargin(0.01);
@@ -257,8 +266,8 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
 
    l->AddEntry(h_All,"All Events","l");
    l->AddEntry(h_Selected,"Selected Events","l");
-   l->AddEntry(h_Eff,"Selected/All","l");
-   l->SetTextSize(0.2);
+   l->AddEntry(h_Eff,"Selected/All","p");
+   //l->SetTextSize(0.2);
 
    // Create the "MicroBooNE" watermark
    TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
@@ -309,6 +318,20 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
    hs->Add(h_All,"");
    hs->Add(h_Selected,"");
    hs->Draw("nostack, e");
+
+   hs->GetXaxis()->SetTitleSize(0.05);
+   hs->GetYaxis()->SetTitleSize(0.05);
+
+   hs->GetXaxis()->SetTitleOffset(0.9);
+   hs->GetYaxis()->SetTitleOffset(0.9);
+
+   hs->GetXaxis()->SetLabelSize(0.045);
+   hs->GetYaxis()->SetLabelSize(0.045);
+
+   double max = hs->GetMaximum("nostack");
+   hs->SetMaximum(1.2*max);
+   gPad->Update();
+
    //gPad->Update();
    c->Modified();
    c->Update();
@@ -324,10 +347,14 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
    TGaxis*axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(),
                             gPad->GetUxmax(),gPad->GetUymax(),
                             0,rightmax,510,"+L");
-   axis->SetLineColor(kRed);
-   axis->SetLabelColor(kRed);
-   axis->SetTitle("Selected/All");
    axis->SetTitleColor(kRed);
+   axis->SetLabelColor(kRed);
+   axis->SetTitleFont(42);
+   axis->SetLabelFont(42);
+   axis->SetTitleSize(0.05);
+   axis->SetTitleOffset(0.9);
+   axis->SetLabelSize(0.045);
+   axis->SetTitle("Selected/All");
    axis->Draw();
 
    p_plot->RedrawAxis();

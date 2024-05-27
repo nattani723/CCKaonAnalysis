@@ -24,8 +24,8 @@ void ConvertToTrackTuple_alg_precut_cheat()
 
   TStopwatch clock;
 
-  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test3.root", "rootfile/test.root");
-  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test3.root", "rootfile/assok_refined_KrecoAlg_track_debug3.root");
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test3.root", "rootfile/test.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test5_debug.root", "rootfile/assok_refined_KrecoAlg_track_debug5_debug.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/CCKaonAnalyzer_debug.root", "rootfile/assok_refined_KrecoAlg_track.root");
 
 
@@ -535,8 +535,8 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
   Int_t true_cut3 = 0;
 
   //event.GetEntry(evt[ev]);
-  for (Long64_t jentry=0; jentry<100; jentry++) {
-  //for (Long64_t jentry=0; jentry<nentries; jentry++) {
+  //for (Long64_t jentry=0; jentry<100; jentry++) {
+  for (Long64_t jentry=0; jentry<nentries; jentry++) {
 
    
     event.GetEntry(jentry);
@@ -548,7 +548,7 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
     //cout << "true_nu_energy: " << event.true_nu_energy << endl;
     //cout << "true_dau_muon_end_x: " << event.true_dau_muon_end_x << endl; 
 
-    if(true_dau_muon_end_x>0) cout << "true_dau_muon_end_x: " << event.true_dau_muon_end_x << ", true_dau_muon_start_x: " <<  event.true_dau_muon_start_x  << endl;  
+    //if(true_dau_muon_end_x>0) cout << "true_dau_muon_end_x: " << event.true_dau_muon_end_x << ", true_dau_muon_start_x: " <<  event.true_dau_muon_start_x  << endl;  
 
     //FHC: 23 October 2015 - 2 May 2016 | run.sub 0 - 6748.22
     //RHC: 29 June 2016 - 29 July 2016 | run.sub 6748.22 - 7001

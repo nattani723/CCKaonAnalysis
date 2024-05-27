@@ -129,18 +129,20 @@ TH1D * h_peak_dir_cheat_mu;
 TH1D * h_peak_dir_cheat_sh;
 TH1D * h_peak_dir_cheat_ot;
 
+TH2D * h_kaon_vtx_length;
+
 TH2D * h_truek_trkln_chi2ka;
 TH1D * h_reco_track_length;
 TH1D * h_reco_track_daughter_distance;
 TH1D * h_reco_track_daughter_vtx_distance;
 
-  THStack * s_trkln_dau = new THStack();
-  THStack * s_trkln_dau_old = new THStack();
-THStack * s_trkln_rebdau = new THStack();
-THStack * s_trkln_rebdau_cheat = new THStack();
-THStack * s_trkln_rebdau_cheat_dir = new THStack();
-THStack * s_peak_dir = new THStack();
-THStack * s_peak_dir_cheat = new THStack();
+THStack * s_trkln_dau = new THStack("s_trkln_dau", ";Daughter Track Length (cm);Event");
+THStack * s_trkln_dau_old = new THStack("s_trkln_dau)old", ";Daughter Track Length (cm);Event");
+THStack * s_trkln_rebdau = new THStack("s_trkln_rebdau", ";Daughter Track Length (cm);Event");
+THStack * s_trkln_rebdau_cheat = new THStack("s_trkln_rebdau_cheat", ";Daughter Track Length (cm);Event");
+THStack * s_trkln_rebdau_cheat_dir = new THStack("s_trkln_rebdau_cheat_dir", ";Daughter Track Length (cm);Event");
+THStack * s_peak_dir = new THStack("s_peak_dir", ";Reconstructed - True direciton Opening angle (rad);Event");
+THStack * s_peak_dir_cheat = new THStack("s_peak_dir_cheat", ";Cheated - True direciton Opening angle (rad);Event");
 THStack * s_vtx_dis = new THStack();
 
 /*

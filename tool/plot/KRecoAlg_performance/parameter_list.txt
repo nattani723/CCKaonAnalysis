@@ -1,4 +1,4 @@
-/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test2.root
+1;95;0c/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test2.root
 
     m_hit_threshold_for_track(50),
     m_growing_fit_initial_length(10.f),
@@ -16,8 +16,109 @@
     m_high_resolution_distance_to_line(1),
     m_high_resolution_hit_connection_distance(5)
 
-
+/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test3.root
 
     m_distance_to_line(0.75),
     m_hit_connection_distance(0.75),
 
+
+/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test4.root
+
+    m_hit_threshold_for_track(50),
+    m_growing_fit_initial_length(10.f),
+    m_initial_fit_distance_to_line(1.f),
+    m_min_initial_hits_found(7),
+    m_max_fitting_hits(15),
+    m_local_sliding_fit_window(10),
+    m_growing_fit_segment_length(5.f),
+    m_distance_to_line(0.75),
+    m_hit_connection_distance(0.75),
+    m_trackall_sliding_fit_window(10),
+    m_trackall_distance_to_line(1),
+    m_trackall_hit_connection_distance(1),
+    m_high_resolution_sliding_fit_window(5),
+    m_high_resolution_distance_to_line(1),
+    m_high_resolution_hit_connection_distance(1)
+
+/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test5.root
+
+    m_hit_threshold_for_track(50),
+    m_growing_fit_initial_length(10.f),
+    m_initial_fit_distance_to_line(1.f),
+    m_min_initial_hits_found(7),
+    m_max_fitting_hits(15),
+    m_local_sliding_fit_window(10),
+    m_growing_fit_segment_length(5.f),
+    m_distance_to_line(0.75),
+    m_hit_connection_distance(0.75),
+    m_trackall_sliding_fit_window(10),
+    m_trackall_distance_to_line(1),
+    m_trackall_hit_connection_distance(5),
+    m_high_resolution_sliding_fit_window(5),
+    m_high_resolution_distance_to_line(1),
+    m_high_resolution_hit_connection_distance(5)
+
+NO TRACK ALL
+
+
+
+/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test6.root
+
+    m_hit_threshold_for_track(50),
+    m_growing_fit_initial_length(10.f),
+    m_initial_fit_distance_to_line(1.f),
+    m_min_initial_hits_found(7),
+    m_max_fitting_hits(15),
+    m_local_sliding_fit_window(10),
+    m_growing_fit_segment_length(5.f),
+    m_distance_to_line(1.5),
+    m_hit_connection_distance(1.5),
+    m_trackall_sliding_fit_window(10),
+    m_trackall_distance_to_line(1),
+    m_trackall_hit_connection_distance(5),
+    m_high_resolution_sliding_fit_window(5),
+    m_high_resolution_distance_to_line(3),
+    m_high_resolution_hit_connection_distance(3)
+
+NO TRACK ALL
+
+
+/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test7.root
+
+    m_hit_threshold_for_track(50),
+    m_growing_fit_initial_length(10.f),
+    m_initial_fit_distance_to_line(1.f),
+    m_min_initial_hits_found(7),
+    m_max_fitting_hits(15),
+    m_local_sliding_fit_window(10),
+    m_growing_fit_segment_length(5.f),
+    m_distance_to_line(1),
+    m_hit_connection_distance(1),
+    m_trackall_sliding_fit_window(10),
+    m_trackall_distance_to_line(1),
+    m_trackall_hit_connection_distance(5),
+    m_high_resolution_sliding_fit_window(5),
+    m_high_resolution_distance_to_line(1),
+    m_high_resolution_hit_connection_distance(5)
+
+NO TRACK ALL
+
+
+/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test8.root
+
+    m_hit_threshold_for_track(50),
+    m_growing_fit_initial_length(10.f),
+    m_initial_fit_distance_to_line(1.f),
+    m_min_initial_hits_found(7),
+    m_max_fitting_hits(15),
+    m_local_sliding_fit_window(10),
+    m_growing_fit_segment_length(5.f),
+    m_distance_to_line(0.75),
+    m_hit_connection_distance(0.75),
+    m_trackall_sliding_fit_window(10),
+    m_trackall_distance_to_line(1),
+    m_trackall_hit_connection_distance(5),
+    m_high_resolution_sliding_fit_window(5),
+    m_high_resolution_distance_to_line(1),
+    m_high_resolution_hit_connection_distance(3)
+NO TRACK ALL

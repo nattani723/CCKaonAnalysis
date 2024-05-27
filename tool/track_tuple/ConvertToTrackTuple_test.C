@@ -1,7 +1,7 @@
 #define Event_cxx
 #define plotcck_cxx
 //#include "plotcck.h"
-#include "Event.h"
+#include "Eventmini.h"
 
 #include "TH1.h"
 #include "TStopwatch.h"
@@ -60,10 +60,6 @@ void ConvertToTrackTuple_test(TString input_name, TString output_name)
   TFile * outfile = new TFile(output_name, "recreate");
   TTree * outtree = new TTree("CCKaonTracks","CCKaonTracks");
 
-  Int_t         true_nu_ccnc = -9999;
-  Int_t         true_nu_pdg = -9999;
-  Int_t         true_nu_mode = -9999;
-  Int_t         true_lepton_pdg = -9999;
   Int_t         eventnum = -9999;
   Int_t         run = -9999;
   Int_t         subrun = -9999;
@@ -74,10 +70,6 @@ void ConvertToTrackTuple_test(TString input_name, TString output_name)
   outtree->Branch("eventnum", &eventnum, "eventnum/I"); 
   outtree->Branch("run", &run, "run/I"); 
   outtree->Branch("subrun", &subrun, "subrun/I"); 
-  outtree->Branch("true_nu_pdg", &true_nu_pdg, "true_nu_pdg/I"); 
-  outtree->Branch("true_nu_ccnc", &true_nu_ccnc, "true_nu_ccnc/I"); 
-  outtree->Branch("true_nu_mode", &true_nu_mode, "true_nu_mode/I"); 
-  outtree->Branch("true_lepton_pdg", &true_lepton_pdg, "true_lepton_pdg/I"); 
   outtree->Branch("true_dau_muon_start_x",&true_dau_muon_start_x,"true_dau_muon_start_x/F");
   outtree->Branch("true_dau_muon_end_x",&true_dau_muon_end_x,"true_dau_muon_end_x/F");
 
@@ -89,7 +81,7 @@ void ConvertToTrackTuple_test(TString input_name, TString output_name)
 
   Event event(t);
 
-  for (Long64_t jentry=0; jentry<300; jentry++){
+  for (Long64_t jentry=0; jentry<100; jentry++){
     
     event.GetEntry(jentry);
     if(nentries>=10){
@@ -99,14 +91,11 @@ void ConvertToTrackTuple_test(TString input_name, TString output_name)
     }
 
     cout << "true_dau_muon_end_x: " << event.true_dau_muon_end_x << endl; 
+    cout << "true_dau_muon_start_x: " << event.true_dau_muon_start_x << endl; 
 
       eventnum = event.event;
       run = event.run;
       subrun = event.subrun;
-      true_nu_pdg = event.true_nu_pdg;
-      true_nu_ccnc = event.true_nu_ccnc;
-      true_nu_mode = event.true_nu_mode;
-      true_lepton_pdg = event.true_lepton_pdg;
 
       true_dau_muon_end_x = event.true_dau_muon_end_x;
       true_dau_muon_start_x = event.true_dau_muon_start_x;

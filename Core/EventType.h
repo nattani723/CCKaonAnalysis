@@ -61,6 +61,7 @@ std::string GetType2(const Event &e,int tr=-1){
        hasKPoutFV = true;
    }
 
+   /*
    if(e.CCNC.at(0) == "CC" && e.EventIsSignal) return "CCKP";
    else if(e.CCNC.at(0) == "NC" && e.EventIsSignal) return "NCKP";
    else if(e.CCNC.at(0) == "CC" && hasKPoutFV) return "CCKPOutFV";//not applying phasespace requirement
@@ -68,6 +69,15 @@ std::string GetType2(const Event &e,int tr=-1){
    else if(e.EventHasKaonPScatter) return "KScatter";
    else if(e.EventHasProtonScatter) return "Proton";
    else return "Other";
+   */
+   if(e.EventHasKaonPScatter) return "KScatter";
+   else if(e.CCNC.at(0) == "CC" && e.EventIsSignal) return "CCKP";
+   else if(e.CCNC.at(0) == "NC" && e.EventIsSignal) return "NCKP";
+   else if(e.CCNC.at(0) == "CC" && hasKPoutFV) return "CCKPOutFV";//not applying phasespace requirement
+   else if(e.Mode.at(0) == "KAON") return "OtherK";
+   else if(e.EventHasProtonScatter) return "Proton";
+   else return "Other";
+
 
    return type;
 }

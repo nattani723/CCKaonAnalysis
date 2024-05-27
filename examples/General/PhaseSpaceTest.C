@@ -20,7 +20,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       BuildTunes();
 
-      std::string label = "test";
+      std::string label = "SignalPhaseSpace";
 
       const double POT = 1e21; // POT to scale samples to
       const int Mode = kFHC;
@@ -41,9 +41,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_SelectedQ2_All = new TH1D("h_SelectedQ2_All","",60,0,3.0);
       TEfficiency* Efficiency_Q2_All = new TEfficiency("Q2_eff_All",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
 
-      TH1D *h_NuE_All = new TH1D("h_TrueNuE_All","",60,0,4.0);
-      TH1D *h_SelectedNuE_All = new TH1D("h_SelectedNuE_All","",60,0,4.0);
-      TEfficiency* Efficiency_NuE_All = new TEfficiency("NuE_eff_All",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
+      TH1D *h_NuE_All = new TH1D("h_TrueNuE_All","",20,0,4.0);
+      TH1D *h_SelectedNuE_All = new TH1D("h_SelectedNuE_All","",20,0,4.0);
+      TEfficiency* Efficiency_NuE_All = new TEfficiency("NuE_eff_All",";True E_{#nu} (GeV);Selected/All",20,0,4.0);
 
       TH1D *h_MuonKE_All = new TH1D("h_MuonKE_All","",60,0,3.0);
       TH1D *h_SelectedMuonKE_All = new TH1D("h_SelectedMuonKE_All","",60,0,3.0);
@@ -69,9 +69,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_SelectedMuonBeamPhi_All = new TH1D("h_SelectedMuonBeamPhi_All","",60,-3.1415,3.1415);
       TEfficiency* Efficiency_MuonBeamPhi_All = new TEfficiency("MuonBeamPhi_eff_All",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_KaonMomentum_All = new TH1D("h_TrueKaonMomentum_All","",60,0.0,2.0);
-      TH1D *h_SelectedKaonMomentum_All = new TH1D("h_SelectedKaonMomentum_All","",60,0.0,2.0);
-      TEfficiency* Efficiency_KaonMomentum_All = new TEfficiency("KaonMomentum_eff_All",";True K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
+      TH1D *h_KaonMomentum_All = new TH1D("h_TrueKaonMomentum_All","",25,0.0,2.5);
+      TH1D *h_SelectedKaonMomentum_All = new TH1D("h_SelectedKaonMomentum_All","",25,0.0,2.5);
+      TEfficiency* Efficiency_KaonMomentum_All = new TEfficiency("KaonMomentum_eff_All",";True K^{+} Momentum (GeV/c);Selected/All",25,0.0,2.5);
 
       TH1D *h_DecayMuonMomentum_All = new TH1D("h_TrueDecayMuonMomentum_All","",60,0.3,1.5);
       TH1D *h_SelectedDecayMuonMomentum_All = new TH1D("h_SelectedDecayMuonMomentum_All","",60,0.3,1.5);
