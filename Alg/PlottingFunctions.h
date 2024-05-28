@@ -715,6 +715,12 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
        continue;
      }
  
+     // Normalize the 2D histogram by area
+     Double_t total = hist_v.at(i_h)->Integral();
+     if (total > 0) { // Ensure the total is non-zero to avoid division by zero
+       hist_v.at(i_h)->Scale(1.0 / total);
+     }
+
      std::string histname = label + EventType::SigBG.at(i_h);
      hist_v.at(i_h)->SetStats(0);
      hist_v.at(i_h)->Draw("COLZ");
