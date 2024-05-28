@@ -374,6 +374,130 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
 
  }
 
+
+//////////////////////////////////////
+
+
+ void DrawPhaseSpacePlot(TH1D * h_Momentum, TH1D * h_Probability)
+ {
+
+   if (!h_Momentum || !h_Probability) {
+     std::cerr << "Histogram not found or is empty!" << std::endl;
+     return;
+   }
+
+   std::string plotdir = "PhaseSpacePlots";
+   std::string label = "Probability_KEndMomentum";
+
+   TCanvas *c = new TCanvas("c","c",800,600);
+   TPad *p_plot = new TPad("pad1","pad1",0,0,1,0.90);
+   TPad *p_legend = new TPad("pad2","pad2",0,0.90,1,1);
+   p_legend->SetBottomMargin(0);
+   p_legend->SetTopMargin(0.1);
+   p_plot->SetTopMargin(0.01);
+
+   // Create the empty legend
+   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
+   l->SetBorderSize(0);
+   l->SetTextSize(0.5);
+   l->SetTextFont(62);
+   int ncols = 2;
+   l->SetNColumns(ncols);
+
+   h_Momentum->SetLineColor(kRed);
+   h_Momentum->SetLineWidth(2);
+
+   h_Probability->SetLineColor(kBlack);
+   h_Probability->SetLineWidth(2);
+
+   l->AddEntry(h_Momentum,"p_{K^{+}}, K^{+} End Momentum","l");
+   l->AddEntry(h_Probability,"f(p_{K^{+}})","l");
+
+   // Create the "MicroBooNE" watermark
+   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.005);
+   l_Watermark->SetTextAlign(32);
+   l_Watermark->SetTextSize(0.05);
+   l_Watermark->SetTextFont(62);
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+
+
+   // Draw everything
+   p_legend->Draw();
+   p_legend->cd();
+   l->Draw();
+   c->cd();
+   //p_plot->SetLogy(1);
+   p_plot->Draw();
+   p_plot->cd();
+
+   h_Probability->SetTitle(";p_{K^{+}}, K^{+} End Momentum (GeV/c^{2}); f(p_{K^{+}})");
+   h_Probability->SetStats(0);
+   h_Probability->Draw("hist");
+
+   h_Probability->GetXaxis()->SetTitleSize(0.045);
+   h_Probability->GetYaxis()->SetTitleSize(0.045);
+
+   h_Probability->GetXaxis()->SetTitleOffset(0.9);
+   h_Probability->GetYaxis()->SetTitleOffset(0.9);
+
+   h_Probability->GetXaxis()->SetLabelSize(0.04);
+   h_Probability->GetYaxis()->SetLabelSize(0.04);
+
+   h_Probability->GetXaxis()->SetTitleFont(62);
+   h_Probability->GetYaxis()->SetTitleFont(62);
+
+   h_Probability->GetXaxis()->SetLabelFont(62);
+   h_Probability->GetYaxis()->SetLabelFont(62);
+
+   h_Probability->SetMaximum(1.2);
+   h_Probability->SetMinimum(0.);
+   gPad->Update();
+
+   //gPad->Update();
+   c->Modified();
+   c->Update();
+
+   Float_t rightmax = h_Momentum->GetBinContent(h_Momentum->GetMaximumBin());
+   //Float_t rightmax = 1.1 * h_Eff->GetMaximum();
+   Float_t scale = gPad->GetUymax()/rightmax;
+   h_Momentum->Scale(scale);
+   h_Momentum->SetStats(0);
+   h_Momentum->Draw("hist same");
+
+   //draw an axis on the right side
+   TGaxis*axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(),
+                            gPad->GetUxmax(),gPad->GetUymax(),
+                            0,rightmax,510,"+L");
+   axis->SetTitleColor(kRed);
+   axis->SetLabelColor(kRed);
+   axis->SetTitleFont(62);
+   axis->SetLabelFont(62);
+   axis->SetTitleSize(0.045);
+   axis->SetTitleOffset(0.9);
+   axis->SetLabelSize(0.04);
+   axis->SetTitle("Events (a.u.)");
+   axis->Draw();
+
+   p_plot->RedrawAxis();
+
+   // Draw the various legends, labels etc.
+   if(DrawWatermark) l_Watermark->Draw();
+
+   gPad->Modified();
+   gPad->Update();
+   c->cd();
+   c->Update();
+   system(("mkdir -p " + plotdir).c_str());
+   c->Print((plotdir + "/" + label + ".png").c_str());
+   c->Print((plotdir + "/" + label + ".pdf").c_str());
+   c->Print((plotdir + "/" + label + ".C").c_str());
+   c->Clear();
+   c->Close();
+
+ }
+
  //};
 
 #endif
