@@ -930,6 +930,7 @@ void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double 
   RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
   
   mode = EventType::GetType(e);
+  //sigbg = EventType::GetSigBG(e);
   sigbg = EventType::GetSigBG(PrimaryKaonTrackParticle, DaughterTrackParticle);
   
   if(mode == "Data") return;
@@ -1108,16 +1109,16 @@ void SelectionManager::DrawHistogramsPDG(std::string label,double Scale,double S
       Hists_ByPrimaryPDG[EventType::PDGs.at(i_pdg)]->Scale(Scale);
       Hists_ByDaughterPDG[EventType::PDGs.at(i_pdg)]->Sumw2();
    }
-	
-Hist_All->Sumw2(); 
-TH1D* h_errors = (TH1D*)Hist_All->Clone("h_errors");	
-	
-Hists_ByPrimaryPDG["KaonP"]->Scale(SignalScale);
-Hists_ByDaughterPDG["MuonP"]->Scale(SignalScale);
-
-std::vector<TH1D*> Hists_ByPrimaryPDG_v;
-std::vector<TH1D*> Hists_ByDaughterPDG_v;
-
+   
+   Hist_All->Sumw2(); 
+   TH1D* h_errors = (TH1D*)Hist_All->Clone("h_errors");	
+   
+   Hists_ByPrimaryPDG["KaonP"]->Scale(SignalScale);
+   Hists_ByDaughterPDG["MuonP"]->Scale(SignalScale);
+   
+   std::vector<TH1D*> Hists_ByPrimaryPDG_v;
+   std::vector<TH1D*> Hists_ByDaughterPDG_v;
+   
    for(size_t i_pdg=0;i_pdg<EventType::PDGs.size();i_pdg++) 
       Hists_ByPrimaryPDG_v.push_back(Hists_ByPrimaryPDG[EventType::PDGs.at(i_pdg)]); 
 
@@ -1125,8 +1126,8 @@ std::vector<TH1D*> Hists_ByDaughterPDG_v;
       Hists_ByDaughterPDG_v.push_back(Hists_ByDaughterPDG[EventType::PDGs.at(i_pdg)]); 
 
    HypPlot::DrawHistogramNoStack(Hists_ByPrimaryPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByPrimaryPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
-HypPlot::DrawHistogramNoStack(Hists_ByDaughterPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByDaugterPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
-
+   HypPlot::DrawHistogramNoStack(Hists_ByDaughterPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByDaugterPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
+ 
    std::map<std::string,TH1D*>::iterator it;
    for (it = Hists_ByPrimaryPDG.begin(); it != Hists_ByPrimaryPDG.end(); it++)
       it->second->Write(it->first.c_str());

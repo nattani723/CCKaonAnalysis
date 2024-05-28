@@ -61,6 +61,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       */
 
       Eff->SetConfidenceLevel(0.6827); // Set to 68.27% confidence level, typical for 1 sigma in physics
+      Efficiency->SetStatisticOption(TEfficiency::kBUniform);
+      Efficiency->SetPosteriorMode();
       Background_Acceptance->SetConfidenceLevel(0.6827);
 
 

@@ -789,11 +789,23 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    double maximum=0;
    
    for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
-      hist_v.at(i_h)->SetLineColor(colors.at(i_h));
-      hs->Add(hist_v.at(i_h),"HIST");
-      maximum = GetHistMaxError(hist_v.at(i_h));
-      if(hasdata) l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
-      else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"F");
+
+     Double_t integral = hist_v.at(i_h)->Integral();
+     if (integral > 0) { // Prevent division by zero
+       hist_v.at(i_h)->Scale(1.0 / integral);
+     }
+
+     hist_v.at(i_h)->SetLineColor(colors.at(i_h));
+     hist_v.at(i_h)->SetLineWidth(2);
+     hs->Add(hist_v.at(i_h),"HIST");
+     
+     if(GetHistMaxError(hist_v.at(i_h))>maximum)
+       maximum = GetHistMaxError(hist_v.at(i_h));
+     
+     if(hasdata)
+       l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
+     else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"l");
+
    }
 
    if(hasdata){
