@@ -137,6 +137,7 @@ class EventAssembler {
       std::vector<RecoParticle>* TrackOthers=0;
       std::vector<RecoParticle>* TrackRebuiltOthers=0;
       std::vector<RecoParticle>* ShowerOthers=0;
+      RecoParticle* CCMuTrack=0;
 
       // Systematics
       vector<string>* SysDials=0;

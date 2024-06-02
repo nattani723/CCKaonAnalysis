@@ -250,11 +250,13 @@ void SelectionManager::SetSignal(Event &e){
          e.TrueKaonIndex = i_tr; 
       }
 
+      /*
       if(e.TrackPrimaryDaughters.at(i_tr).HasTruth && e.TrackPrimaryDaughters.at(i_tr).TrackTruePDG == 13 && e.TrackPrimaryDaughters.at(i_tr).TrackTrueOrigin == 1){ 
          found_muon = true; 
          e.TrueMuonIndex = i_tr; 
       }
 
+      
       if(e.TrackPrimaryDaughters.at(i_tr).HasTruth && e.TrackPrimaryDaughters.at(i_tr).TrackTruePDG == -13 && e.TrackPrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){ 
          found_decay_muon = true; 
          e.TrueDecayMuonIndex = i_tr; 
@@ -264,9 +266,38 @@ void SelectionManager::SetSignal(Event &e){
          found_decay_pion = true;
          e.TrueDecayPionIndex = i_tr; 
       }
+      */
 
    }
 
+   for(size_t i_tr=0;i_tr<e.TrackOthers.size();i_tr++){ 
+
+     if(e.TrackOthers.at(i_tr).HasTruth && e.TrackOthers.at(i_tr).TrackTruePDG == -13){
+       found_decay_muon = true;
+       e.TrueDecayMuonIndex = i_tr;
+     }
+
+     if(e.TrackOthers.at(i_tr).HasTruth && e.TrackOthers.at(i_tr).TrackTruePDG == 211){
+       found_decay_pion = true;
+       e.TrueDecayPionIndex = i_tr;
+     }
+
+   }
+
+   for(size_t i_tr=0;i_tr<e.TrackRebuiltOthers.size();i_tr++){ 
+
+     if(e.TrackRebuiltOthers.at(i_tr).HasTruth && e.TrackRebuiltOthers.at(i_tr).TrackTruePDG == -13){
+       found_decay_muon = true;
+       e.TrueDecayRebuiltMuonIndex = i_tr;
+     }
+
+     if(e.TrackOthers.at(i_tr).HasTruth && e.TrackOthers.at(i_tr).TrackTruePDG == 211){
+       found_decay_pion = true;
+       e.TrueDecayRebuiltPionIndex = i_tr;
+     }
+
+   }
+   
    e.GoodReco = e.EventIsSignal && found_kaon && ( found_decay_muon || found_decay_pion );
    e.GoodReco_NuMuP = e.EventIsSignal && found_kaon && found_decay_muon;
    e.GoodReco_PiPPi0 = e.EventIsSignal && found_kaon && found_decay_pion;
@@ -441,24 +472,22 @@ bool SelectionManager::DaughterTrackCut(const Event &e){
 
   int NDaughterTrack=0;
 
+  if(e.CCMuTrack.IsCCMu) SetCCMuTrackParticle(PrimaryTrack);
+
   for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
 
      PrimaryEnd.Clear();
      PrimaryTrack = e.TrackPrimaryDaughters.at(i_tr);
      PrimaryEnd.SetXYZ(PrimaryTrack.TrackEndX, PrimaryTrack.TrackEndY, PrimaryTrack.TrackEndZ);
 
-     if(PrimaryTrack.IsCCMu){
-	SetCCMuTrackParticle(PrimaryTrack);
-	continue;
-     }
-
+     /*
      for(size_t i_tr_dau=0;i_tr_dau<e.TrackPrimaryDaughters.size();i_tr_dau++){
 
        if(i_tr == i_tr_dau) continue;
 
        DaughterStart.Clear();
        DaughterTrack = e.TrackPrimaryDaughters.at(i_tr_dau);
-       DaughterStart.SetXYZ(PrimaryTrack.TrackStartX, PrimaryTrack.TrackStartY, PrimaryTrack.TrackStartZ);
+       DaughterStart.SetXYZ(PrimaryTrack.TrackStartX, PrimaryTrack.TrackStartY, PrimaryTrack.TrackStartZ); DaughterTrack should be
 
        PrimaryDaughterDistance = PrimaryEnd - DaughterStart;
        if( PrimaryDaughterDistance.Mag() < 10){
@@ -469,8 +498,48 @@ bool SelectionManager::DaughterTrackCut(const Event &e){
        }
 
      }
+     */
 
-   }
+     for(size_t i_tr_dau=0;i_tr_dau<e.TrackOthers.size();i_tr_dau++){
+       
+       DaughterStart.Clear();
+       DaughterTrack = e.TrackOthers.at(i_tr_dau);
+       DaughterStart.SetXYZ(DaughterTrack.TrackStartX, DaughterTrack.TrackStartY, DaughterTrack.TrackStartZ);
+
+       PrimaryDaughterDistance = PrimaryEnd - DaughterStart;
+
+       if( PrimaryDaughterDistance.Mag() < 10){
+	 NDaughterTrack++;
+	 SetPrimaryKaonTrackParticle(PrimaryTrack);
+	 SetDaughterTrackParticle(DaughterTrack);
+	 //RecoParticle DaughterTrack_tmp = GetDaughterTrackParticle();//for what purpose
+       }
+ 
+     }
+
+     double maxLength=-1;
+     int index=-1;
+     RecoParticle DaughterTrackRebuilt;
+
+     for(size_t i_tr_dau=0;i_tr_dau<e.TrackRebuiltOthers.size();i_tr_dau++){
+
+       DaughterTrackRebuilt = e.TrackRebuiltOthers.at(i_tr_dau);
+       if(DaughterTrackRebuilt.TrackLength>maxLength)
+	 index = i_tr_dau;
+
+     }
+
+     if(index>=0) DaughterTrackRebuilt = e.TrackRebuiltOthers.at(index); 
+
+     if( DaughterTrackRebuilt.TrackLength>0 && (DaughterTrack.TrackLength<40. || DaughterTrack.TrackLength>65.) ){
+
+       //we would retrieve rebuilt track
+       SetDaughterTrackParticle(DaughterTrackRebuilt);
+
+     }
+
+  }//TrackPrimaryDaughters loop
+  std::cout << "15" << std::endl;
 
    bool passed = NDaughterTrack > 0; 
 

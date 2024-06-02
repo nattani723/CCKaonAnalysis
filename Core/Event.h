@@ -13,15 +13,15 @@ using std::string;
 
 struct Event {
 
-	bool IsData=false;
-	UInt_t EventID;
-	Int_t run;
-	Int_t subrun;
-	Int_t event;
-	Int_t fileID;
-	double Weight=1.0;
-
-        // Flags applying to the entire event
+  bool IsData=false;
+  UInt_t EventID;
+  Int_t run;
+  Int_t subrun;
+  Int_t event;
+  Int_t fileID;
+  double Weight=1.0;
+  
+  // Flags applying to the entire event
   Bool_t EventIsSignal = false;
   Bool_t EventIsSignal_NuMuP = false;
   Bool_t EventIsSignal_PiPPi0 = false;
@@ -36,13 +36,13 @@ struct Event {
   Bool_t EventHasKaonM = false;
   Bool_t EventHasKaon0 = false;
 
-        // Flags for each MCTruth
-        vector<string> Mode;
-        vector<string> CCNC;
-        Int_t NMCTruths;
-        Int_t NMCTruthsInTPC;
-        vector<bool> InActiveTPC;
-        vector<bool> IsHyperon;
+  // Flags for each MCTruth
+  vector<string> Mode;
+  vector<string> CCNC;
+  Int_t NMCTruths;
+  Int_t NMCTruthsInTPC;
+  vector<bool> InActiveTPC;
+  vector<bool> IsHyperon;
   vector<bool> IsKaon;
   vector<bool> IsKaonP;
   vector<bool> IsKaonP_NuMuP;
@@ -63,12 +63,12 @@ struct Event {
   Bool_t GoodPrimaryReco;
   Bool_t GoodRecoAsShower;
 
-        vector<TVector3> TruePrimaryVertex;
-
-	//true variables
-	std::vector<SimParticle> Neutrino;
-	std::vector<SimParticle> Lepton;
-	std::vector<SimParticle> PrimaryHyperon;
+  vector<TVector3> TruePrimaryVertex;
+  
+  //true variables
+  std::vector<SimParticle> Neutrino;
+  std::vector<SimParticle> Lepton;
+  std::vector<SimParticle> PrimaryHyperon;
   std::vector<SimParticle> PrimaryNucleon;
   std::vector<SimParticle> PrimaryPion;
   std::vector<SimParticle> PrimaryKaon;
@@ -83,44 +83,47 @@ struct Event {
   std::vector<SimParticle> Kaon0Decay;
   std::vector<SimParticle> NeutralKaonDecayK0SL;
 
-        vector<TVector3> DecayVertex;
-
-	TVector3 RecoPrimaryVertex;
+  vector<TVector3> DecayVertex;
+  
+  TVector3 RecoPrimaryVertex;
   Bool_t PassNuCCInclusiveFilter;
-	Int_t NPrimaryDaughters;
-	Int_t NPrimaryTrackDaughters;
-	Int_t NPrimaryShowerDaughters;
+  Int_t NPrimaryDaughters;
+  Int_t NPrimaryTrackDaughters;
+  Int_t NPrimaryShowerDaughters;
   Int_t NOtherTracks;
   Int_t NOtherRebuiltTracks;
   Int_t NOtherShowers;
 
-	std::vector<RecoParticle> TrackPrimaryDaughters;
-	std::vector<RecoParticle> ShowerPrimaryDaughters;
+  std::vector<RecoParticle> TrackPrimaryDaughters;
+  std::vector<RecoParticle> ShowerPrimaryDaughters;
   std::vector<RecoParticle> TrackOthers;
   std::vector<RecoParticle> TrackRebuiltOthers;
   std::vector<RecoParticle> ShowerOthers;
+  RecoParticle CCMuTrack;
 
-	int TrueMuonIndex;
-	int TrueKaonIndex;
-	int TrueDecayMuonIndex;
-	int TrueDecayPionIndex;
-
-	// Muon, proton and pion candidates
-	RecoParticle MuonCandidate;
-	RecoParticle KaonCandidate;
-	RecoParticle DecayMuonCandidate;
-	RecoParticle DecayPionCandidate;
-
-	Float_t SelectorBDTScore;
-	Float_t AnalysisBDTScore;
+  int TrueMuonIndex;
+  int TrueKaonIndex;
+  int TrueDecayMuonIndex;
+  int TrueDecayPionIndex;
+  int TrueDecayRebuiltMuonIndex;
+  int TrueDecayRebuiltPionIndex;
+  
+  // Muon, proton and pion candidates
+  RecoParticle MuonCandidate;
+  RecoParticle KaonCandidate;
+  RecoParticle DecayMuonCandidate;
+  RecoParticle DecayPionCandidate;
+  
+  Float_t SelectorBDTScore;
+  Float_t AnalysisBDTScore;
   Float_t BDTScore;
-    
-        vector<string> SysDials;
+  
+  vector<string> SysDials;
   //vector<vector<double>> SysWeights;
   vector<vector<vector<double>>> SysWeights;
-
-        void Print(){ std::cout << run << "  " << subrun << "  " << event << std::endl; }
-
+  
+  void Print(){ std::cout << run << "  " << subrun << "  " << event << std::endl; }
+  
 };
 
 #endif

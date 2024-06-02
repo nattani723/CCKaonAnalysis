@@ -716,10 +716,12 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
      }
  
      // Normalize the 2D histogram by area
+     /*
      Double_t total = hist_v.at(i_h)->Integral();
      if (total > 0) { // Ensure the total is non-zero to avoid division by zero
        hist_v.at(i_h)->Scale(1.0 / total);
      }
+     */
 
      std::string histname = label + EventType::SigBG.at(i_h);
      hist_v.at(i_h)->SetStats(0);
@@ -794,12 +796,14 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
 
    double maximum=0;
    
-   for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
+   //for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
+   for(size_t i_h=0;i_h<3;i_h++){ 
 
+     
      Double_t integral = hist_v.at(i_h)->Integral();
      if (integral > 0) { // Prevent division by zero
        hist_v.at(i_h)->Scale(1.0 / integral);
-     }
+     }     
 
      hist_v.at(i_h)->SetLineColor(colors.at(i_h));
      hist_v.at(i_h)->SetLineWidth(2);

@@ -121,7 +121,7 @@ std::string GetProc(const Event &e){
    if(p.TrackTruePDG == 321) return "KaonP";
    else if(p.TrackTruePDG == 2212) return "Proton";
    else if(p.TrackTruePDG == -13) return "MuonP";
-   else if(p.TrackTruePDG == 13) return "MuonP";
+   else if(p.TrackTruePDG == 13) return "MuonM";
    else if(p.TrackTruePDG == 211) return "PionP";
    else if(p.TrackTruePDG == -211) return "PionM";
    else if(p.TrackTruePDG == 11 || p.TrackTruePDG == -11 || p.TrackTruePDG == 22 || p.TrackTruePDG == 111 ) return "Shower";

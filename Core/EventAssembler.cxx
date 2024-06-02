@@ -60,6 +60,7 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("TrackOthers",1);
    t_in->SetBranchStatus("TrackRebuiltOthers",1);
    t_in->SetBranchStatus("ShowerOthers",1);
+   t_in->SetBranchStatus("CCMuTrack",1);
 
    t_in->SetBranchStatus("IsData",1);
    t_in->SetBranchStatus("EventID",1);
@@ -209,6 +210,7 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("TrackOthers",&TrackOthers);
    t_in->SetBranchAddress("TrackRebuiltOthers",&TrackRebuiltOthers);
    t_in->SetBranchAddress("ShowerOthers",&ShowerOthers);
+   t_in->SetBranchAddress("CCMuTrack",&CCMuTrack);
 
    if(LoadWeights){
    t_in->SetBranchAddress("SysDials", &SysDials);
@@ -358,6 +360,7 @@ Event EventAssembler::GetEvent(int i){
    e.TrackOthers = *TrackOthers;
    e.TrackRebuiltOthers = *TrackRebuiltOthers;
    e.ShowerOthers = *ShowerOthers;
+   e.CCMuTrack = *CCMuTrack;
 
    if(LoadWeights){
    e.SysDials = *SysDials;

@@ -32,9 +32,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
 //exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root");
 
+/*
       SampleNames.push_back("GENIE Background"); 
       SampleTypes.push_back("Background");
       SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/NuMI_sample0_KaonTrees_0_2894.root");
+*/
 
       bool hasdata=false;
 
@@ -61,8 +63,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       */
 
       Eff->SetConfidenceLevel(0.6827); // Set to 68.27% confidence level, typical for 1 sigma in physics
-      Efficiency->SetStatisticOption(TEfficiency::kBUniform);
-      Efficiency->SetPosteriorMode();
+      Eff->SetStatisticOption(TEfficiency::kBUniform);
+      Eff->SetPosteriorMode();
       Background_Acceptance->SetConfidenceLevel(0.6827);
 
 
@@ -85,6 +87,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(i % 10000 == 0) std::cout << "Processing event " << i << "/" << E.GetNEvents() << std::endl;
 
             Event e = E.GetEvent(i);
+
             M.SetSignal(e);                
             M.AddEvent(e);
 

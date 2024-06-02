@@ -21,9 +21,9 @@ void BDTXCheck(){
   SampleTypes.push_back("AssocKaon"); 
   SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
   
-  SampleNames.push_back("GENIE Background"); 
-  SampleTypes.push_back("Background");
-  SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/NuMI_sample0_KaonTrees_0_2894.root");
+  //SampleNames.push_back("GENIE Background"); 
+  //SampleTypes.push_back("Background");
+  //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/NuMI_sample0_KaonTrees_0_2894.root");
   
   EventAssembler E;
   SelectionManager M(P);
@@ -98,7 +98,8 @@ void BDTXCheck(){
       double DaughterTrackBraggPIDKaon = DaughterTrack.Track_Bragg_PID_Kaon;
       double DaughterMeandEdX3Plane = DaughterTrack.MeandEdX_ThreePlane;
 
-
+      //if(PrimaryTrackChi2KaonPlane2>0 && PrimaryTrackChi2KaonPlane2<3) std::cout << PrimaryKaonTrack.TrackTruePDG << " " << PrimaryTrackChi2KaonPlane2 << std::endl;
+      if(PrimaryKaonTrack.TrackTruePDG == 321) std::cout << PrimaryTrackChi2KaonPlane2 << std::endl;
       //M.FillHistogramsPDG(e,PrimaryMeandEdX3Plane);
       M.FillHistogramsPDG(e,PrimaryTrackChi2KaonPlane2);
       //M.Fill2DHistograms(e,PrimaryTrackChi2Proton3Plane,PrimaryTrackChi2Kaon3Plane);
@@ -136,6 +137,6 @@ void BDTXCheck(){
   }
     
   M.DrawHistogramsPDG(label);
-
   //M.Draw2DHistograms(label);
+
 }
