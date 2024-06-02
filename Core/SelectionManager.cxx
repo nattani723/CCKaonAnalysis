@@ -433,11 +433,31 @@ bool SelectionManager::FiducialVolumeCut(const Event &e){
 
 bool SelectionManager::DaughterFiducialVolumeCut(const Event &e){
 
-  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+  //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
   TVector3 DaughterTrackEnd;
 
-  DaughterTrackEnd.SetXYZ(DaughterTrackParticle.TrackEndX, DaughterTrackParticle.TrackEndY, DaughterTrackParticle.TrackEndZ);
-   bool passed = a_FiducialVolume.InFiducialVolume_5cm(DaughterTrackEnd);
+  //for (const auto& pair : VectorPair){
+
+    DaughterTrackEnd.Clear();
+
+    auto isOutsideFiducialVolume = [&](const std::pair<RecoParticle, RecoParticle>& pair) {
+      DaughterTrackEnd.SetXYZ(pair.second.TrackEndX, pair.second.TrackEndY, pair.second.TrackEndZ);
+      return !a_FiducialVolume.InFiducialVolume_5cm(DaughterTrackEnd);
+    };
+
+    VectorPair.erase(std::remove_if(VectorPair.begin(), VectorPair.end(), isOutsideFiducialVolume), VectorPair.end());
+
+    /*
+    RecoParticle DaughterTrackParticle = pair.second;
+    DaughterTrackEnd.SetXYZ(DaughterTrackParticle.TrackEndX, DaughterTrackParticle.TrackEndY, DaughterTrackParticle.TrackEndZ);
+ 
+    if(!a_FiducialVolume.InFiducialVolume_5cm(DaughterTrackEnd))
+    */
+
+    //}
+
+    bool passed = VectorPair.size() > 0;
+  //bool passed = a_FiducialVolume.InFiducialVolume_5cm(DaughterTrackEnd);
 
    UpdateCut(e,passed,"DaughterFV");
 
@@ -461,7 +481,7 @@ bool SelectionManager::NuCCInclusiveFilter(const Event &e){
 
 // Apply the three track cut
 
-bool SelectionManager::DaughterTrackCut(const Event &e){
+void SelectionManager::StorePrimaryDaughterTracksPair(const Event &e){
 
   RecoParticle PrimaryTrack;
   RecoParticle DaughterTrack;
@@ -470,35 +490,13 @@ bool SelectionManager::DaughterTrackCut(const Event &e){
   TVector3 DaughterStart;
   TVector3 PrimaryDaughterDistance;
 
-  int NDaughterTrack=0;
-
-  if(e.CCMuTrack.IsCCMu) SetCCMuTrackParticle(PrimaryTrack);
+  VectorPair.clear();
 
   for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
 
      PrimaryEnd.Clear();
      PrimaryTrack = e.TrackPrimaryDaughters.at(i_tr);
      PrimaryEnd.SetXYZ(PrimaryTrack.TrackEndX, PrimaryTrack.TrackEndY, PrimaryTrack.TrackEndZ);
-
-     /*
-     for(size_t i_tr_dau=0;i_tr_dau<e.TrackPrimaryDaughters.size();i_tr_dau++){
-
-       if(i_tr == i_tr_dau) continue;
-
-       DaughterStart.Clear();
-       DaughterTrack = e.TrackPrimaryDaughters.at(i_tr_dau);
-       DaughterStart.SetXYZ(PrimaryTrack.TrackStartX, PrimaryTrack.TrackStartY, PrimaryTrack.TrackStartZ); DaughterTrack should be
-
-       PrimaryDaughterDistance = PrimaryEnd - DaughterStart;
-       if( PrimaryDaughterDistance.Mag() < 10){
-	 NDaughterTrack++;
-	 SetPrimaryKaonTrackParticle(PrimaryTrack);
-	 SetDaughterTrackParticle(DaughterTrack);
-	 RecoParticle DaughterTrack_tmp = GetDaughterTrackParticle();
-       }
-
-     }
-     */
 
      for(size_t i_tr_dau=0;i_tr_dau<e.TrackOthers.size();i_tr_dau++){
        
@@ -509,10 +507,8 @@ bool SelectionManager::DaughterTrackCut(const Event &e){
        PrimaryDaughterDistance = PrimaryEnd - DaughterStart;
 
        if( PrimaryDaughterDistance.Mag() < 10){
-	 NDaughterTrack++;
-	 SetPrimaryKaonTrackParticle(PrimaryTrack);
-	 SetDaughterTrackParticle(DaughterTrack);
-	 //RecoParticle DaughterTrack_tmp = GetDaughterTrackParticle();//for what purpose
+	 SetPrimaryKaonTrackParticle(&PrimaryTrack);
+	 SetDaughterTrackParticle(&DaughterTrack);
        }
  
      }
@@ -524,24 +520,42 @@ bool SelectionManager::DaughterTrackCut(const Event &e){
      for(size_t i_tr_dau=0;i_tr_dau<e.TrackRebuiltOthers.size();i_tr_dau++){
 
        DaughterTrackRebuilt = e.TrackRebuiltOthers.at(i_tr_dau);
-       if(DaughterTrackRebuilt.TrackLength>maxLength)
-	 index = i_tr_dau;
+       if(DaughterTrackRebuilt.TrackLength>maxLength) index = i_tr_dau;
 
      }
 
      if(index>=0) DaughterTrackRebuilt = e.TrackRebuiltOthers.at(index); 
 
-     if( DaughterTrackRebuilt.TrackLength>0 && (DaughterTrack.TrackLength<40. || DaughterTrack.TrackLength>65.) ){
+     if( DaughterTrackRebuilt.TrackLength>0 && (DaughterTrack.TrackLength<40. || DaughterTrack.TrackLength>65.) )
+       SetDaughterTrackParticle(&DaughterTrackRebuilt);
 
-       //we would retrieve rebuilt track
-       SetDaughterTrackParticle(DaughterTrackRebuilt);
+     
+     RecoParticle * PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
+     RecoParticle * DaughterTrackParticle = GetDaughterTrackParticle();
+
+     if(PrimaryKaonTrackParticle && DaughterTrackParticle){
+
+       std::pair <RecoParticle, RecoParticle> PrimaryDaughterTracksPair = {*PrimaryKaonTrackParticle, *DaughterTrackParticle};
+       VectorPair.push_back(PrimaryDaughterTracksPair);
 
      }
 
-  }//TrackPrimaryDaughters loop
-  std::cout << "15" << std::endl;
+     SetPrimaryKaonTrackParticle(0);
+     SetDaughterTrackParticle(0);
 
-   bool passed = NDaughterTrack > 0; 
+  }//TrackPrimaryDaughters loop
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+bool SelectionManager::DaughterTrackCut(const Event &e){
+
+  StorePrimaryDaughterTracksPair(e);
+
+  bool passed = VectorPair.size() > 0; 
 
    UpdateCut(e,passed,"DaughterTrack");
 
@@ -576,8 +590,8 @@ bool SelectionManager::ChooseMuonCandidate(Event &e){
 
 bool SelectionManager::DaughterTrackLengthCut(const Event &e){
 
-  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
-  bool passed = DaughterTrackParticle.TrackLength > 20.f;
+  RecoParticle * DaughterTrackParticle = GetDaughterTrackParticle();
+  bool passed = DaughterTrackParticle->TrackLength > 20.f;
 
    UpdateCut(e,passed,"DaughterTrackLength");
 
@@ -913,21 +927,21 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
 ///////////////////////////////////////////////////////////////////////////////////////////////                                                                                                                 
 // Fill the histograms for EtP calculation
 
-void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,double weight){
+void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle,double weight){
 
   std::string mode = EventType::GetType(e);
   if(mode == "Data") return;
 
-  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
-  RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
+  //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+  //RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
       
   Hist_BDT_All->Fill(variable,weight*e.Weight);
   
   if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
     Hist_BDT_Signal->Fill(variable,weight*e.Weight);
 
-  FillEtoPCurve();
 
+  FillEtoPCurve();
   PlotEtoPCurve();
   /*
     Hist_Efficiency_Left->Fill(variable,weight*e.Weight);
@@ -991,17 +1005,16 @@ void SelectionManager::PlotEtoPCurve(){
 
 // Fill the 2D histograms
 
-void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double variable_y,double weight){
+void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double variable_y,RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle,double weight){
 
   std::string mode, sigbg;
 
-  RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
-  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+  //RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
+  //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
   
   mode = EventType::GetType(e);
   //sigbg = EventType::GetSigBG(e);
   sigbg = EventType::GetSigBG(PrimaryKaonTrackParticle, DaughterTrackParticle);
-  
   if(mode == "Data") return;
   Hists2D_BySigBG[sigbg]->Fill(variable_x,variable_y,weight*e.Weight);
 
@@ -1011,12 +1024,12 @@ void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double 
 
 // Fill the histograms wrt true match PDG
 
-void SelectionManager::FillHistogramsPDG(const Event &e,double variable,double weight){
+void SelectionManager::FillHistogramsPDG(const Event &e,double variable,RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle,double weight){
 
    std::string mode, primarypdg, daughterpdg;
 	
-   RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
-   RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+   //RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
+   //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
    
    mode = EventType::GetType(e);
    primarypdg = EventType::GetPDG(PrimaryKaonTrackParticle);
@@ -1152,8 +1165,10 @@ void SelectionManager::Draw2DHistograms(std::string label,double Scale,double Si
 
    std::vector<TH2D*> Hists2D_BySigBG_v;
 
-   for(size_t i_t=0;i_t<EventType::SigBG.size();i_t++) 
+   for(size_t i_t=0;i_t<EventType::SigBG.size();i_t++){
       Hists2D_BySigBG_v.push_back(Hists2D_BySigBG[EventType::SigBG.at(i_t)]); 
+      //std::cout << Hists2D_BySigBG[EventType::SigBG.at(i_t)]->GetEntries() << std::endl;
+   }
 
    HypPlot::Draw2DHistogram(Hists2D_BySigBG_v,EventType::Captions,PlotDir,label+"_BySigBG",{BeamMode},{Run},{POT},SignalScale);
    
@@ -1414,38 +1429,38 @@ double SelectionManager::GetPrediction(int bin,std::string type){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-      RecoParticle SelectionManager::GetDaughterTrackParticle(){
+      RecoParticle * SelectionManager::GetDaughterTrackParticle(){
 	return DaughterTrackParticle_;
       }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-      RecoParticle SelectionManager::SetDaughterTrackParticle(RecoParticle &DaughterTrackParticle){
+      RecoParticle * SelectionManager::SetDaughterTrackParticle(RecoParticle * DaughterTrackParticle){
 	DaughterTrackParticle_ = DaughterTrackParticle;
 	return DaughterTrackParticle_;
       }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-      RecoParticle SelectionManager::GetPrimaryKaonTrackParticle(){
+      RecoParticle * SelectionManager::GetPrimaryKaonTrackParticle(){
 	return PrimaryKaonTrackParticle_;
       }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-      RecoParticle SelectionManager::SetPrimaryKaonTrackParticle(RecoParticle &PrimaryKaonTrackParticle){
+      RecoParticle * SelectionManager::SetPrimaryKaonTrackParticle(RecoParticle * PrimaryKaonTrackParticle){
 	PrimaryKaonTrackParticle_ = PrimaryKaonTrackParticle;
 	return PrimaryKaonTrackParticle_;
       }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-      RecoParticle SelectionManager::GetCCMuTrackParticle(){
+      RecoParticle * SelectionManager::GetCCMuTrackParticle(){
 	return CCMuTrackParticle_;
       }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-      RecoParticle SelectionManager::SetCCMuTrackParticle(RecoParticle &CCMuTrackParticle){
+      RecoParticle * SelectionManager::SetCCMuTrackParticle(RecoParticle * CCMuTrackParticle){
 	CCMuTrackParticle_ = CCMuTrackParticle;
 	return CCMuTrackParticle_;
       }

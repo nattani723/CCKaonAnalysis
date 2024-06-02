@@ -77,9 +77,9 @@ class SelectionManager {
 
       // Stores the parameters controlling the selection
       SelectionParameters TheParams;
-      RecoParticle DaughterTrackParticle_;
-      RecoParticle CCMuTrackParticle_;
-      RecoParticle PrimaryKaonTrackParticle_;
+      RecoParticle *  DaughterTrackParticle_ = 0;
+      RecoParticle * CCMuTrackParticle_ = 0;
+      RecoParticle * PrimaryKaonTrackParticle_ = 0;
       //int test=0;
 
       // POT to scale samples to
@@ -145,6 +145,7 @@ class SelectionManager {
       bool DaughterTrackLengthCut(const Event &e);
       bool BDTCut(Event &e);
       bool EventListCut(const Event &e);
+      void StorePrimaryDaughterTracksPair(const Event &e);
 
       // Histogram Functions //
 
@@ -209,9 +210,9 @@ class SelectionManager {
       void Setup2DHistograms(int n_x, double low_x, double high_x, int n_y, double low_y, double high_y, std::string title);
       void Setup2DHistograms(std::vector<double> boundariesx, std::vector<double> boundariesy, std::string title="");
       void FillHistograms(const Event &e,double variable,double weight=1.0);
-      void FillHistogramsEtoP(const Event &e,double variable,double weight=1.0);
-      void Fill2DHistograms(const Event &e,double variable_x,double variable_y,double weight=1.0);
-      void FillHistogramsPDG(const Event &e,double variable,double weight=1.0);
+      void FillHistogramsEtoP(const Event &e,double variable,RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle,double weight=1.0);
+      void Fill2DHistograms(const Event &e,double variable_x,double variable_y,RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle,double weight=1.0);
+      void FillHistogramsPDG(const Event &e,double variable,RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
       void Draw2DHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
       void DrawHistogramsPDG(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
@@ -221,12 +222,13 @@ class SelectionManager {
 
       double GetPrediction(int bin,std::string type="");
 
-      RecoParticle GetDaughterTrackParticle();
-      RecoParticle SetDaughterTrackParticle(RecoParticle &DaughterTrackParticle);
-      RecoParticle GetPrimaryKaonTrackParticle();
-      RecoParticle SetPrimaryKaonTrackParticle(RecoParticle &PrimaryKaonTrackParticle);
-      RecoParticle GetCCMuTrackParticle();
-      RecoParticle SetCCMuTrackParticle(RecoParticle &CCMu);
+      RecoParticle * GetDaughterTrackParticle();
+      RecoParticle * SetDaughterTrackParticle(RecoParticle * DaughterTrackParticle);
+      RecoParticle * GetPrimaryKaonTrackParticle();
+      RecoParticle * SetPrimaryKaonTrackParticle(RecoParticle * PrimaryKaonTrackParticle);
+      RecoParticle * GetCCMuTrackParticle();
+      RecoParticle * SetCCMuTrackParticle(RecoParticle * CCMu);
+      std::vector<std::pair<RecoParticle,RecoParticle>> VectorPair;
 
       TH1D* GetHist_All();
 

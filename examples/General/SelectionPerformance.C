@@ -30,7 +30,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       SampleNames.push_back("AssocKaon"); 
       SampleTypes.push_back("AssocKaon"); 
       SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
-//exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root");
+      //exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root");
 
 /*
       SampleNames.push_back("GENIE Background"); 

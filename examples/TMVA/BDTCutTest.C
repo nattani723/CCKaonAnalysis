@@ -38,6 +38,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
   EventAssembler E;
   SelectionManager M(P);
   M.SetPOT(POT);
+  M.ImportBDTWeights(filllater);
 
   // Setup the histograms
   M.SetupHistograms(20,-1,1,";BDT Score;Events");
@@ -70,12 +71,17 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       if(!M.NuCCInclusiveFilter(e)) continue;
       if(!M.DaughterTrackCut(e)) continue;
       if(!M.DaughterFiducialVolumeCut(e)) continue;
-      //if(!M.BDTCut(e)) continue;
+      if(!M.BDTCut(e)) continue;
       //if(!M.DaughterTrackLengthCut(e)) continue;
       
       double bdt = e.BDTScore;
       M.FillHistograms(e,bdt);//add weight
-      M.FillHistogramsEtoP(e,bdt)
+
+      for (const auto& pair : e.VectorPair) {
+	RecoParticle PrimaryKaonTrackParticle = pair.first;
+	RecoParticle DaughterTrackParticle = pair.second;
+	M.FillHistogramsEtoP(e,bdt,weight,PrimaryKaonTrackParticle,DaughterTrackParticle);
+      }
       
     }
     E.Close();

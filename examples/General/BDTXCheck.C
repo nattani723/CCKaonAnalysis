@@ -34,9 +34,9 @@ void BDTXCheck(){
 
   
   // Setup the histograms
-  M.SetupHistogramsPDG(50,0.0,100,";#Chi_{K^{+}};Events");
+  //M.SetupHistogramsPDG(50,0.0,100,";#Chi_{K^{+}};Events");
   //M.SetupHistogramsPDG(30,0.0,30,";Three Plane Mean dE/dx;Events");
-  //M.Setup2DHistograms(50,0,50,30,0,30,";#Chi_{p^{+}};#Chi_{K^{+}};");
+  M.Setup2DHistograms(50,0,50,30,0,30,";#Chi_{p^{+}};#Chi_{K^{+}};");
   
   // Sample Loop
   for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -61,7 +61,7 @@ void BDTXCheck(){
       M.AddEvent(e);
       
       if(!M.FiducialVolumeCut(e)) continue;
-      if(!M.NuCCInclusiveFilter(e)) continue;
+      //if(!M.NuCCInclusiveFilter(e)) continue;
       if(!M.DaughterTrackCut(e)) continue;
       if(!M.DaughterFiducialVolumeCut(e)) continue;
       //if(!M.DaughterTrackLengthCut(e)) continue;
@@ -69,56 +69,62 @@ void BDTXCheck(){
       if (!(e.Neutrino.size() > 0 && e.Lepton.size() > 0)) continue;
       //if (M.GetDaughterTrackParticle().Length<=0 || !M.GetPrimaryKaonTrackParticle().Length<=0) continue;
 
-      RecoParticle PrimaryKaonTrack = M.GetPrimaryKaonTrackParticle();
-      RecoParticle DaughterTrack = M.GetDaughterTrackParticle();
+      for (const auto& pair : M.VectorPair) {
+
+	RecoParticle PrimaryKaonTrack = pair.first;
+	RecoParticle DaughterTrack = pair.second;
+
+	//RecoParticle PrimaryKaonTrack = M.GetPrimaryKaonTrackParticle();
+	//RecoParticle DaughterTrack = M.GetDaughterTrackParticle();
 
       //if(DaughterTrack.TrackLength<=0 || PrimaryKaonTrack.TrackLength<=0) continue;
 
-      double PrimaryTrackLength = PrimaryKaonTrack.TrackLength;
-      double PrimaryTrackLLRPID = PrimaryKaonTrack.Track_LLR_PID;
-      double PrimaryTrackLLRPIDKaon = PrimaryKaonTrack.Track_LLR_PID_Kaon;
-      double PrimaryTrackChi2KaonPlane2 = PrimaryKaonTrack.Track_Chi2_Kaon_Plane2;
-      double PrimaryTrackChi2ProtonPlane2 = PrimaryKaonTrack.Track_Chi2_Proton_Plane2;
-      double PrimaryTrackChi2MuonPlane2 = PrimaryKaonTrack.Track_Chi2_Muon_Plane2;
-      double PrimaryTrackChi2PionPlane2 = PrimaryKaonTrack.Track_Chi2_Pion_Plane2;
-      double PrimaryTrackChi2Kaon3Plane = PrimaryKaonTrack.Track_Chi2_Kaon_3Plane;
-      double PrimaryTrackChi2Proton3Plane = PrimaryKaonTrack.Track_Chi2_Proton_3Plane;
-      double PrimaryTrackChi2Pion3Plane = PrimaryKaonTrack.Track_Chi2_Pion_3Plane;
-      double PrimaryTrackChi2Muon3Plane = PrimaryKaonTrack.Track_Chi2_Muon_3Plane;
-      double PrimaryTrackBraggPIDKaon = PrimaryKaonTrack.Track_Bragg_PID_Kaon;
-      double PrimaryMeandEdX3Plane = PrimaryKaonTrack.MeandEdX_ThreePlane;
+	double PrimaryTrackLength = PrimaryKaonTrack.TrackLength;
+	double PrimaryTrackLLRPID = PrimaryKaonTrack.Track_LLR_PID;
+	double PrimaryTrackLLRPIDKaon = PrimaryKaonTrack.Track_LLR_PID_Kaon;
+	double PrimaryTrackChi2KaonPlane2 = PrimaryKaonTrack.Track_Chi2_Kaon_Plane2;
+	double PrimaryTrackChi2ProtonPlane2 = PrimaryKaonTrack.Track_Chi2_Proton_Plane2;
+	double PrimaryTrackChi2MuonPlane2 = PrimaryKaonTrack.Track_Chi2_Muon_Plane2;
+	double PrimaryTrackChi2PionPlane2 = PrimaryKaonTrack.Track_Chi2_Pion_Plane2;
+	double PrimaryTrackChi2Kaon3Plane = PrimaryKaonTrack.Track_Chi2_Kaon_3Plane;
+	double PrimaryTrackChi2Proton3Plane = PrimaryKaonTrack.Track_Chi2_Proton_3Plane;
+	double PrimaryTrackChi2Pion3Plane = PrimaryKaonTrack.Track_Chi2_Pion_3Plane;
+	double PrimaryTrackChi2Muon3Plane = PrimaryKaonTrack.Track_Chi2_Muon_3Plane;
+	double PrimaryTrackBraggPIDKaon = PrimaryKaonTrack.Track_Bragg_PID_Kaon;
+	double PrimaryMeandEdX3Plane = PrimaryKaonTrack.MeandEdX_ThreePlane;
+	
+	double DaughterTrackLength = DaughterTrack.TrackLength;
+	double DaughterTrackLLRPID = DaughterTrack.Track_LLR_PID;
+	double DaughterTrackLLRPIDKaon = DaughterTrack.Track_LLR_PID_Kaon;
+	double DaughterTrackChi2Kaon3Plane = DaughterTrack.Track_Chi2_Kaon_3Plane;
+	double DaughterTrackChi2Proton3Plane = DaughterTrack.Track_Chi2_Proton_3Plane;
+	double DaughterTrackChi2Pion3Plane = DaughterTrack.Track_Chi2_Pion_3Plane;
+	double DaughterTrackChi2Muon3Plane = DaughterTrack.Track_Chi2_Muon_3Plane;
+	double DaughterTrackBraggPIDKaon = DaughterTrack.Track_Bragg_PID_Kaon;
+	double DaughterMeandEdX3Plane = DaughterTrack.MeandEdX_ThreePlane;
+	
+	//if(PrimaryTrackChi2KaonPlane2>0 && PrimaryTrackChi2KaonPlane2<3) std::cout << PrimaryKaonTrack.TrackTruePDG << " " << PrimaryTrackChi2KaonPlane2 << std::endl;
+	//if(PrimaryKaonTrack.TrackTruePDG == 321) std::cout << PrimaryTrackChi2KaonPlane2 << std::endl;
+	//M.FillHistogramsPDG(e,PrimaryMeandEdX3Plane,PrimaryKaonTrack,DaughterTrack);
+	//M.FillHistogramsPDG(e,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack);
+	//M.Fill2DHistograms(e,PrimaryTrackChi2Proton3Plane,PrimaryTrackChi2Kaon3Plane,PrimaryKaonTrack,DaughterTrack);
+	M.Fill2DHistograms(e,PrimaryTrackChi2ProtonPlane2,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack,1);
+	
+	//calculation for efficiency and purity
+	//bool passed=false;
+	//condition for passed
+	
+	
+	bool passed_PrimaryMeandEdX = false;
+	
+	if(PrimaryMeandEdX3Plane<15) passed_PrimaryMeandEdX = true;
+	
+	if(e.EventIsSignal) Eff->FillWeighted(true,e.Weight,0);
+	else Background_Acceptance->FillWeighted(true,e.Weight,0);  
+	if(e.EventIsSignal) Eff->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
+	else Background_Acceptance->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
 
-      double DaughterTrackLength = DaughterTrack.TrackLength;
-      double DaughterTrackLLRPID = DaughterTrack.Track_LLR_PID;
-      double DaughterTrackLLRPIDKaon = DaughterTrack.Track_LLR_PID_Kaon;
-      double DaughterTrackChi2Kaon3Plane = DaughterTrack.Track_Chi2_Kaon_3Plane;
-      double DaughterTrackChi2Proton3Plane = DaughterTrack.Track_Chi2_Proton_3Plane;
-      double DaughterTrackChi2Pion3Plane = DaughterTrack.Track_Chi2_Pion_3Plane;
-      double DaughterTrackChi2Muon3Plane = DaughterTrack.Track_Chi2_Muon_3Plane;
-      double DaughterTrackBraggPIDKaon = DaughterTrack.Track_Bragg_PID_Kaon;
-      double DaughterMeandEdX3Plane = DaughterTrack.MeandEdX_ThreePlane;
-
-      //if(PrimaryTrackChi2KaonPlane2>0 && PrimaryTrackChi2KaonPlane2<3) std::cout << PrimaryKaonTrack.TrackTruePDG << " " << PrimaryTrackChi2KaonPlane2 << std::endl;
-      if(PrimaryKaonTrack.TrackTruePDG == 321) std::cout << PrimaryTrackChi2KaonPlane2 << std::endl;
-      //M.FillHistogramsPDG(e,PrimaryMeandEdX3Plane);
-      M.FillHistogramsPDG(e,PrimaryTrackChi2KaonPlane2);
-      //M.Fill2DHistograms(e,PrimaryTrackChi2Proton3Plane,PrimaryTrackChi2Kaon3Plane);
-      //M.Fill2DHistograms(e,PrimaryTrackChi2ProtonPlane2,PrimaryTrackChi2KaonPlane2);
-
-      //calculation for efficiency and purity
-      //bool passed=false;
-      //condition for passed
-
-
-      bool passed_PrimaryMeandEdX = false;
-
-      if(PrimaryMeandEdX3Plane<15) passed_PrimaryMeandEdX = true;
-      
-      if(e.EventIsSignal) Eff->FillWeighted(true,e.Weight,0);
-      else Background_Acceptance->FillWeighted(true,e.Weight,0);  
-      if(e.EventIsSignal) Eff->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
-      else Background_Acceptance->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);  
-          
+      }
     }
     E.Close();
   
@@ -136,7 +142,7 @@ void BDTXCheck(){
     
   }
     
-  M.DrawHistogramsPDG(label);
-  //M.Draw2DHistograms(label);
+  //M.DrawHistogramsPDG(label);
+  M.Draw2DHistograms(label);
 
 }
