@@ -132,7 +132,7 @@ std::string GetProc(const Event &e){
  std::string GetSigBG(const RecoParticle &p_track, const RecoParticle &p_daughter){
 
    if(p_track.TrackTruePDG == 321 && (p_daughter.TrackTruePDG == -13 || p_daughter.TrackTruePDG == 211) ) return "Signal";
-   //if(e.CCNC.at(0) == "CC" && e.EventIsSignal) return "Signal";
+   //if(p_track.TrackTruePDG == 321) return "Signal";
    return "BG";
    
  }

@@ -1013,8 +1013,8 @@ void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double 
   //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
   
   mode = EventType::GetType(e);
-  //sigbg = EventType::GetSigBG(e);
-  sigbg = EventType::GetSigBG(PrimaryKaonTrackParticle, DaughterTrackParticle);
+  sigbg = EventType::GetSigBG(e);
+  //sigbg = EventType::GetSigBG(PrimaryKaonTrackParticle, DaughterTrackParticle);
   if(mode == "Data") return;
   Hists2D_BySigBG[sigbg]->Fill(variable_x,variable_y,weight*e.Weight);
 
