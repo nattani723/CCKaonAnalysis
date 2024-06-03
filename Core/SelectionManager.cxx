@@ -434,14 +434,17 @@ bool SelectionManager::FiducialVolumeCut(const Event &e){
 bool SelectionManager::DaughterFiducialVolumeCut(const Event &e){
 
   //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
-  TVector3 DaughterTrackEnd;
+  //TVector3 DaughterTrackEnd;
 
   //for (const auto& pair : VectorPair){
 
-    DaughterTrackEnd.Clear();
+  //DaughterTrackEnd.Clear();
 
     auto isOutsideFiducialVolume = [&](const std::pair<RecoParticle, RecoParticle>& pair) {
+      TVector3 DaughterTrackEnd;
       DaughterTrackEnd.SetXYZ(pair.second.TrackEndX, pair.second.TrackEndY, pair.second.TrackEndZ);
+      //std::cout << "primarytrackend: " << pair.first.TrackEndX << " " << pair.first.TrackEndY << " " << pair.first.TrackEndZ << " " << std::endl; 
+      //std::cout << "DaughterTrackEnd: " << DaughterTrackEnd.X() << " " <<  DaughterTrackEnd.Y() << " " <<  DaughterTrackEnd.Z() << std::endl;
       return !a_FiducialVolume.InFiducialVolume_5cm(DaughterTrackEnd);
     };
 
@@ -520,13 +523,18 @@ void SelectionManager::StorePrimaryDaughterTracksPair(const Event &e){
      for(size_t i_tr_dau=0;i_tr_dau<e.TrackRebuiltOthers.size();i_tr_dau++){
 
        DaughterTrackRebuilt = e.TrackRebuiltOthers.at(i_tr_dau);
-       if(DaughterTrackRebuilt.TrackLength>maxLength) index = i_tr_dau;
+
+       if(DaughterTrackRebuilt.TrackLength>maxLength){
+	 maxLength = DaughterTrackRebuilt.TrackLength;
+	 index = i_tr_dau;
+       }
 
      }
 
      if(index>=0) DaughterTrackRebuilt = e.TrackRebuiltOthers.at(index); 
 
-     if( DaughterTrackRebuilt.TrackLength>0 && (DaughterTrack.TrackLength<40. || DaughterTrack.TrackLength>65.) )
+     if( (!GetDaughterTrackParticle() && DaughterTrackRebuilt.TrackLength>0) ||
+	 (DaughterTrackRebuilt.TrackLength>0 && (DaughterTrack.TrackLength<40. || DaughterTrack.TrackLength>65.)) )
        SetDaughterTrackParticle(&DaughterTrackRebuilt);
 
      

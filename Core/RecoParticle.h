@@ -39,6 +39,8 @@ class RecoParticle : public TObject{
     double TrackDirectionX=0,TrackDirectionY=0,TrackDirectionZ=0;
     double TrackStartX=0,TrackStartY=0,TrackStartZ=0;
     double TrackEndX=0,TrackEndY=0,TrackEndZ=0;
+    double TrackStartXCorr=0,TrackStartYCorr=0,TrackStartZCorr=0;
+    double TrackEndXCorr=0,TrackEndYCorr=0,TrackEndZCorr=0
     double TrackPID; // 3 plane PID score
     double MeandEdX_Plane0,MeandEdX_Plane1,MeandEdX_Plane2,MeandEdX_ThreePlane; // Mean dE/dX scores
     double Track_LLR_PID; // LLR PID
@@ -72,7 +74,7 @@ class RecoParticle : public TObject{
     double MergeHitPurity_1st, MergeHitPurity_2nd, MergeHitPurity_3rd;
 
     inline void SetVertex(TVector3 V);
-    inline void SetTrackPositions(TVector3 Start,TVector3 End);
+    inline void SetTrackPositions(TVector3 Start,TVector3 StartCorr,TVector3 End,TVector3 EndCorr);
     inline void SetMergeCheck(std::vector<int> MergePDG, std::vector<double> MergeEnergyPurity, std::vector<double> MergeHitPurity);
     inline void Print();
 
@@ -91,15 +93,23 @@ class RecoParticle : public TObject{
 
   }
 
-  inline void RecoParticle::SetTrackPositions(TVector3 Start,TVector3 End){
+  inline void RecoParticle::SetTrackPositions((TVector3 Start,TVector3 StartCorr,TVector3 End,TVector3 EndCorr){
 
     TrackStartX = Start.X();
     TrackStartY = Start.Y();
     TrackStartZ = Start.Z();
 
+    TrackStartXCorr = StartCorr.X();
+    TrackStartYCorr = StartCorr.Y();
+    TrackStartZCorr = StartCorr.Z();
+
     TrackEndX = End.X();
     TrackEndY = End.Y();
     TrackEndZ = End.Z();
+
+    TrackEndXCorr = EndCorr.X();
+    TrackEndYCorr = EndCorr.Y();
+    TrackEndZCorr = EndCorr.Z();
 
   }
 
