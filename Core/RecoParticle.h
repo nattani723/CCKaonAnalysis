@@ -40,7 +40,7 @@ class RecoParticle : public TObject{
     double TrackStartX=0,TrackStartY=0,TrackStartZ=0;
     double TrackEndX=0,TrackEndY=0,TrackEndZ=0;
     double TrackStartXCorr=0,TrackStartYCorr=0,TrackStartZCorr=0;
-    double TrackEndXCorr=0,TrackEndYCorr=0,TrackEndZCorr=0
+    double TrackEndXCorr=0,TrackEndYCorr=0,TrackEndZCorr=0;
     double TrackPID; // 3 plane PID score
     double MeandEdX_Plane0,MeandEdX_Plane1,MeandEdX_Plane2,MeandEdX_ThreePlane; // Mean dE/dX scores
     double Track_LLR_PID; // LLR PID
@@ -93,7 +93,7 @@ class RecoParticle : public TObject{
 
   }
 
-  inline void RecoParticle::SetTrackPositions((TVector3 Start,TVector3 StartCorr,TVector3 End,TVector3 EndCorr){
+  inline void RecoParticle::SetTrackPositions(TVector3 Start,TVector3 StartCorr,TVector3 End,TVector3 EndCorr){
 
     TrackStartX = Start.X();
     TrackStartY = Start.Y();

@@ -77,9 +77,9 @@ class SelectionManager {
 
       // Stores the parameters controlling the selection
       SelectionParameters TheParams;
-      RecoParticle *  DaughterTrackParticle_ = 0;
-      RecoParticle * CCMuTrackParticle_ = 0;
-      RecoParticle * PrimaryKaonTrackParticle_ = 0;
+      RecoParticle DaughterTrackParticle_;
+      RecoParticle CCMuTrackParticle_;
+      RecoParticle PrimaryKaonTrackParticle_;
       //int test=0;
 
       // POT to scale samples to
@@ -145,7 +145,9 @@ class SelectionManager {
       bool DaughterTrackLengthCut(const Event &e);
       bool BDTCut(Event &e);
       bool EventListCut(const Event &e);
+
       void StorePrimaryDaughterTracksPair(const Event &e);
+      bool IsWithinDistance(const TVector3& end1, const TVector3& start2, double maxDistance);
 
       // Histogram Functions //
 
@@ -222,12 +224,15 @@ class SelectionManager {
 
       double GetPrediction(int bin,std::string type="");
 
-      RecoParticle * GetDaughterTrackParticle();
-      RecoParticle * SetDaughterTrackParticle(RecoParticle * DaughterTrackParticle);
-      RecoParticle * GetPrimaryKaonTrackParticle();
-      RecoParticle * SetPrimaryKaonTrackParticle(RecoParticle * PrimaryKaonTrackParticle);
-      RecoParticle * GetCCMuTrackParticle();
-      RecoParticle * SetCCMuTrackParticle(RecoParticle * CCMu);
+      RecoParticle GetDaughterTrackParticle();
+      //RecoParticle * SetDaughterTrackParticle(RecoParticle * DaughterTrackParticle);
+      void SetDaughterTrackParticle(RecoParticle DaughterTrackParticle);
+      RecoParticle GetPrimaryKaonTrackParticle();
+      void SetPrimaryKaonTrackParticle(RecoParticle PrimaryKaonTrackParticle);
+      //RecoParticle * SetPrimaryKaonTrackParticle(RecoParticle * PrimaryKaonTrackParticle);
+      RecoParticle GetCCMuTrackParticle();
+      void SetCCMuTrackParticle(RecoParticle CCMu);
+      //RecoParticle * SetCCMuTrackParticle(RecoParticle * CCMu);
       std::vector<std::pair<RecoParticle,RecoParticle>> VectorPair;
 
       TH1D* GetHist_All();
