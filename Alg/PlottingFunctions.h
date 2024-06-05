@@ -890,6 +890,16 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    h_errors->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
    if(binlabels.size()) h_errors->GetXaxis()->SetLabelSize(Single_TextLabelSize);
 
+   hist_v.at(0)->SetTitle(hs->GetTitle());
+   hist_v.at(0)->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
+   hist_v.at(0)->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
+   hist_v.at(0)->GetXaxis()->SetTitleFont(62);
+   hist_v.at(0)->GetYaxis()->SetTitleFont(62);
+   hist_v.at(0)->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
+   hist_v.at(0)->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
+   hist_v.at(0)->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
+   hist_v.at(0)->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
+
    // Draw everything
    p_legend->Draw();
    p_legend->cd();
@@ -900,6 +910,7 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
 
    // hist_v.at(0)->SetLineColor(kWhite);
    //hist_v.at(0)->SetFillColor(kWhite);
+   maximum = hs->GetMaximum();
    hist_v.at(0)->GetYaxis()->SetRangeUser(0, 1.25*maximum); 
    hist_v.at(0)->Draw("");
    //h_errors->Draw("E2");

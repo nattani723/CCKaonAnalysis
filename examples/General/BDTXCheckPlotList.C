@@ -22,13 +22,21 @@ int PDGToBin(int pdg) {
   }
 }
 
-void BDTXCheck(){
-  
-  std::string label = "test";//select the name?
-  double POT = 1.0e21; // POT to scale samples to
+void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double xlow, double xhigh, std::string title, int nbinsY = 0, double ylow = 0, double yhigh = 0) {
 
+  double POT = 1.0e21; // POT to scale samples to
   BuildTunes();
   SelectionParameters P = P_FHC_K_NOBDT_TEST;
+    
+  EventAssembler E;
+  SelectionManager M(P);
+  M.SetPOT(POT);
+
+  if (IsHistosPDG) {
+    M.SetupHistogramsPDG(nbinsX, xlow, xhigh, title);
+  } else {
+    M.Setup2DHistograms(nbinsX, xlow, xhigh, nbinsY, ylow, yhigh, title);
+  }
   
   SampleNames.push_back("AssocKaon"); 
   SampleTypes.push_back("AssocKaon"); 
@@ -39,16 +47,9 @@ void BDTXCheck(){
   //SampleTypes.push_back("Background");
   //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/NuMI_sample0_KaonTrees_0_2894.root");
   
-  EventAssembler E;
-  SelectionManager M(P);
-  M.SetPOT(POT);
-
   TEfficiency* Eff = new TEfficiency("Eff","",2,-0.5,1.5);
   TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",2,-0.5,1.5); 
 
-  //TH2D* h = new TH2D("h", ";Primary Track PDG;Daughter PDG",6, 0, 6, 6, 0, 6);
-  //h->SetStats(0);
-  
   // Setup the histograms
   //M.SetupHistogramsPDG(25,0.0,50,";#Chi_{K^{+}};Events");
   M.SetupHistogramsPDG(20,-1,1,";LLRPID p/#mu;Events");
@@ -194,8 +195,8 @@ void BDTXCheck(){
     
   }
     
-  M.DrawHistogramsPDG(label);
-  //M.Draw2DHistograms(label);
+  if (IsHistosPDG) M.DrawHistogramsPDG(label);
+  else M.Draw2DHistograms(label);
 
   /*
   TCanvas* c1 = new TCanvas("c1", "Canvas for Drawing Histograms", 800, 600);
@@ -217,5 +218,5 @@ void BDTXCheck(){
   c1->Update();
 
   c1->Print("Plots/PrimaryDaughterPDGs.pdf");
-  */
+  */  
 }
