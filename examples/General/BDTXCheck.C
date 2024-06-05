@@ -9,6 +9,19 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 #include "Parameters.h"
 #include "SampleSets_Example.h"
 
+int PDGToBin(int pdg) {
+  switch (pdg) {
+  case 321: return 1;  // K+
+  case -13: return 2; // mu+
+  case 211: return 3; // pi+
+  case 2212: return 4; // proton
+  case 11:  // e-
+  case -11: // e+
+  case 22:  return 5; // gamma (shower)
+  default: return 6;  // Others
+  }
+}
+
 void BDTXCheck(){
   
   std::string label = "test";//select the name?
@@ -20,6 +33,7 @@ void BDTXCheck(){
   SampleNames.push_back("AssocKaon"); 
   SampleTypes.push_back("AssocKaon"); 
   SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
+  //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/test/KaonTrees.root");
   
   //SampleNames.push_back("GENIE Background"); 
   //SampleTypes.push_back("Background");
@@ -32,11 +46,14 @@ void BDTXCheck(){
   TEfficiency* Eff = new TEfficiency("Eff","",2,-0.5,1.5);
   TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",2,-0.5,1.5); 
 
+  TH2D* h = new TH2D("h", ";Primary Track PDG;Daughter PDG",6, 0, 6, 6, 0, 6);
+  h->SetStats(0);
   
   // Setup the histograms
   //M.SetupHistogramsPDG(50,0.0,100,";#Chi_{K^{+}};Events");
   //M.SetupHistogramsPDG(30,0.0,30,";Three Plane Mean dE/dx;Events");
   M.Setup2DHistograms(50,0,50,30,0,30,";#Chi_{p^{+}};#Chi_{K^{+}};");
+
   
   // Sample Loop
   for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -61,7 +78,7 @@ void BDTXCheck(){
       M.AddEvent(e);
       
       if(!M.FiducialVolumeCut(e)) continue;
-      //if(!M.NuCCInclusiveFilter(e)) continue;
+      if(!M.NuCCInclusiveFilter(e)) continue;
       if(!M.DaughterTrackCut(e)) continue;
       if(!M.DaughterFiducialVolumeCut(e)) continue;
       //if(!M.DaughterTrackLengthCut(e)) continue;
@@ -73,6 +90,9 @@ void BDTXCheck(){
 
 	RecoParticle PrimaryKaonTrack = pair.first;
 	RecoParticle DaughterTrack = pair.second;
+
+	int PrimaryKaonTrackPDG = PrimaryKaonTrack.TrackTruePDG;
+	int DaughterTrackPDG = DaughterTrack.TrackTruePDG;
 
 	//RecoParticle PrimaryKaonTrack = M.GetPrimaryKaonTrackParticle();
 	//RecoParticle DaughterTrack = M.GetDaughterTrackParticle();
@@ -124,8 +144,28 @@ void BDTXCheck(){
 	if(e.EventIsSignal) Eff->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
 	else Background_Acceptance->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
 
+	int xbin = PDGToBin(PrimaryKaonTrackPDG) - 1;
+	int ybin = PDGToBin(DaughterTrackPDG) - 1;
+	h->Fill(xbin, ybin);
+
+	// Set bin labels
+	h->GetXaxis()->SetBinLabel(1, "K^{+}");
+	h->GetXaxis()->SetBinLabel(2, "#mu^{+}");
+	h->GetXaxis()->SetBinLabel(3, "#pi^{+}");
+	h->GetXaxis()->SetBinLabel(4, "proton");
+	h->GetXaxis()->SetBinLabel(5, "shower");
+	h->GetXaxis()->SetBinLabel(6, "Others");
+
+	h->GetYaxis()->SetBinLabel(1, "K^{+}");
+	h->GetYaxis()->SetBinLabel(2, "#mu^{+}");
+	h->GetYaxis()->SetBinLabel(3, "#pi^{+}");
+	h->GetYaxis()->SetBinLabel(4, "proton");
+	h->GetYaxis()->SetBinLabel(5, "shower");
+	h->GetYaxis()->SetBinLabel(6, "Others");
+
       }
     }
+
     E.Close();
   
   }
@@ -145,4 +185,14 @@ void BDTXCheck(){
   //M.DrawHistogramsPDG(label);
   M.Draw2DHistograms(label);
 
+  TCanvas* c1 = new TCanvas("c1", "Canvas for Drawing Histograms", 800, 600);
+  c1->cd();
+
+  h->GetXaxis()->SetLabelSize(0.04);
+  h->GetYaxis()->SetLabelSize(0.04);
+  h->Draw("COLZ");
+  c1->Modified();
+  c1->Update();
+
+  c1->Print("Plots/PrimaryDaughterPDGs.pdf");
 }

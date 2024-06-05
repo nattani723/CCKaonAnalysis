@@ -225,14 +225,11 @@ class SelectionManager {
       double GetPrediction(int bin,std::string type="");
 
       RecoParticle GetDaughterTrackParticle();
-      //RecoParticle * SetDaughterTrackParticle(RecoParticle * DaughterTrackParticle);
       void SetDaughterTrackParticle(RecoParticle DaughterTrackParticle);
       RecoParticle GetPrimaryKaonTrackParticle();
       void SetPrimaryKaonTrackParticle(RecoParticle PrimaryKaonTrackParticle);
-      //RecoParticle * SetPrimaryKaonTrackParticle(RecoParticle * PrimaryKaonTrackParticle);
       RecoParticle GetCCMuTrackParticle();
       void SetCCMuTrackParticle(RecoParticle CCMu);
-      //RecoParticle * SetCCMuTrackParticle(RecoParticle * CCMu);
       std::vector<std::pair<RecoParticle,RecoParticle>> VectorPair;
 
       TH1D* GetHist_All();

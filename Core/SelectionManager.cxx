@@ -490,8 +490,8 @@ void SelectionManager::StorePrimaryDaughterTracksPair(const Event &e){
       TVector3 DaughterStart(DaughterTrack.X, DaughterTrack.Y, DaughterTrack.Z);
 
       if (IsWithinDistance(PrimaryEnd, DaughterStart, 10.0)) {
-	std::cout << "PrimaryTrackEnd: " << PrimaryTrack.TrackEndX << " " << PrimaryTrack.TrackEndY << " " <<  PrimaryTrack.TrackEndZ << std::endl;
-	std::cout << "DaughterEnd: " << DaughterTrack.TrackEndX << " " << DaughterTrack.TrackEndY << " " << DaughterTrack.TrackEndZ << std::endl;
+	//std::cout << "PrimaryTrackEnd: " << PrimaryTrack.TrackEndX << " " << PrimaryTrack.TrackEndY << " " <<  PrimaryTrack.TrackEndZ << std::endl;
+	//std::cout << "DaughterEnd: " << DaughterTrack.TrackEndX << " " << DaughterTrack.TrackEndY << " " << DaughterTrack.TrackEndZ << std::endl;
 
 	bestDaughterTrack = &DaughterTrack;
 	VectorPair.emplace_back(PrimaryTrack, DaughterTrack); // Directly emplace_back to avoid extra copy
