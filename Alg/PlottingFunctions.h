@@ -757,7 +757,8 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
 void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof,std::vector<double> data_v={}){
 
    bool drawchi2 = chi2ndof.second != 0;
- 
+   bool DoNormalise = false;
+
    assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
    for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
    if(hasdata && h_data == nullptr) throw std::invalid_argument("PlottingFunctions::DrawHistogram: hasdata flag set to true but data histogram is nullptr, exiting");
@@ -768,7 +769,7 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    if(binlabels.size()){
       for(int i=1;i<nbins+1;i++){
          for(size_t i_h=0;i_h<hist_v.size();i_h++) 
-            hist_v.at(i_h)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
+	   hist_v.at(i_h)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
          h_errors->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
          if(hasdata) h_data->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
       }
@@ -787,6 +788,8 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    // Create the empty legend
    TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
    l->SetBorderSize(0);
+   l->SetTextSize(0.25);
+   l->SetTextFont(62);
    const int nhists = hist_v.size() + static_cast<int>(hasdata);
    int ncols = 2;
    if(nhists > 4) ncols = 3;
@@ -796,19 +799,21 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
 
    double maximum=0;
    
-   //for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
-   for(size_t i_h=0;i_h<3;i_h++){ 
-
+   for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
+   //for(size_t i_h=0;i_h<3;i_h++){ 
      
-     Double_t integral = hist_v.at(i_h)->Integral();
-     if (integral > 0) { // Prevent division by zero
-       hist_v.at(i_h)->Scale(1.0 / integral);
-     }     
-
+     if(DoNormalise){
+       Double_t integral = hist_v.at(i_h)->Integral();
+       if (integral > 0) { // Prevent division by zero
+	 hist_v.at(i_h)->Scale(1.0 / integral);
+       } 
+     }
+         
      hist_v.at(i_h)->SetLineColor(colors.at(i_h));
+     hist_v.at(i_h)->SetFillColor(colors.at(i_h));
      hist_v.at(i_h)->SetLineWidth(2);
      hs->Add(hist_v.at(i_h),"HIST");
-     
+
      if(GetHistMaxError(hist_v.at(i_h))>maximum)
        maximum = GetHistMaxError(hist_v.at(i_h));
      
@@ -838,7 +843,6 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    else if(run.size() == 1) l_Watermark->SetHeader(("MicroBooNE Run " + std::to_string(run.at(0)) + ", Preliminary").c_str());
    else if(run.size() == 2) l_Watermark->SetHeader(("MicroBooNE Runs " + std::to_string(run.at(0)) + " + " + std::to_string(run.at(1)) + ", Preliminary").c_str());
    else throw std::invalid_argument("PlottingFunctions::DrawHistogram: Currently maximum of two running periods supported");
-
 
    // Create the POT label
    //TLegend *l_POT = new TLegend(0.54,0.815,0.885,0.900);
@@ -877,6 +881,8 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    h_errors->SetFillColor(1);
    h_errors->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
    h_errors->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
+   h_errors->GetXaxis()->SetTitleFont(62);
+   h_errors->GetYaxis()->SetTitleFont(62);
    h_errors->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
    h_errors->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
    h_errors->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
@@ -891,17 +897,30 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    p_plot->Draw();
    p_plot->cd();
 
-   //h_errors->Draw("E2");
-   hs->Draw("HIST, nostack,e");
+   h_errors->Draw("E2");
+   hs->Draw("HIST,same");
+   /*
+   hs->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
+   hs->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
+   hs->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
+   hs->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
+   hs->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
+   hs->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
+   */
+   //hs->SetStats(0);
+   //hist_v.at(0)->Draw("AXIS SAME");
+
+   //hs->Draw("HIST, nostack,e");
    //h_errors->Draw("E2 same");
    if(hasdata) h_data->Draw("E0 P0 same");
    hs->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
-   /*
-   double maximum = GetHistMaxError(h_errors);
-   if(hasdata) maximum = std::max(maximum,GetHistMaxError(h_data));
+
+   
+   //double maximum = GetHistMaxError(h_errors);
+   //if(hasdata) maximum = std::max(maximum,GetHistMaxError(h_data));
    h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
    h_errors->SetStats(0);
-   */
+   
 
    // Draw the data graph if required
    TGraph* g_data1;
@@ -921,6 +940,7 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    }
 
    p_plot->RedrawAxis();
+   //p_plot->Update();
 
    // Draw the various legends, labels etc.
    if(POT.size() > 0) l_POT->Draw();
@@ -932,6 +952,7 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    if(hasdata && drawchi2) l_Chi2->Draw();
 
    c->cd();
+   //c->Update();
    system(("mkdir -p " + plotdir).c_str());
    c->Print((plotdir + "/" + label + ".png").c_str());
    c->Print((plotdir + "/" + label + ".pdf").c_str());

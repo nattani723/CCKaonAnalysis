@@ -1182,8 +1182,8 @@ void SelectionManager::DrawHistogramsPDG(std::string label,double Scale,double S
    for(size_t i_pdg=0;i_pdg<EventType::PDGs.size();i_pdg++) 
       Hists_ByDaughterPDG_v.push_back(Hists_ByDaughterPDG[EventType::PDGs.at(i_pdg)]); 
 
-   HypPlot::DrawHistogramNoStack(Hists_ByPrimaryPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByPrimaryPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
-   HypPlot::DrawHistogramNoStack(Hists_ByDaughterPDG_v,h_errors,Hist_Data,EventType::PDGs,PlotDir,label+"_ByDaugterPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
+   HypPlot::DrawHistogramNoStack(Hists_ByPrimaryPDG_v,h_errors,Hist_Data,EventType::CaptionsPDG,PlotDir,label+"_ByPrimaryPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
+   HypPlot::DrawHistogramNoStack(Hists_ByDaughterPDG_v,h_errors,Hist_Data,EventType::CaptionsPDG,PlotDir,label+"_ByDaugterPDG",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
  
    std::map<std::string,TH1D*>::iterator it;
    for (it = Hists_ByPrimaryPDG.begin(); it != Hists_ByPrimaryPDG.end(); it++)

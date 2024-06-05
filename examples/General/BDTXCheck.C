@@ -46,13 +46,14 @@ void BDTXCheck(){
   TEfficiency* Eff = new TEfficiency("Eff","",2,-0.5,1.5);
   TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",2,-0.5,1.5); 
 
-  TH2D* h = new TH2D("h", ";Primary Track PDG;Daughter PDG",6, 0, 6, 6, 0, 6);
-  h->SetStats(0);
+  //TH2D* h = new TH2D("h", ";Primary Track PDG;Daughter PDG",6, 0, 6, 6, 0, 6);
+  //h->SetStats(0);
   
   // Setup the histograms
-  //M.SetupHistogramsPDG(50,0.0,100,";#Chi_{K^{+}};Events");
+  M.SetupHistogramsPDG(25,0.0,50,"a;#Chi_{K^{+}};Events");
   //M.SetupHistogramsPDG(30,0.0,30,";Three Plane Mean dE/dx;Events");
-  M.Setup2DHistograms(50,0,50,30,0,30,";#Chi_{p^{+}};#Chi_{K^{+}};");
+  //M.Setup2DHistograms(25,0,50,15,0,30,";#Chi_{p^{+}};#Chi_{K^{+}};");
+  //M.Setup2DHistograms(30,0,150,12,0,60,";#Chi_{p^{+}};#Chi_{#mu^{+}};");
 
   
   // Sample Loop
@@ -116,6 +117,10 @@ void BDTXCheck(){
 	double DaughterTrackLength = DaughterTrack.TrackLength;
 	double DaughterTrackLLRPID = DaughterTrack.Track_LLR_PID;
 	double DaughterTrackLLRPIDKaon = DaughterTrack.Track_LLR_PID_Kaon;
+	double DaughterTrackChi2KaonPlane2 = DaughterTrack.Track_Chi2_Kaon_Plane2;
+	double DaughterTrackChi2ProtonPlane2 = DaughterTrack.Track_Chi2_Proton_Plane2;
+	double DaughterTrackChi2PionPlane2 = DaughterTrack.Track_Chi2_Pion_Plane2;
+	double DaughterTrackChi2MuonPlane2 = DaughterTrack.Track_Chi2_Muon_Plane2;
 	double DaughterTrackChi2Kaon3Plane = DaughterTrack.Track_Chi2_Kaon_3Plane;
 	double DaughterTrackChi2Proton3Plane = DaughterTrack.Track_Chi2_Proton_3Plane;
 	double DaughterTrackChi2Pion3Plane = DaughterTrack.Track_Chi2_Pion_3Plane;
@@ -126,10 +131,13 @@ void BDTXCheck(){
 	//if(PrimaryTrackChi2KaonPlane2>0 && PrimaryTrackChi2KaonPlane2<3) std::cout << PrimaryKaonTrack.TrackTruePDG << " " << PrimaryTrackChi2KaonPlane2 << std::endl;
 	//if(PrimaryKaonTrack.TrackTruePDG == 321) std::cout << PrimaryTrackChi2KaonPlane2 << std::endl;
 	//M.FillHistogramsPDG(e,PrimaryMeandEdX3Plane,PrimaryKaonTrack,DaughterTrack);
-	//M.FillHistogramsPDG(e,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack);
+
+	M.FillHistogramsPDG(e,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack);
 	//M.Fill2DHistograms(e,PrimaryTrackChi2Proton3Plane,PrimaryTrackChi2Kaon3Plane,PrimaryKaonTrack,DaughterTrack);
-	M.Fill2DHistograms(e,PrimaryTrackChi2ProtonPlane2,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack,1);
-	
+
+	//M.Fill2DHistograms(e,PrimaryTrackChi2ProtonPlane2,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack,1);
+	//M.Fill2DHistograms(e,DaughterTrackChi2ProtonPlane2,DaughterTrackChi2MuonPlane2,PrimaryKaonTrack,DaughterTrack,1);
+		
 	//calculation for efficiency and purity
 	//bool passed=false;
 	//condition for passed
@@ -144,6 +152,7 @@ void BDTXCheck(){
 	if(e.EventIsSignal) Eff->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
 	else Background_Acceptance->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
 
+	/*
 	int xbin = PDGToBin(PrimaryKaonTrackPDG) - 1;
 	int ybin = PDGToBin(DaughterTrackPDG) - 1;
 	h->Fill(xbin, ybin);
@@ -162,6 +171,7 @@ void BDTXCheck(){
 	h->GetYaxis()->SetBinLabel(4, "proton");
 	h->GetYaxis()->SetBinLabel(5, "shower");
 	h->GetYaxis()->SetBinLabel(6, "Others");
+	*/
 
       }
     }
@@ -182,17 +192,28 @@ void BDTXCheck(){
     
   }
     
-  //M.DrawHistogramsPDG(label);
-  M.Draw2DHistograms(label);
+  M.DrawHistogramsPDG(label);
+  //M.Draw2DHistograms(label);
 
+  /*
   TCanvas* c1 = new TCanvas("c1", "Canvas for Drawing Histograms", 800, 600);
   c1->cd();
 
   h->GetXaxis()->SetLabelSize(0.04);
   h->GetYaxis()->SetLabelSize(0.04);
+  h->GetXaxis()->SetLabelFont(62);
+  h->GetYaxis()->SetLabelFont(62);
+  h->GetXaxis()->SetTitleFont(62);
+  h->GetYaxis()->SetTitleFont(62);
+  h->GetXaxis()->SetTitleOffset(1.0);
+  h->GetYaxis()->SetTitleOffset(1.5);
+  h->GetXaxis()->SetLabelSize(0.04);
+  h->GetYaxis()->SetLabelSize(0.04);
+
   h->Draw("COLZ");
   c1->Modified();
   c1->Update();
 
   c1->Print("Plots/PrimaryDaughterPDGs.pdf");
+  */
 }
