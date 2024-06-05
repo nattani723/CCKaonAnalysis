@@ -50,7 +50,7 @@ void BDTXCheck(){
   //h->SetStats(0);
   
   // Setup the histograms
-  M.SetupHistogramsPDG(25,0.0,50,"a;#Chi_{K^{+}};Events");
+  M.SetupHistogramsPDG(25,0.0,50,";#Chi_{K^{+}};Events");
   //M.SetupHistogramsPDG(30,0.0,30,";Three Plane Mean dE/dx;Events");
   //M.Setup2DHistograms(25,0,50,15,0,30,";#Chi_{p^{+}};#Chi_{K^{+}};");
   //M.Setup2DHistograms(30,0,150,12,0,60,";#Chi_{p^{+}};#Chi_{#mu^{+}};");

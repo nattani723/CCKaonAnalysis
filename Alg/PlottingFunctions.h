@@ -812,6 +812,7 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
      hist_v.at(i_h)->SetLineColor(colors.at(i_h));
      hist_v.at(i_h)->SetFillColor(colors.at(i_h));
      hist_v.at(i_h)->SetLineWidth(2);
+     hist_v.at(i_h)->SetStats(0);
      hs->Add(hist_v.at(i_h),"HIST");
 
      if(GetHistMaxError(hist_v.at(i_h))>maximum)
@@ -897,8 +898,13 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
    p_plot->Draw();
    p_plot->cd();
 
-   h_errors->Draw("E2");
+   // hist_v.at(0)->SetLineColor(kWhite);
+   //hist_v.at(0)->SetFillColor(kWhite);
+   hist_v.at(0)->GetYaxis()->SetRangeUser(0, 1.25*maximum); 
+   hist_v.at(0)->Draw("");
+   //h_errors->Draw("E2");
    hs->Draw("HIST,same");
+   p_plot->RedrawAxis(); 
    /*
    hs->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
    hs->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
@@ -912,12 +918,16 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
 
    //hs->Draw("HIST, nostack,e");
    //h_errors->Draw("E2 same");
+   //hist_v.at(0)->GetXaxis()->Draw();
+   //hist_v.at(0)->GetYaxis()->Draw();
    if(hasdata) h_data->Draw("E0 P0 same");
    hs->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
 
    
    //double maximum = GetHistMaxError(h_errors);
    //if(hasdata) maximum = std::max(maximum,GetHistMaxError(h_data));
+   hist_v.at(0)->SetStats(0);
+
    h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
    h_errors->SetStats(0);
    
@@ -939,8 +949,9 @@ void DrawHistogramNoStack(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,
       l->AddEntry(g_data1,"Events","P"); 
    }
 
-   p_plot->RedrawAxis();
-   //p_plot->Update();
+   //p_plot->RedrawAxis();
+   p_plot->Modified();
+   p_plot->Update();
 
    // Draw the various legends, labels etc.
    if(POT.size() > 0) l_POT->Draw();
