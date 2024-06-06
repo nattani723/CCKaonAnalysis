@@ -22,7 +22,58 @@ int PDGToBin(int pdg) {
   }
 }
 
-void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double xlow, double xhigh, std::string title, int nbinsY = 0, double ylow = 0, double yhigh = 0) {
+double GetVariableValue(const RecoParticle& particle, const std::string& variableName) {
+  
+  if (variableName == "TrackLength") {
+    return particle.TrackLength;
+  }
+  else if (variableName == "LLRPID") {
+    return particle.Track_LLR_PID;
+  }
+  else if (variableName == "LLRPIDKaon") {
+    return particle.Track_LLR_PID_Kaon;
+  }
+  else if (variableName == "Chi2KaonPlane2") {
+    return particle.Track_Chi2_Kaon_Plane2;
+  }
+  else if (variableName == "Chi2ProtonPlane2") {
+    return particle.Track_Chi2_Proton_Plane2;
+	  }
+  else if (variableName == "Chi2MuonPlane2") {
+    return particle.Track_Chi2_Muon_Plane2;
+  }
+  else if (variableName == "Chi2PionPlane2") {
+    return particle.Track_Chi2_Pion_Plane2;
+  }
+  else if (variableName == "Chi2Kaon3Plane") {
+    return particle.Track_Chi2_Kaon_3Plane;
+	  }
+  else if (variableName == "Chi2Proton3Plane") {
+    return particle.Track_Chi2_Proton_3Plane;
+  }
+  else if (variableName == "Chi2Muon3Plane") {
+	    return particle.Track_Chi2_Muon_3Plane;
+  }
+  else if (variableName == "Chi2Pion3Plane") {
+    return particle.Track_Chi2_Pion_3Plane;
+  }
+  else if (variableName == "BraggPIDKaon") {
+    return particle.Track_Bragg_PID_Kaon;
+  }
+  else if (variableName == "MeandEdX3Plane") {
+	    return particle.MeandEdX_ThreePlane;
+  }
+  
+  
+  // Add more variables as needed
+  else {
+    std::cerr << "Variable name '" << variableName << "' not recognized." << std::endl;
+    return -1; // Return an invalid value or handle this case appropriately
+  }
+}
+
+
+void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double xlow, double xhigh, std::string title, bool IsPrimaryX, std::string variableNameX, int nbinsY = 0, double ylow = 0, double yhigh = 0, bool IsPrimaryY = true, std::string variableNameY = "defaultY") {
 
   double POT = 1.0e21; // POT to scale samples to
   BuildTunes();
@@ -52,7 +103,7 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
 
   // Setup the histograms
   //M.SetupHistogramsPDG(25,0.0,50,";#Chi_{K^{+}};Events");
-  M.SetupHistogramsPDG(20,-1,1,";LLRPID p/#mu;Events");
+  //M.SetupHistogramsPDG(20,-1,1,";LLRPID p/#mu;Events");
   //M.SetupHistogramsPDG(30,0.0,30,";Three Plane Mean dE/dx;Events");
   //M.Setup2DHistograms(25,0,50,15,0,30,";#Chi_{p^{+}};#Chi_{K^{+}};");
   //M.Setup2DHistograms(30,0,150,12,0,60,";#Chi_{p^{+}};#Chi_{#mu^{+}};");
@@ -97,11 +148,19 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
 	int PrimaryKaonTrackPDG = PrimaryKaonTrack.TrackTruePDG;
 	int DaughterTrackPDG = DaughterTrack.TrackTruePDG;
 
-	//RecoParticle PrimaryKaonTrack = M.GetPrimaryKaonTrackParticle();
-	//RecoParticle DaughterTrack = M.GetDaughterTrackParticle();
+	double valueToFillX=-9;
+	double valueToFillY=-9;
 
-      //if(DaughterTrack.TrackLength<=0 || PrimaryKaonTrack.TrackLength<=0) continue;
+	if (IsPrimaryX) valueToFillX = GetVariableValue(PrimaryKaonTrack, variableNameX);
+	else valueToFillX = GetVariableValue(DaughterTrack, variableNameX);
 
+	if (!IsHistosPDG) {
+	  if (IsPrimaryY) valueToFillY = GetVariableValue(PrimaryKaonTrack, variableNameY);
+	  else valueToFillY = GetVariableValue(DaughterTrack, variableNameY);
+	}
+
+
+	/*
 	double PrimaryTrackLength = PrimaryKaonTrack.TrackLength;
 	double PrimaryTrackLLRPID = PrimaryKaonTrack.Track_LLR_PID;
 	double PrimaryTrackLLRPIDKaon = PrimaryKaonTrack.Track_LLR_PID_Kaon;
@@ -129,26 +188,25 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
 	double DaughterTrackChi2Muon3Plane = DaughterTrack.Track_Chi2_Muon_3Plane;
 	double DaughterTrackBraggPIDKaon = DaughterTrack.Track_Bragg_PID_Kaon;
 	double DaughterMeandEdX3Plane = DaughterTrack.MeandEdX_ThreePlane;
-	
-	//if(PrimaryTrackChi2KaonPlane2>0 && PrimaryTrackChi2KaonPlane2<3) std::cout << PrimaryKaonTrack.TrackTruePDG << " " << PrimaryTrackChi2KaonPlane2 << std::endl;
-	//if(PrimaryKaonTrack.TrackTruePDG == 321) std::cout << PrimaryTrackChi2KaonPlane2 << std::endl;
+	*/	
+
+	if(IsHistosPDG) M.FillHistogramsPDG(e,valueToFillX,PrimaryKaonTrack,DaughterTrack);
+	else M.Fill2DHistograms(e,valueToFillX,valueToFillY,PrimaryKaonTrack,DaughterTrack);
+
+
 	//M.FillHistogramsPDG(e,PrimaryMeandEdX3Plane,PrimaryKaonTrack,DaughterTrack);
 
 	//M.FillHistogramsPDG(e,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack);
-	M.FillHistogramsPDG(e,PrimaryTrackLLRPID,PrimaryKaonTrack,DaughterTrack);
+	//M.FillHistogramsPDG(e,PrimaryTrackLLRPID,PrimaryKaonTrack,DaughterTrack);
 	//M.Fill2DHistograms(e,PrimaryTrackChi2Proton3Plane,PrimaryTrackChi2Kaon3Plane,PrimaryKaonTrack,DaughterTrack);
 
 	//M.Fill2DHistograms(e,PrimaryTrackChi2ProtonPlane2,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack,1);
 	//M.Fill2DHistograms(e,DaughterTrackChi2ProtonPlane2,DaughterTrackChi2MuonPlane2,PrimaryKaonTrack,DaughterTrack,1);
 		
-	//calculation for efficiency and purity
-	//bool passed=false;
 	//condition for passed
-	
-	
 	bool passed_PrimaryMeandEdX = false;
 	
-	if(PrimaryMeandEdX3Plane<15) passed_PrimaryMeandEdX = true;
+	if(PrimaryKaonTrack.MeandEdX_ThreePlane<15) passed_PrimaryMeandEdX = true;
 	
 	if(e.EventIsSignal) Eff->FillWeighted(true,e.Weight,0);
 	else Background_Acceptance->FillWeighted(true,e.Weight,0);  
