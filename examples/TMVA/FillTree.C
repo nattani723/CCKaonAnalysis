@@ -51,19 +51,20 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 	    if(!M.FiducialVolumeCut(e)) continue;
 	    if(!M.NuCCInclusiveFilter(e)) continue;
-	    //if(!M.DaughterTrackCut(e)) continue;
-	    //if(!M.DaughterFiducialVolumeCut(e)) continue;
+	    if(!M.DaughterTrackCut(e)) continue;
+	    if(!M.DaughterFiducialVolumeCut(e)) continue;
 	    //if(!M.DaughterTrackLengthCut(e)) continue;
 
-	    RecoParticle DaughterTrackParticle = M.GetDaughterTrackParticle();
-	    RecoParticle PrimaryKaonTrackParticle = M.GetPrimaryKaonTrackParticle();
+	    for (const auto& pair : M.VectorPair) {
 
-            BDTManager.FillTree(e, PrimaryKaonTrackParticle, DaughterTrackParticle);
+	      RecoParticle DaughterTrackParticle = pair.first;
+	      RecoParticle PrimaryKaonTrackParticle = pair.second;
 
+	      BDTManager.FillTree(e, PrimaryKaonTrackParticle, DaughterTrackParticle);
+	    }
          }
-
+	 
          E.Close();
-
       }
 
       BDTManager.WriteTrainingTrees();
