@@ -62,32 +62,61 @@ void BDTManager::SetupTrainingTrees(){
    t_Signal->Branch("PrimaryTrack_Chi2_Proton_3Plane",&v_PrimaryTrack_Chi2_Proton_3Plane);
    t_Signal->Branch("PrimaryTrack_Chi2_Muon_3Plane",&v_PrimaryTrack_Chi2_Muon_3Plane);
    t_Signal->Branch("PrimaryTrack_Chi2_Pion_3Plane",&v_PrimaryTrack_Chi2_Pion_3Plane);
+
+   t_Signal->Branch("PrimaryTrack_Chi2_Kaon_Plane2",&v_PrimaryTrack_Chi2_Kaon_Plane2);
+   t_Signal->Branch("PrimaryTrack_Chi2_Proton_Plane2",&v_PrimaryTrack_Chi2_Proton_Plane2);
+   t_Signal->Branch("PrimaryTrack_Chi2_Muon_Plane2",&v_PrimaryTrack_Chi2_Muon_Plane2);
+   t_Signal->Branch("PrimaryTrack_Chi2_Pion_Plane2",&v_PrimaryTrack_Chi2_Pion_Plane2);
+
    t_Signal->Branch("DaughterTrack_Chi2_Kaon_3Plane",&v_DaughterTrack_Chi2_Kaon_3Plane);
    t_Signal->Branch("DaughterTrack_Chi2_Proton_3Plane",&v_DaughterTrack_Chi2_Proton_3Plane);
    t_Signal->Branch("DaughterTrack_Chi2_Muon_3Plane",&v_DaughterTrack_Chi2_Muon_3Plane);
    t_Signal->Branch("DaughterTrack_Chi2_Pion_3Plane",&v_DaughterTrack_Chi2_Pion_3Plane);
+
+   t_Signal->Branch("DaughterTrack_Chi2_Kaon_Plane2",&v_DaughterTrack_Chi2_Kaon_Plane2);
+   t_Signal->Branch("DaughterTrack_Chi2_Proton_Plane2",&v_DaughterTrack_Chi2_Proton_Plane2);
+   t_Signal->Branch("DaughterTrack_Chi2_Muon_Plane2",&v_DaughterTrack_Chi2_Muon_Plane2);
+   t_Signal->Branch("DaughterTrack_Chi2_Pion_Plane2",&v_DaughterTrack_Chi2_Pion_Plane2);
+
    t_Signal->Branch("PrimaryTrack_LLR_PID",&v_PrimaryTrack_LLR_PID);
    t_Signal->Branch("PrimaryTrack_LLR_PID_Kaon",&v_PrimaryTrack_LLR_PID_Kaon);
    t_Signal->Branch("PrimaryTrack_dEdX",&v_PrimaryTrack_dEdX);
+   t_Signal->Branch("PrimaryTrack_Bragg_PID_Kaon",&v_PrimaryTrack_Bragg_PID_Kaon);
    t_Signal->Branch("DaughterTrack_LLR_PID",&v_DaughterTrack_LLR_PID);
    t_Signal->Branch("DaughterTrack_LLR_PID_Kaon",&v_DaughterTrack_LLR_PID_Kaon);
    t_Signal->Branch("DaughterTrack_dEdX",&v_DaughterTrack_dEdX);
+   t_Signal->Branch("DaughterTrack_Bragg_PID_Kaon",&v_DaughterTrack_Bragg_PID_Kaon);
    t_Signal->Branch("DaughterTrackLength",&v_DaughterTrackLength);
 
    t_Background->Branch("PrimaryTrack_Chi2_Kaon_3Plane",&v_PrimaryTrack_Chi2_Kaon_3Plane);
    t_Background->Branch("PrimaryTrack_Chi2_Proton_3Plane",&v_PrimaryTrack_Chi2_Proton_3Plane);
    t_Background->Branch("PrimaryTrack_Chi2_Muon_3Plane",&v_PrimaryTrack_Chi2_Muon_3Plane);
    t_Background->Branch("PrimaryTrack_Chi2_Pion_3Plane",&v_PrimaryTrack_Chi2_Pion_3Plane);
+
+   t_Background->Branch("PrimaryTrack_Chi2_Kaon_Plane2",&v_PrimaryTrack_Chi2_Kaon_Plane2);
+   t_Background->Branch("PrimaryTrack_Chi2_Proton_Plane2",&v_PrimaryTrack_Chi2_Proton_Plane2);
+   t_Background->Branch("PrimaryTrack_Chi2_Muon_Plane2",&v_PrimaryTrack_Chi2_Muon_Plane2);
+   t_Background->Branch("PrimaryTrack_Chi2_Pion_Plane2",&v_PrimaryTrack_Chi2_Pion_Plane2);
+
    t_Background->Branch("DaughterTrack_Chi2_Kaon_3Plane",&v_DaughterTrack_Chi2_Kaon_3Plane);
    t_Background->Branch("DaughterTrack_Chi2_Proton_3Plane",&v_DaughterTrack_Chi2_Proton_3Plane);
    t_Background->Branch("DaughterTrack_Chi2_Muon_3Plane",&v_DaughterTrack_Chi2_Muon_3Plane);
    t_Background->Branch("DaughterTrack_Chi2_Pion_3Plane",&v_DaughterTrack_Chi2_Pion_3Plane);
+
+   t_Background->Branch("DaughterTrack_Chi2_Kaon_Plane2",&v_DaughterTrack_Chi2_Kaon_Plane2);
+   t_Background->Branch("DaughterTrack_Chi2_Proton_Plane2",&v_DaughterTrack_Chi2_Proton_Plane2);
+   t_Background->Branch("DaughterTrack_Chi2_Muon_Plane2",&v_DaughterTrack_Chi2_Muon_Plane2);
+   t_Background->Branch("DaughterTrack_Chi2_Pion_Plane2",&v_DaughterTrack_Chi2_Pion_Plane2);
+
    t_Background->Branch("PrimaryTrack_LLR_PID",&v_PrimaryTrack_LLR_PID);
    t_Background->Branch("PrimaryTrack_LLR_PID_Kaon",&v_PrimaryTrack_LLR_PID_Kaon);
    t_Background->Branch("PrimaryTrack_dEdX",&v_PrimaryTrack_dEdX);
+   t_Background->Branch("PrimaryTrack_Bragg_PID_Kaon",&v_PrimaryTrack_Bragg_PID_Kaon);
    t_Background->Branch("DaughterTrack_LLR_PID",&v_DaughterTrack_LLR_PID);
    t_Background->Branch("DaughterTrack_LLR_PID_Kaon",&v_DaughterTrack_LLR_PID_Kaon);
    t_Background->Branch("DaughterTrack_dEdX",&v_DaughterTrack_dEdX);
+   t_Background->Branch("DaughterTrack_Bragg_PID_Kaon",&v_DaughterTrack_Bragg_PID_Kaon);
+   t_Background->Branch("DaughterTrackLength",&v_DaughterTrackLength);
 
 }
 
@@ -130,15 +159,28 @@ bool BDTManager::SetVariables(const RecoParticle &PrimaryKaonTrackParticle, cons
    v_PrimaryTrack_Chi2_Muon_3Plane = PrimaryKaonTrackParticle.Track_Chi2_Muon_3Plane;
    v_PrimaryTrack_Chi2_Pion_3Plane = PrimaryKaonTrackParticle.Track_Chi2_Pion_3Plane;
 
+   v_PrimaryTrack_Chi2_Kaon_Plane2 = PrimaryKaonTrackParticle.Track_Chi2_Kaon_Plane2;
+   v_PrimaryTrack_Chi2_Proton_Plane2 = PrimaryKaonTrackParticle.Track_Chi2_Proton_Plane2;
+   v_PrimaryTrack_Chi2_Muon_Plane2 = PrimaryKaonTrackParticle.Track_Chi2_Muon_Plane2;
+   v_PrimaryTrack_Chi2_Pion_Plane2 = PrimaryKaonTrackParticle.Track_Chi2_Pion_Plane2;
+
    v_DaughterTrack_Chi2_Kaon_3Plane = DaughterTrackParticle.Track_Chi2_Kaon_3Plane;
    v_DaughterTrack_Chi2_Proton_3Plane = DaughterTrackParticle.Track_Chi2_Proton_3Plane;
    v_DaughterTrack_Chi2_Muon_3Plane = DaughterTrackParticle.Track_Chi2_Muon_3Plane;
    v_DaughterTrack_Chi2_Pion_3Plane = DaughterTrackParticle.Track_Chi2_Pion_3Plane;
 
+   v_DaughterTrack_Chi2_Kaon_Plane2 = DaughterTrackParticle.Track_Chi2_Kaon_Plane2;
+   v_DaughterTrack_Chi2_Proton_Plane2 = DaughterTrackParticle.Track_Chi2_Proton_Plane2;
+   v_DaughterTrack_Chi2_Muon_Plane2 = DaughterTrackParticle.Track_Chi2_Muon_Plane2;
+   v_DaughterTrack_Chi2_Pion_Plane2 = DaughterTrackParticle.Track_Chi2_Pion_Plane2;
+
    v_PrimaryTrack_LLR_PID = PrimaryKaonTrackParticle.Track_LLR_PID;
    v_PrimaryTrack_LLR_PID_Kaon = PrimaryKaonTrackParticle.Track_LLR_PID_Kaon;
    v_DaughterTrack_LLR_PID = DaughterTrackParticle.Track_LLR_PID;
    v_DaughterTrack_LLR_PID_Kaon = DaughterTrackParticle.Track_LLR_PID_Kaon;
+
+   v_PrimaryTrack_Bragg_PID_Kaon = PrimaryKaonTrackParticle.Track_Bragg_PID_Kaon;
+   v_DaughterTrack_Bragg_PID_Kaon = DaughterTrackParticle.Track_Bragg_PID_Kaon;
 
    v_DaughterTrackLength = DaughterTrackParticle.TrackLength;
 
