@@ -15,7 +15,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
    void FillTree(std::string Mode){
 
       BuildTunes();
-      ImportSamples(sNuWroNoCosmic); //change
+      ImportSamples(sBDTTest); //change
 
       // POT to scale samples to
       double POT = 1.0e21;

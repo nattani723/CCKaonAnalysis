@@ -22,6 +22,14 @@ std::vector<std::vector<std::pair<int,int>>> CommonRSLists;
 
 void ImportSamples(int Setting){
 
+  if(Setting == sBDTTest){
+    
+    SampleNames = { "Associated K Overlay" };
+    SampleTypes = { "AssocKaon" };
+    SampleFiles = { "/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root" };
+
+  }
+
    if(Setting == sNuWroFullFHCvsData){
 
       SampleNames = { "NuWro Overlay Backgroud" , "NuWro Overlay Hyperon" , "GENIE Dirt" , "EXT" , "Data" };
