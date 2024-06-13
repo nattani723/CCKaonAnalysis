@@ -24,7 +24,13 @@ void ConvertToTrackTuple_alg_precut_debug()
 
   TStopwatch clock;
 
-  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug.root", "rootfile/assok_refined_KrecoAlg_track.root");
+  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_test.root");
+  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple.root");
+  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_rerunPID_tracktuple.root");
+  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_rerunPID_tracktuple.root");
+  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_rerunPID_tracktuple.root");
+
+  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana_old/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod.root", "rootfile/core.root");
   //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_debug_2.root", "refine_debug_2.root");
 
   cout << "Real time " << clock.RealTime() << " s" << endl << endl;
@@ -478,7 +484,8 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
   Int_t true_cut3 = 0;
 
   //event.GetEntry(evt[ev]);
-  for (Long64_t jentry=0; jentry<nentries; jentry++) {
+  //for (Long64_t jentry=0; jentry<1000; jentry++) {
+    for (Long64_t jentry=0; jentry<nentries; jentry++) {
    
     event.GetEntry(jentry);
     if(nentries>=10){
@@ -521,6 +528,8 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
     
 
     //if(event.run==5025 || event.subrun==134 || event.event==6738) cout << "num_tracks: " << event.reco_ntracks << endl;
+
+    //std::cout << "event.run: " << event.run << ", event.subrun: " << event.subrun << ", event.event: " << event.event << std::endl;
 
     // Loop over tracks 
     for (int itrk=0;itrk<event.reco_ntracks;itrk++) {
@@ -580,12 +589,24 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 	  max_dau_length_index = idau;
 	}
       }
-      
+
+      if(event.reco_track_daughter_true_pdg[itrk][max_dau_length_index]==211){
+	cout << "event.rebdautrack_length[itrk][idau]: " << event.reco_track_daughter_length[itrk][max_dau_length_index] << endl;
+	cout << "event.reco_track_daughter_old_true_pdg[itrk][0]: " << event.reco_track_daughter_old_true_pdg[itrk][0] << ", event.reco_track_daughter_old_length[itrk][0]" << event.reco_track_daughter_old_length[itrk][0] << endl;
+      }
+      /*
+      if(max_dau_length_index>=0){
+	cout << "reco_track_true_pdg: " << reco_track_true_pdg << endl;
+	cout << "itrk: " << itrk << ", idau: " << max_dau_length_index  <<  ", event.rebdautrack_length[itrk][idau]: " << event.reco_track_daughter_length[itrk][max_dau_length_index] << endl;
+      }
+      */
+
       //cout << event.reco_track_daughter_old_length[itrk][0] << endl;
       //if(event.reco_track_daughter_old_length[itrk][0]>40){
+      if(event.reco_track_daughter_old_length[itrk][0]>0 || event.reco_track_ndaughters[itrk]>0){
       if(event.reco_track_daughter_old_length[itrk][0]>0){
 
-	//if (event.reco_track_daughter_old_end_in5cmTPC[itrk][0]==false) continue;
+	if (event.reco_track_daughter_old_end_in5cmTPC[itrk][0]==false) continue;
 	reco_track_daughter_old_length = event.reco_track_daughter_old_length[itrk][0];
 	reco_track_daughter_old_distance = event.reco_track_daughter_old_distance[itrk][0];
 	reco_track_daughter_old_theta = event.reco_track_daughter_old_theta[itrk][0];
@@ -624,7 +645,8 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 	
       }
 
-      else if(max_dau_length_index>=0){//retrieve rebuild track
+      if(max_dau_length_index>=0){//retrieve rebuild track
+	//else if(max_dau_length_index>=0){//retrieve rebuild track
 	
 	reco_track_daughter_length = event.reco_track_daughter_length[itrk][max_dau_length_index];
 	reco_track_daughter_distance = event.reco_track_daughter_distance[itrk][max_dau_length_index];
@@ -666,6 +688,7 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 	reco_track_daughter_end_in5cmTPC = event.reco_track_daughter_end_in5cmTPC[itrk][max_dau_length_index];
 	reco_track_daughter_end_inCCInclusiveTPC = event.reco_track_daughter_end_inCCInclusiveTPC[itrk][max_dau_length_index];
       }
+      }
 	else{
 	  //cout << "no daughter track" << endl;
 	  reco_track_daughter_length = -9999;
@@ -699,13 +722,51 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 	  reco_track_daughter_end_inTPC = false;
 	  reco_track_daughter_end_in5cmTPC = false;
 	  reco_track_daughter_end_inCCInclusiveTPC= false;
+
+	  reco_track_daughter_old_length = -9999;
+	  reco_track_daughter_old_distance = -9999;
+	  //reco_track_daughter_old_vtx_distance = -9999;
+	  reco_track_daughter_old_theta = -9999;
+	  reco_track_daughter_old_phi = -9999;
+	  reco_angle_track_daughter = -9999;
+	  reco_track_daughter_old_chi2ka_pl0 = -9999;
+	  reco_track_daughter_old_chi2pr_pl0 = -9999;
+	  reco_track_daughter_old_chi2pi_pl0 = -9999;
+	  reco_track_daughter_old_chi2mu_pl0 = -9999;
+	  reco_track_daughter_old_chi2ka_pl1 = -9999;
+	  reco_track_daughter_old_chi2pr_pl1 = -9999;
+	  reco_track_daughter_old_chi2pi_pl1 = -9999;
+	  reco_track_daughter_old_chi2mu_pl1 = -9999;
+	  reco_track_daughter_old_chi2ka_pl2 = -9999;
+	  reco_track_daughter_old_chi2pr_pl2 = -9999;
+	  reco_track_daughter_old_chi2pi_pl2 = -9999;
+	  reco_track_daughter_old_chi2mu_pl2 = -9999;
+	  reco_track_daughter_old_chi2ka_3pl = -9999;
+	  reco_track_daughter_old_chi2pr_3pl = -9999;
+	  reco_track_daughter_old_chi2pi_3pl = -9999;
+	  reco_track_daughter_old_chi2mu_3pl = -9999;
+	  reco_track_daughter_old_llrpid_3pl = -9999;
+	  reco_track_daughter_old_llrpid_k_3pl = -9999;
+	  reco_track_daughter_old_true_pdg = -9999;
+	  reco_track_daughter_old_vtx_inTPC = false;
+	  reco_track_daughter_old_vtx_in5cmTPC = false;
+	  reco_track_daughter_old_vtx_inCCInclusiveTPC = false;
+	  reco_track_daughter_old_end_inTPC = false;
+	  reco_track_daughter_old_end_in5cmTPC = false;
+	  reco_track_daughter_old_end_inCCInclusiveTPC= false;
 	  
 	}
 	
+
+      if(reco_track_daughter_true_pdg==211){
+	cout << "rebdautrack_length[itrk][idau]: " << reco_track_daughter_length << endl;
+	cout << "reco_track_daughter_old_true_pdg[itrk][0]: " << reco_track_daughter_old_true_pdg << ", reco_track_daughter_old_length[itrk][0]" << reco_track_daughter_old_length << endl;
+      }
+
       //}
       
       if(reco_track_daughter_end_in5cmTPC == false) continue;
-      if(reco_track_daughter_length<0) continue;
+      //if(reco_track_daughter_length<0) continue;
 
 
       /*
