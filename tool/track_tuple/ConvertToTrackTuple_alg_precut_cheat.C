@@ -542,8 +542,8 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
   Int_t true_cut3 = 0;
 
   //event.GetEntry(evt[ev]);
-  for (Long64_t jentry=0; jentry<1000; jentry++) {
-  //for (Long64_t jentry=0; jentry<nentries; jentry++) {
+  //for (Long64_t jentry=0; jentry<1000; jentry++) {
+  for (Long64_t jentry=0; jentry<nentries; jentry++) {
 
    
     event.GetEntry(jentry);
@@ -623,8 +623,8 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
       //if(n_recoRebDauTracks<=0) continue;
       for (int idau=0;idau<event.n_recoRebDauTracks[itrk];idau++) {
 
-	cout << "reco_track_true_pdg: " << reco_track_true_pdg << endl;
-	cout << "itrk: " << itrk << ", idau: " << idau <<  ", event.rebdautrack_length[itrk][idau]: " << event.rebdautrack_length[itrk][idau] << endl;
+	//cout << "reco_track_true_pdg: " << reco_track_true_pdg << endl;
+	//cout << "itrk: " << itrk << ", idau: " << idau <<  ", event.rebdautrack_length[itrk][idau]: " << event.rebdautrack_length[itrk][idau] << endl;
 
 	if(event.rebdautrack_length[itrk][idau]>max_dau_length){
 	  max_dau_length = event.rebdautrack_length[itrk][idau];
@@ -849,7 +849,64 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
 
       outtree->Fill();
 
+      // Reset track-level variables after filling the tree
+      reco_track_ndaughters = -1;
+      reco_track_daughter_length = -9999;
+      reco_track_daughter_distance = -9999;
+      reco_track_daughter_vtx_distance = -9999;
+      reco_track_daughter_theta = -9999;
+      reco_track_daughter_phi = -9999;
+      reco_track_daughter_chi2ka_pl0 = -9999;
+      reco_track_daughter_chi2pr_pl0 = -9999;
+      reco_track_daughter_chi2pi_pl0 = -9999;
+      reco_track_daughter_chi2mu_pl0 = -9999;
+      reco_track_daughter_chi2ka_pl1 = -9999;
+      reco_track_daughter_chi2pr_pl1 = -9999;
+      reco_track_daughter_chi2pi_pl1 = -9999;
+      reco_track_daughter_chi2mu_pl1 = -9999;
+      reco_track_daughter_chi2ka_pl2 = -9999;
+      reco_track_daughter_chi2pr_pl2 = -9999;
+      reco_track_daughter_chi2pi_pl2 = -9999;
+      reco_track_daughter_chi2mu_pl2 = -9999;
+      reco_track_daughter_chi2ka_3pl = -9999;
+      reco_track_daughter_chi2pr_3pl = -9999;
+      reco_track_daughter_chi2pi_3pl = -9999;
+      reco_track_daughter_chi2mu_3pl = -9999;
+      reco_track_daughter_llrpid_3pl = -9999;
+      reco_track_daughter_llrpid_k_3pl = -9999;
+      reco_track_daughter_true_pdg = -9999;
+      reco_track_daughter_vtx_inTPC = false;
+      reco_track_daughter_vtx_in5cmTPC = false;
+      reco_track_daughter_vtx_inCCInclusiveTPC = false;
+      reco_track_daughter_end_inTPC = false;
+      reco_track_daughter_end_in5cmTPC = false;
+      reco_track_daughter_end_inCCInclusiveTPC = false;
+
     }//end loop over tracks
+
+    // Reset event-level variables after each event is fully processed
+    true_nu_energy = -9999;
+    true_kaon_length = -9999;
+    true_kaon_daughter_length = -9999;
+    true_kaon_p = -9999;
+    true_kaon_ke = -9999;
+    true_kaon_theta = -9999;
+    true_kaon_costheta = -9999;
+    true_kaon_phi = -9999;
+    true_dau_pip_length = -9999;
+    true_dau_muon_length = -9999;
+    true_nu_ccnc = -9999;
+    true_nu_pdg = -9999;
+    true_nu_mode = -9999;
+    true_lepton_pdg = -9999;
+    true_nkaons = -9999;
+    true_nhyperons = -9999;
+    true_kaon_end_process = -9999;
+    true_kaon_ndaughters_inelastic = -9999;
+    reco_ccmu_true_pdg = -9999;
+    eventnum = -9999;
+    run = -9999;
+    subrun = -9999;
 
   }//tree loop
 

@@ -143,7 +143,7 @@ THStack * s_trkln_rebdau_cheat = new THStack("s_trkln_rebdau_cheat", ";Daughter 
 THStack * s_trkln_rebdau_cheat_dir = new THStack("s_trkln_rebdau_cheat_dir", ";Daughter Track Length (cm);Event");
 THStack * s_peak_dir = new THStack("s_peak_dir", ";Reconstructed - True direciton Opening angle (rad);Event");
 THStack * s_peak_dir_cheat = new THStack("s_peak_dir_cheat", ";Cheated - True direciton Opening angle (rad);Event");
-THStack * s_vtx_dis = new THStack();
+THStack * s_vtx_dis = new THStack("s_vtx_dis", ";Reconstructed - True Vertex Distance (cm)");
 
 /*
   THStack * s_braggka = new THStack();

@@ -27,9 +27,11 @@ void Initialise()
 void RebuildTrackHist()
 {
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/track_tuple/refine_debug_2.root", "test2.pdf", "3pl");
-  //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
-  //RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/tool/track_tuple/rootfile/refine_debug_2.root", "test.pdf", "3pl", "IsK", true);
-  RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track.root", "test.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana_old/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
+  //RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/core.root", "core.pdf", "3pl", "All", true);
+  //RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track_test.root", "test.pdf", "3pl", "All", true);
+  RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_test.root",  "test.pdf", "3pl", "All", true);
+  ///exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track.root", "test.pdf", "3pl", "IsK", true);
 
 }
 
@@ -542,7 +544,12 @@ void SetHistosStyle(){
 
 void FillHybridTrackLength(){
   
-  if(reco_track_daughter_old_length>40){
+  if(reco_track_daughter_true_pdg==211){
+    cout << "reco_track_daughter_length: " << reco_track_daughter_length << endl;
+    cout << "reco_track_daughter_old_true_pdg: " << reco_track_daughter_old_true_pdg << ", reco_track_daughter_old_length: " << reco_track_daughter_old_length << endl;
+  }
+
+  if(reco_track_daughter_old_length>50){
     if(reco_track_daughter_old_true_pdg==2212)
       h_track_dau_ln_pr->Fill(reco_track_daughter_old_length);
     else if(reco_track_daughter_old_true_pdg==-13)
@@ -558,7 +565,8 @@ void FillHybridTrackLength(){
     if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
 
   }
-  else if(reco_track_daughter_old_length<40){
+  else{
+    //else if(reco_track_daughter_old_length<40){
     
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;

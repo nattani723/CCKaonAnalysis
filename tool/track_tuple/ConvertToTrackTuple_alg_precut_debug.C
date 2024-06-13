@@ -590,10 +590,13 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 	}
       }
 
+      /*
       if(event.reco_track_daughter_true_pdg[itrk][max_dau_length_index]==211){
 	cout << "event.rebdautrack_length[itrk][idau]: " << event.reco_track_daughter_length[itrk][max_dau_length_index] << endl;
 	cout << "event.reco_track_daughter_old_true_pdg[itrk][0]: " << event.reco_track_daughter_old_true_pdg[itrk][0] << ", event.reco_track_daughter_old_length[itrk][0]" << event.reco_track_daughter_old_length[itrk][0] << endl;
+	cout << "before store reco_track_daughter_old_true_pdg: " << reco_track_daughter_old_true_pdg << ", reco_track_daughter_old_length" << reco_track_daughter_old_length << endl;
       }
+      */
       /*
       if(max_dau_length_index>=0){
 	cout << "reco_track_true_pdg: " << reco_track_true_pdg << endl;
@@ -757,11 +760,13 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 	  
 	}
 	
-
+      /*
       if(reco_track_daughter_true_pdg==211){
 	cout << "rebdautrack_length[itrk][idau]: " << reco_track_daughter_length << endl;
+	cout << "After Access 2: " << event.reco_track_daughter_old_true_pdg[itrk][0] << ", Length=" << event.reco_track_daughter_old_length[itrk][0] << endl;
 	cout << "reco_track_daughter_old_true_pdg[itrk][0]: " << reco_track_daughter_old_true_pdg << ", reco_track_daughter_old_length[itrk][0]" << reco_track_daughter_old_length << endl;
       }
+      */
 
       //}
       
@@ -905,8 +910,66 @@ void ConvertToTrackTuple_alg_precut_debug(TString input_name, TString output_nam
 
       
       outtree->Fill();
+      // Reset track-level variables
+      reco_track_daughter_old_true_pdg = -9999;
+      reco_track_daughter_old_length = -9999;
+      reco_track_daughter_true_pdg = -9999;
+      reco_track_daughter_length = -9999;
+      reco_track_chi2ka_pl0 = -9999;
+      reco_track_chi2pr_pl0 = -9999;
+      reco_track_chi2pi_pl0 = -9999;
+      reco_track_chi2mu_pl0 = -9999;
+      reco_track_chi2ka_pl1 = -9999;
+      reco_track_chi2pr_pl1 = -9999;
+      reco_track_chi2pi_pl1 = -9999;
+      reco_track_chi2mu_pl1 = -9999;
+      reco_track_chi2ka_pl2 = -9999;
+      reco_track_chi2pr_pl2 = -9999;
+      reco_track_chi2pi_pl2 = -9999;
+      reco_track_chi2mu_pl2 = -9999;
+      reco_track_chi2ka_3pl = -9999;
+      reco_track_chi2pr_3pl = -9999;
+      reco_track_chi2pi_3pl = -9999;
+      reco_track_chi2mu_3pl = -9999;
+      reco_track_llrpid_3pl = -9999;
+      reco_track_llrpid_k_3pl = -9999;
+      reco_track_true_pdg = -9999;
+      reco_track_daughter_vtx_inTPC = false;
+      reco_track_daughter_vtx_in5cmTPC = false;
+      reco_track_daughter_vtx_inCCInclusiveTPC = false;
+      reco_track_daughter_end_inTPC = false;
+      reco_track_daughter_end_in5cmTPC = false;
+      reco_track_daughter_end_inCCInclusiveTPC = false;
+      reco_track_daughter_old_vtx_inTPC = false;
+      reco_track_daughter_old_vtx_in5cmTPC = false;
+      reco_track_daughter_old_vtx_inCCInclusiveTPC = false;
+      reco_track_daughter_old_end_inTPC = false;
+      reco_track_daughter_old_end_in5cmTPC = false;
+      reco_track_daughter_old_end_inCCInclusiveTPC = false;
 
     }//end loop over tracks
+
+    // Reset event-level variables
+    true_nu_energy = -9999;
+    true_kaon_length = -9999;
+    true_kaon_daughter_length = -9999;
+    true_kaon_p = -9999;
+    true_kaon_ke = -9999;
+    true_kaon_theta = -9999;
+    true_kaon_costheta = -9999;
+    true_kaon_phi = -9999;
+    true_dau_pip_length = -9999;
+    true_dau_muon_length = -9999;
+    true_nu_pdg = -9999;
+    true_nu_ccnc = -9999;
+    true_nu_mode = -9999;
+    true_lepton_pdg = -9999;
+    true_nkaons = -9999;
+    true_nhyperons = -9999;
+    true_kaon_end_process = -9999;
+    true_nu_vtx_inCCInclusiveTPC = false;
+    true_kaon_end_inCCInclusiveTPC = false;
+    true_kaon_daughter_end_in5cmTPC = false;
 
   }//tree loop
 
