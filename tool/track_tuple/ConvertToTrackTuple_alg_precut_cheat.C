@@ -24,8 +24,15 @@ void ConvertToTrackTuple_alg_precut_cheat()
 
   TStopwatch clock;
 
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_debug.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug_test.root");
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple.root");
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root");
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_tracktuple.root");
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_tracktuple.root");
+
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test3.root", "rootfile/test.root");
-  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test5_debug.root", "rootfile/assok_refined_KrecoAlg_track_debug5_debug.root");
+  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/assok_refined_KrecoAlg_debug_test5_debug.root", "rootfile/assok_refined_KrecoAlg_track_debug5_debugtest.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/recoalg_testarea/CCKaonAnalyzer_debug.root", "rootfile/assok_refined_KrecoAlg_track.root");
 
 
@@ -535,8 +542,8 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
   Int_t true_cut3 = 0;
 
   //event.GetEntry(evt[ev]);
-  //for (Long64_t jentry=0; jentry<100; jentry++) {
-  for (Long64_t jentry=0; jentry<nentries; jentry++) {
+  for (Long64_t jentry=0; jentry<1000; jentry++) {
+  //for (Long64_t jentry=0; jentry<nentries; jentry++) {
 
    
     event.GetEntry(jentry);
@@ -581,6 +588,8 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
 
     //if(event.run==5025 || event.subrun==134 || event.event==6738) cout << "num_tracks: " << event.reco_ntracks << endl;
 
+    std::cout << "event.run: " << event.run << ", event.subrun: " << event.subrun << ", event.event: " << event.event << std::endl;
+
     // Loop over tracks 
     //cout << "event.reco_ntracks: " << event.reco_ntracks << endl;
     for (int itrk=0;itrk<event.reco_ntracks;itrk++) {
@@ -611,10 +620,11 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
       int max_dau_length_index = -1;
 
       //if(event.rebdautrack_length[itrk][idau]!=-9999) 
-      if(n_recoRebDauTracks<=0) continue;
+      //if(n_recoRebDauTracks<=0) continue;
       for (int idau=0;idau<event.n_recoRebDauTracks[itrk];idau++) {
 
-	//cout << "itrk: " << itrk << ", idau: " << idau <<  ", event.rebdautrack_length[itrk][idau]: " << event.rebdautrack_length[itrk][idau] << endl;
+	cout << "reco_track_true_pdg: " << reco_track_true_pdg << endl;
+	cout << "itrk: " << itrk << ", idau: " << idau <<  ", event.rebdautrack_length[itrk][idau]: " << event.rebdautrack_length[itrk][idau] << endl;
 
 	if(event.rebdautrack_length[itrk][idau]>max_dau_length){
 	  max_dau_length = event.rebdautrack_length[itrk][idau];
