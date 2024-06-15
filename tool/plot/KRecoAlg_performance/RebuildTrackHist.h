@@ -5,6 +5,7 @@
 #include <TChain.h>
 #include <TTree.h>
 #include <TVectorT.h>
+#include <TChain.h>
 #include <vector>
 #include <iostream>
 #include <stdio.h>
@@ -12,7 +13,7 @@
 
 void Initialise();
 //void GeneratePlots(TFile *f, TString pl, TCanvas* &c, TString output_name);
-void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name);
+void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name, TChain *chain);
 //void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name);
 void RebuildTrackHist(TString input_name, TString output_name, TString pl, TString mode, bool IsHybrid);
 void LoadTree(TFile *f, TString pl, TTree* &t);
@@ -27,6 +28,7 @@ void FillPrimaryTrack();
 void AddStackHistos();
 void AddLegend();
 void DrawHistos(TCanvas* &c,TString output_name);
+double GetMaxBinContentFromStack(THStack *stack);
 
 // Cuts
 TString output_pdf_trk = "chi2_trk.pdf";
@@ -42,6 +44,8 @@ double n5=0;
 int nentry=0;
 int reco_true_length_mu;
 int reco_true_length_pi;
+int reco_true_length_mu_hy;
+int reco_true_length_pi_hy;
 int reco_old_true_length_mu;
 int reco_old_true_length_pi;
 
@@ -159,6 +163,12 @@ TH1D * h_track_dau_ln_mu;
 TH1D * h_track_dau_ln_sh;
 TH1D * h_track_dau_ln_ot;
 
+TH1D * h_track_dau_ln_pr_hy;
+TH1D * h_track_dau_ln_pi_hy;
+TH1D * h_track_dau_ln_mu_hy;
+TH1D * h_track_dau_ln_sh_hy;
+TH1D * h_track_dau_ln_ot_hy;
+
 TH1D * h_track_dau_old_llr_sh;
 TH1D * h_track_dau_old_llr_pr;
 TH1D * h_track_dau_old_llr_pi;
@@ -205,14 +215,19 @@ TH1D * h_reco_track_daughter_vtx_distance;
   THStack * s_chi2pr_dau = new THStack();
   THStack * s_chi2pi_dau = new THStack();
   THStack * s_chi2mu_dau = new THStack();
-  THStack * s_trkln_dau = new THStack();
+//THStack * s_trkln_dau = new THStack();
 
   THStack * s_llr_dau_old = new THStack();
   THStack * s_llrka_dau_old = new THStack();
   THStack * s_chi2pr_dau_old = new THStack();
   THStack * s_chi2pi_dau_old = new THStack();
   THStack * s_chi2mu_dau_old = new THStack();
-  THStack * s_trkln_dau_old = new THStack();
+//THStack * s_trkln_dau_old = new THStack();
+
+THStack * s_trkln_dau = new THStack("s_trkln_dau", ";Daughter Track Length (cm);Event (a.u.)");
+THStack * s_trkln_dau_hy = new THStack("s_trkln_dau_hy", ";Daughter Track Length (cm);Event (a.u.)");
+THStack * s_trkln_dau_old = new THStack("s_trkln_dau)old", ";Daughter Track Length (cm);Event (a.u.)");
+
 
 /*
   THStack * s_braggka = new THStack();

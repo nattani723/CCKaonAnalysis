@@ -30,8 +30,22 @@ void RebuildTrackHist()
   //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana_old/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/core.root", "core.pdf", "3pl", "All", true);
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track_test.root", "test.pdf", "3pl", "All", true);
-  RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_test.root",  "test.pdf", "3pl", "All", true);
-  ///exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track.root", "test.pdf", "3pl", "IsK", true);
+
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_test.root",  "Plots/assocK_all.pdf", "3pl", "All", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_test.root",  "Plots/assocK_IsK.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_test.root",  "Plots/assocK_NotK.pdf", "3pl", "NotK", true);
+
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple.root",  "Plots/singleK_all.pdf", "3pl", "All", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple.root",  "Plots/singleK_IsK.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple.root",  "Plots/singleK_NotK.pdf", "3pl", "NotK", true);
+
+  //RebuildTrackHist("cck.list",  "Plots/CCK_all.pdf", "3pl", "All", true);
+  //RebuildTrackHist("cck.list",  "Plots/CCK_IsK.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("cck.list",  "Plots/CCK_NotK.pdf", "3pl", "NotK", true);
+
+  //RebuildTrackHist("numi.list",  "Plots/NuMI_all.pdf", "3pl", "All", true);
+  //RebuildTrackHist("numi.list",  "Plots/NuMI_IsK.pdf", "3pl", "IsK", true);
+  RebuildTrackHist("numi.list",  "Plots/NuMI_NotK.pdf", "3pl", "NotK", true);
 
 }
 
@@ -40,8 +54,32 @@ void RebuildTrackHist(TString input_name, TString output_name, TString pl, TStri
   TGaxis::SetMaxDigits(3);
   gErrorIgnoreLevel = kWarning;
 
-  //output from PreCutHistos
-  //TFile * f = new TFile("/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/TMVA/Jun28/TMVA_all_pl2.root");
+  TChain *chain_TMVA = new TChain("dataset_tree325_node4_depth4_beta60_frac12_ncut5_addspec/TestTree");
+  TChain *chain_Standard = new TChain("CCKaonTracks");
+
+  if (input_name.EndsWith(".root")) {
+    // Determine which chain to add to based on file name
+    if (input_name.Contains("TMVA")) {
+      chain_TMVA->Add(input_name);
+    } else {
+      chain_Standard->Add(input_name);
+    }
+  } else if (input_name.EndsWith(".list")) {
+    std::ifstream listFile(input_name.Data());
+    std::string line;
+    while (std::getline(listFile, line)) {
+      if (!line.empty()) {
+	if (line.find("TMVA") != std::string::npos) {
+	  chain_TMVA->Add(line.c_str());
+	} else {
+	  chain_Standard->Add(line.c_str());
+	}
+      }
+    }
+  } else {
+    std::cout << "Unsupported file type or path. Exiting." << std::endl;
+    return;
+  }
 
   TFile * f = new TFile(input_name);
 
@@ -54,17 +92,27 @@ void RebuildTrackHist(TString input_name, TString output_name, TString pl, TStri
 
   //c->Print(Form("%s[", output_name.Data()));
 
-  GeneratePlots(f, pl, mode, IsHybrid, c, output_name);
+  // Determine which chain to use based on some criteria, e.g., number of entries or priority
+  TChain* activeChain = (chain_TMVA->GetEntries() > 0) ? chain_TMVA : chain_Standard;
+  //GeneratePlots(pl, mode, IsHybrid, c, output_name, activeChain);
+  GeneratePlots(f, pl, mode, IsHybrid, c, output_name, activeChain);
   
   c->Print(Form("%s]", output_name.Data()));
   //c->Print(Form("%s]", output_name.Data()));
 
 }
 
-void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name)
+void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name, TChain *chain)
 {
 
-  TTree * t;
+  if (!chain || chain->GetEntries() == 0) {
+    std::cout << "No entries in the chain or chain is null." << std::endl;
+    return;
+  }
+
+  TTree * t = chain;
+  //TTree * t;
+  //t = chain;
 
   LoadTree(f, pl, t);
   SetHistos();
@@ -118,17 +166,29 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
   cout << "h_track_dau_ln_mu: " << h_track_dau_ln_mu->GetEntries() << endl;
   cout << "h_track_dau_ln_sh: " << h_track_dau_ln_sh->GetEntries() << endl;
   cout << "h_track_dau_ln_ot: " << h_track_dau_ln_ot->GetEntries() << endl;
+  cout << endl;
+
+  cout << "h_track_dau_ln_pr_hy: " << h_track_dau_ln_pr_hy->GetEntries() << endl;
+  cout << "h_track_dau_ln_pi_hy: " << h_track_dau_ln_pi_hy->GetEntries() << endl;
+  cout << "h_track_dau_ln_mu_hy: " << h_track_dau_ln_mu_hy->GetEntries() << endl;
+  cout << "h_track_dau_ln_sh_hy: " << h_track_dau_ln_sh_hy->GetEntries() << endl;
+  cout << "h_track_dau_ln_ot_hy: " << h_track_dau_ln_ot_hy->GetEntries() << endl;
+  cout << endl;
 
   cout << "h_track_dau_old_ln_pr: " << h_track_dau_old_ln_pr->GetEntries() << endl;
   cout << "h_track_dau_old_ln_pi: " << h_track_dau_old_ln_pi->GetEntries() << endl;
   cout << "h_track_dau_old_ln_mu: " << h_track_dau_old_ln_mu->GetEntries() << endl;
   cout << "h_track_dau_old_ln_sh: " << h_track_dau_old_ln_sh->GetEntries() << endl;
   cout << "h_track_dau_old_ln_ot: " << h_track_dau_old_ln_ot->GetEntries() << endl;
+  cout << endl;
 
   cout << "reco_old_true_length_mu: " << reco_old_true_length_mu << endl;
   cout << "reco_old_true_length_pi: " << reco_old_true_length_pi << endl;
   cout << "reco_true_length_mu: " << reco_true_length_mu << endl;
   cout << "reco_true_length_pi: " << reco_true_length_pi << endl;
+  cout << "reco_true_length_mu_hy: " << reco_true_length_mu_hy << endl;
+  cout << "reco_true_length_pi_hy: " << reco_true_length_pi_hy << endl;
+
 
   delete h_track_chi2ka_ka;
   delete h_track_chi2ka_pr;
@@ -145,18 +205,21 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
 }
 
 
-void LoadTree(TFile *f, TString pl, TTree * &t){
+void LoadTree(TFile *f, TString pl, TTree* &t){
 
   TString fname(f->GetName());
 
+
+  /*
   //TTree * t;
   if(fname.Contains("TMVA")){
     t = (TTree*) f->Get("dataset_tree325_node4_depth4_beta60_frac12_ncut5_addspec/TestTree");
   }else{
     t = (TTree*) f->Get("CCKaonTracks");
   }
-
+  */
   nentry = t->GetEntries();
+
 
   t->SetBranchAddress("true_nu_pdg", &true_nu_pdg);
   t->SetBranchAddress("true_nu_ccnc", &true_nu_ccnc);
@@ -295,6 +358,12 @@ void SetHistos(){
   h_track_dau_ln_mu = new TH1D("track_dau_ln_mu", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_dau_ln_sh = new TH1D("track_dau_ln_sh", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_dau_ln_ot = new TH1D("track_dau_ln_ot", "; BDT Response; Number of Events", 50, 0, 100);
+
+  h_track_dau_ln_pr_hy = new TH1D("track_dau_ln_pr_hy", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_pi_hy = new TH1D("track_dau_ln_pi_hy", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_mu_hy = new TH1D("track_dau_ln_mu_hy", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_sh_hy = new TH1D("track_dau_ln_sh_hy", "; BDT Response; Number of Events", 50, 0, 100);
+  h_track_dau_ln_ot_hy = new TH1D("track_dau_ln_ot_hy", "; BDT Response; Number of Events", 50, 0, 100);
 
   //
 
@@ -439,6 +508,20 @@ void SetHistosStyle(){
   h_track_dau_ln_ot->SetLineWidth(2);
   h_track_dau_ln_pi->SetFillColorAlpha(TColor::GetColorDark(kGreen), 0.5);
   h_track_dau_ln_mu->SetFillColorAlpha(kCyan, 0.3);
+
+  h_track_dau_ln_pr_hy->SetLineColor(kRed);
+  h_track_dau_ln_pi_hy->SetLineColor(TColor::GetColorDark(kGreen));
+  h_track_dau_ln_mu_hy->SetLineColor(kCyan);
+  h_track_dau_ln_sh_hy->SetLineColor(kMagenta);
+  h_track_dau_ln_ot_hy->SetLineColor(kBlack);
+  h_track_dau_ln_pr_hy->SetLineWidth(2);
+  h_track_dau_ln_pi_hy->SetLineWidth(3);
+  h_track_dau_ln_mu_hy->SetLineWidth(3);
+  h_track_dau_ln_sh_hy->SetLineWidth(2);
+  h_track_dau_ln_ot_hy->SetLineWidth(2);
+  h_track_dau_ln_pi_hy->SetFillColorAlpha(TColor::GetColorDark(kGreen), 0.5);
+  h_track_dau_ln_mu_hy->SetFillColorAlpha(kCyan, 0.3);
+
   //h_track_dau_ln_pr->SetFillColor(kRed);
   //h_track_dau_ln_sh->SetFillColor(kMagenta);
   //h_track_dau_ln_ot->SetFillColor(kBlack);
@@ -551,30 +634,30 @@ void FillHybridTrackLength(){
   }
   */
 
-  if(reco_track_daughter_old_length>50){
+  if(reco_track_daughter_old_length>50 && reco_track_daughter_old_length<75){
     if(reco_track_daughter_old_true_pdg==2212)
-      h_track_dau_ln_pr->Fill(reco_track_daughter_old_length);
+      h_track_dau_ln_pr_hy->Fill(reco_track_daughter_old_length);
     else if(reco_track_daughter_old_true_pdg==-13)
-      h_track_dau_ln_mu->Fill(reco_track_daughter_old_length);
+      h_track_dau_ln_mu_hy->Fill(reco_track_daughter_old_length);
     else if(reco_track_daughter_old_true_pdg==211)
-      h_track_dau_ln_pi->Fill(reco_track_daughter_old_length);  
+      h_track_dau_ln_pi_hy->Fill(reco_track_daughter_old_length);  
     else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22)
-      h_track_dau_ln_sh->Fill(reco_track_daughter_old_length);
+      h_track_dau_ln_sh_hy->Fill(reco_track_daughter_old_length);
     else if(reco_track_daughter_old_true_pdg!=-9999)
-      h_track_dau_ln_ot->Fill(reco_track_daughter_old_length);
+      h_track_dau_ln_ot_hy->Fill(reco_track_daughter_old_length);
 
-    if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==211 && std::abs(reco_track_daughter_old_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
-    if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
+    if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==211 && std::abs(reco_track_daughter_old_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi_hy++;
+    if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu_hy++;
 
   }
-  else{
-    //else if(reco_track_daughter_old_length<40){
+  else if(reco_track_daughter_length>25 && reco_track_daughter_length<75){
+    //else{
     
-    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
-    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
+    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi_hy++;
+    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu_hy++;
 
     if(reco_track_daughter_true_pdg==2212){
-      h_track_dau_ln_pr->Fill(reco_track_daughter_length);
+      h_track_dau_ln_pr_hy->Fill(reco_track_daughter_length);
       //h_track_dis_ln_pr->Fill(reco_track_distance);
       //h_track_dau_dis_ln_pr->Fill(reco_track_daughter_distance);
       h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
@@ -582,26 +665,26 @@ void FillHybridTrackLength(){
     }
     //else if(reco_track_daughter_true_pdg==-13){
     else if( (reco_track_daughter_true_pdg==-13 || reco_track_daughter_true_pdg==13) ){
-      h_track_dau_ln_mu->Fill(reco_track_daughter_length);
+      h_track_dau_ln_mu_hy->Fill(reco_track_daughter_length);
       //h_track_dis_ln_mu->Fill(reco_track_distance);
       //h_track_dau_dis_ln_mu->Fill(reco_track_daughter_distance);
       h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl);
       h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl);
     }
     else if(reco_track_daughter_true_pdg==211){
-      h_track_dau_ln_pi->Fill(reco_track_daughter_length);
+      h_track_dau_ln_pi_hy->Fill(reco_track_daughter_length);
       //h_track_dis_ln_pi->Fill(reco_track_distance);
       //h_track_dau_dis_ln_pi->Fill(reco_track_daughter_distance);
       h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl);
       h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl);
     }
     else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22){
-      h_track_dau_ln_sh->Fill(reco_track_daughter_length);
+      h_track_dau_ln_sh_hy->Fill(reco_track_daughter_length);
       h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl);
       h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl);
     }
     else if(reco_track_daughter_true_pdg!=-9999){
-      h_track_dau_ln_ot->Fill(reco_track_daughter_length);
+      h_track_dau_ln_ot_hy->Fill(reco_track_daughter_length);
       //h_track_dis_ln_ot->Fill(reco_track_distance);
       //h_track_dau_dis_ln_ot->Fill(reco_track_daughter_distance);
       h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
@@ -609,11 +692,43 @@ void FillHybridTrackLength(){
     }
   }
   
+    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
+    if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
+
+    if(reco_track_daughter_length>25 && reco_track_daughter_length<75){
+  if(reco_track_daughter_true_pdg==2212){
+    h_track_dau_ln_pr->Fill(reco_track_daughter_length);
+    h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl);
+  }
+  else if(reco_track_daughter_true_pdg==-13){
+    h_track_dau_ln_mu->Fill(reco_track_daughter_length);
+    h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl);
+  }
+  else if(reco_track_daughter_true_pdg==211){
+    h_track_dau_ln_pi->Fill(reco_track_daughter_length);
+    h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl);
+  }
+  else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22){
+    h_track_dau_ln_sh->Fill(reco_track_daughter_length);
+    h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl);	  
+  }
+  else if(reco_track_daughter_true_pdg!=-9999){
+    h_track_dau_ln_ot->Fill(reco_track_daughter_length);
+    h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
+    h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
+  }
+  }
+
 }
 
 
 void FillOldTrackLength(){
 
+  if(reco_track_daughter_old_length>25 && reco_track_daughter_old_length<75){
   if(reco_track_daughter_old_true_pdg==2212){
     h_track_dau_old_ln_pr->Fill(reco_track_daughter_old_length);
     h_track_dau_old_llr_pr->Fill(reco_track_daughter_old_llrpid_3pl);
@@ -638,6 +753,7 @@ void FillOldTrackLength(){
     h_track_dau_old_ln_ot->Fill(reco_track_daughter_old_length);
     h_track_dau_old_llr_ot->Fill(reco_track_daughter_old_llrpid_3pl);
     h_track_dau_old_llrka_ot->Fill(reco_track_daughter_old_llrpid_k_3pl);
+  }
   }
 
   if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==211 && std::abs(reco_track_daughter_old_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_old_true_length_pi++;
@@ -939,6 +1055,12 @@ void AddStackHistos(){
   s_trkln_dau->Add(h_track_dau_ln_pr);
   s_trkln_dau->Add(h_track_dau_ln_ot);
 
+  s_trkln_dau_hy->Add(h_track_dau_ln_pi_hy);
+  s_trkln_dau_hy->Add(h_track_dau_ln_mu_hy);
+  s_trkln_dau_hy->Add(h_track_dau_ln_sh_hy);
+  s_trkln_dau_hy->Add(h_track_dau_ln_pr_hy);
+  s_trkln_dau_hy->Add(h_track_dau_ln_ot_hy);
+
 
   s_llr_dau_old->Add(h_track_dau_old_llr_pr);
   s_llr_dau_old->Add(h_track_dau_old_llr_mu);
@@ -1002,12 +1124,21 @@ void AddLegend(){
   l_pr_dau->AddEntry(h_track_dau_chi2pr_sh, "True shower"   , "f");
   l_pr_dau->AddEntry(h_track_dau_chi2pr_ot, "Others"   , "f");
 
+  /*
   l_pr_dau_ln = new TLegend(0.75,0.65,0.95,0.95);
   l_pr_dau_ln->AddEntry(h_track_dau_ln_pr, "True p" , "f");
   l_pr_dau_ln->AddEntry(h_track_dau_ln_pi, "True #pi^{+}"   , "f");
   l_pr_dau_ln->AddEntry(h_track_dau_ln_mu, "True #mu^{+}"   , "f");
   l_pr_dau_ln->AddEntry(h_track_dau_ln_sh, "True shower"   , "f");
   l_pr_dau_ln->AddEntry(h_track_dau_ln_ot, "Others"   , "f");
+  */
+  l_pr_dau_ln = new TLegend(0.65,0.55,0.85,0.85);
+  l_pr_dau_ln->SetBorderSize(0);
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_mu, "True #mu^{+}"   , "f");
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_pi, "True #pi^{+}"   , "f");
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_pr, "True p" , "l");
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_sh, "True shower"   , "l");
+  l_pr_dau_ln->AddEntry(h_track_dau_ln_ot, "Others"   , "l");
 
   l_pr_dau2 = new TLegend(0.15,0.58,0.35,0.88);
   l_pr_dau2->AddEntry(h_track_dau_chi2pr_pr, "True p" , "f");
@@ -1024,6 +1155,7 @@ void AddLegend(){
 
 void DrawHistos(TCanvas* &c,TString output_name){
   
+  /*
   h_reco_track_daughter_vtx_distance->Draw();
   h_reco_track_daughter_distance->Draw("same");
   h_reco_track_length->Draw("same");
@@ -1074,14 +1206,25 @@ void DrawHistos(TCanvas* &c,TString output_name){
   s_llrka_dau->Draw("nostack");
   l_pr_dau2->Draw();
   c->Print(output_name);
+  */
   
   //s_trkln_dau->Draw();
-  s_trkln_dau->SetMaximum(200.);
-  s_trkln_dau_old->SetMaximum(200.); 
+// Usage example:
+  int maximum = GetMaxBinContentFromStack(s_trkln_dau_hy);
+  maximum *= 1.05;
+
+  s_trkln_dau->SetMaximum(maximum);
   s_trkln_dau->Draw("nostack");
   l_pr_dau_ln->Draw();
   c->Print(output_name);
   
+  //s_trkln_dau->Draw();
+  s_trkln_dau_hy->SetMaximum(maximum);
+  s_trkln_dau_hy->Draw("nostack");
+  l_pr_dau_ln->Draw();
+  c->Print(output_name);
+  
+  /*
   //s_chi2pr_dau_old->Draw();
   s_chi2pr_dau_old->Draw("nostack");
   //l_pr_dau->Draw();
@@ -1106,10 +1249,33 @@ void DrawHistos(TCanvas* &c,TString output_name){
   s_llrka_dau_old->Draw("nostack");
   l_pr_dau2->Draw();
   c->Print(output_name);
+  */
   
   //s_trkln_dau_old->Draw();
+  s_trkln_dau_old->SetMaximum(maximum); 
   s_trkln_dau_old->Draw("nostack");
   l_pr_dau_ln->Draw();
   c->Print(output_name);
   
+  
+}
+
+double GetMaxBinContentFromStack(THStack *stack) {
+  double maxBinContent = 0;
+
+  // THStack::GetHists returns a TList of histograms
+  TList* histList = stack->GetHists();
+  if (!histList) return maxBinContent; // Return 0 if no histograms
+
+  TIter next(histList);
+  TH1* hist;
+  while ((hist = (TH1*)next())) {
+    // Get the maximum content of the current histogram
+    double currentMax = hist->GetBinContent(hist->GetMaximumBin());
+    if (currentMax > maxBinContent) {
+      maxBinContent = currentMax;
+    }
+  }
+
+  return maxBinContent;
 }

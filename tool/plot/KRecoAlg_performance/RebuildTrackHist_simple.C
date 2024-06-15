@@ -30,9 +30,10 @@ void RebuildTrackHist_simple()
   //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
   //RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora//CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track_debug5_debug.root", "debug5_debug.pdf", "3pl", "IsK", true);
 
-  RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug_test2.root","Plots/assok_KReco.pdf", "3pl", "All", true);
-  //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple.root","Plots/singlek_KReco.pdf", "3pl", "IsK", true);
-  //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root","Plots/numi_sample0_KReco.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug.root","Plots/assok_KReco_simple.pdf", "3pl", "All", true);
+  //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple.root","Plots/singlek_KReco_simple.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist_simple("cck_simple.list","Plots/CCKReco_simple.pdf", "3pl", "IsK", true);
+  RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root","Plots/numi_sample0_KReco_simple.pdf", "3pl", "IsK", true);
 
 }
 
@@ -41,8 +42,32 @@ void RebuildTrackHist_simple(TString input_name, TString output_name, TString pl
   TGaxis::SetMaxDigits(3);
   gErrorIgnoreLevel = kWarning;
 
-  //output from PreCutHistos
-  //TFile * f = new TFile("/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/TMVA/Jun28/TMVA_all_pl2.root");
+  TChain *chain_TMVA = new TChain("dataset_tree325_node4_depth4_beta60_frac12_ncut5_addspec/TestTree");
+  TChain *chain_Standard = new TChain("CCKaonTracks");
+
+  if (input_name.EndsWith(".root")) {
+    // Determine which chain to add to based on file name
+    if (input_name.Contains("TMVA")) {
+      chain_TMVA->Add(input_name);
+    } else {
+      chain_Standard->Add(input_name);
+    }
+  } else if (input_name.EndsWith(".list")) {
+    std::ifstream listFile(input_name.Data());
+    std::string line;
+    while (std::getline(listFile, line)) {
+      if (!line.empty()) {
+	if (line.find("TMVA") != std::string::npos) {
+	  chain_TMVA->Add(line.c_str());
+	} else {
+	  chain_Standard->Add(line.c_str());
+	}
+      }
+    }
+  } else {
+    std::cout << "Unsupported file type or path. Exiting." << std::endl;
+    return;
+  }
 
   TFile * f = new TFile(input_name);
 
@@ -54,18 +79,25 @@ void RebuildTrackHist_simple(TString input_name, TString output_name, TString pl
   c->Print(Form("%s[", output_name.Data()));
 
   //c->Print(Form("%s[", output_name.Data()));
-
-  GeneratePlots(f, pl, mode, IsHybrid, c, output_name);
+  TChain* activeChain = (chain_TMVA->GetEntries() > 0) ? chain_TMVA : chain_Standard;
+  GeneratePlots(f, pl, mode, IsHybrid, c, output_name, activeChain);
+  //GeneratePlots(f, pl, mode, IsHybrid, c, output_name);
   
   c->Print(Form("%s]", output_name.Data()));
   //c->Print(Form("%s]", output_name.Data()));
 
 }
 
-void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name)
+void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name, TChain *chain)
 {
 
-  TTree * t;
+  if (!chain || chain->GetEntries() == 0) {
+    std::cout << "No entries in the chain or chain is null." << std::endl;
+    return;
+  }
+
+  TTree * t = chain;
+  //TTree * t;
 
   LoadTree(f, pl, t);
   SetHistos();
@@ -97,12 +129,14 @@ void LoadTree(TFile *f, TString pl, TTree * &t){
 
   TString fname(f->GetName());
 
+  /*
   //TTree * t;
   if(fname.Contains("TMVA")){
     t = (TTree*) f->Get("dataset_tree325_node4_depth4_beta60_frac12_ncut5_addspec/TestTree");
   }else{
     t = (TTree*) f->Get("CCKaonTracks");
   }
+  */
 
   nentry = t->GetEntries();
 
@@ -220,7 +254,7 @@ void SetHistos(){
   h_peak_dir_cheat_sh = new TH1D("peak_dir_cheat_sh", "; true_pip_pin_theta; Number of Events", 30, 0, 3.14);
   h_peak_dir_cheat_ot = new TH1D("peak_dir_cheat_ot", "; true_pip_pin_theta; Number of Events", 30, 0, 3.14);
 
-  h_kaon_vtx_length = new TH2D("h_kaon_vtx_length", ";True-Reco K^{+} Track Length (cm);True-Reco  K^{+} Track Vertex (cm)", 10, 0, 20, 7, 0, 14);
+  h_kaon_vtx_length = new TH2D("h_kaon_vtx_length", ";True-Reco K^{+} Track Length (cm);True-Reco  K^{+} Track Vertex (cm)", 10, -10, 10, 7, 0, 14);
 
   h_truek_trkln_chi2ka = new TH2D("h_truek_trkln_chi2ka", "Track length vs #chi^{2}_{K};  #chi^{2}_{K}; Track length", 50, 0 , 50, 50, 0, 100);
 
@@ -485,14 +519,32 @@ void FillRebuildTrackLength(){
     //if(true_dau_dir!=initvec && cheat_dir!=initvec) cout << "true_dau_dir.Angle(cheat_dir): " << true_dau_dir.Angle(cheat_dir) << endl;
   }
 
-  if(reco_track_true_pdg==321) h_kaon_vtx_length->Fill(true_kaon_length - reco_track_length, reco_vtx);
+  if(reco_track_true_pdg==321){
+    h_kaon_vtx_length->Fill(true_kaon_length - reco_track_length, reco_vtx);
+    /*
+    cout << "true_kaon_length: " << true_kaon_length << endl;
+    cout << "reco_track_length: " << reco_track_length << endl;
+    cout << "true_kaon_length - reco_track_length = " << true_kaon_length - reco_track_length << endl;
+    cout << endl;
+    */
+  }
 
   if(reco_track_true_pdg==321) h_vtx_dis_ka->Fill(reco_vtx);
-  if(reco_track_true_pdg==2212) h_vtx_dis_pr->Fill(reco_vtx);
-  if(reco_track_true_pdg==-13 || reco_track_true_pdg==13 ) h_vtx_dis_pi->Fill(reco_vtx);
-  if(reco_track_true_pdg==221 || reco_track_true_pdg==-221) h_vtx_dis_mu->Fill(reco_vtx);
-  else h_vtx_dis_ot->Fill(reco_vtx);
+  else if(reco_track_true_pdg==2212) h_vtx_dis_pr->Fill(reco_vtx);
+  else if(reco_track_true_pdg==-13 || reco_track_true_pdg==13 ) h_vtx_dis_pi->Fill(reco_vtx);
+  else if(reco_track_true_pdg==221 || reco_track_true_pdg==-221) h_vtx_dis_mu->Fill(reco_vtx);
+  else if(rebdautrack_pdg!=-9999) h_vtx_dis_ot->Fill(reco_vtx);
 
+  if(true_kaon_end_process==0){
+    h_track_rebdau_cheat_ln_mu->Fill(rebdautracktrue_length);
+    h_track_rebdau_cheat_dir_ln_mu->Fill(rebdautracktruedir_length);
+    h_peak_dir_cheat_mu->Fill(true_dau_dir.Angle(cheat_dir));
+  }
+  else if(true_kaon_end_process==1){
+    h_track_rebdau_cheat_ln_pi->Fill(rebdautracktrue_length);
+    h_track_rebdau_cheat_dir_ln_pi->Fill(rebdautracktruedir_length);
+    h_peak_dir_cheat_pi->Fill(true_dau_dir.Angle(cheat_dir));
+  }
 
   if(rebdautrack_pdg==2212){
     h_track_rebdau_ln_pr->Fill(rebdautrack_length);
@@ -506,12 +558,12 @@ void FillRebuildTrackLength(){
   }
   else if(rebdautrack_pdg==-13){
     h_track_rebdau_ln_mu->Fill(rebdautrack_length);
-    h_track_rebdau_cheat_ln_mu->Fill(rebdautracktrue_length);
-    h_track_rebdau_cheat_dir_ln_mu->Fill(rebdautracktruedir_length);
+    //h_track_rebdau_cheat_ln_mu->Fill(rebdautracktrue_length);
+    //h_track_rebdau_cheat_dir_ln_mu->Fill(rebdautracktruedir_length);
 
     if(true_kaon_end_process==0 || true_kaon_end_process==1) { 
       h_peak_dir_mu->Fill(true_dau_dir.Angle(reco_dir));
-      h_peak_dir_cheat_mu->Fill(true_dau_dir.Angle(cheat_dir));
+      //h_peak_dir_cheat_mu->Fill(true_dau_dir.Angle(cheat_dir));
     }
   }
   else if(rebdautrack_pdg==211){
@@ -526,15 +578,15 @@ void FillRebuildTrackLength(){
   }
   else if(rebdautrack_pdg==22 || rebdautrack_pdg==11 || rebdautrack_pdg==-11 || rebdautrack_pdg==111){
     h_track_rebdau_ln_sh->Fill(rebdautrack_length);
-    h_track_rebdau_cheat_ln_sh->Fill(rebdautracktrue_length);
-    h_track_rebdau_cheat_dir_ln_sh->Fill(rebdautracktruedir_length);
+    //h_track_rebdau_cheat_ln_sh->Fill(rebdautracktrue_length);
+    //h_track_rebdau_cheat_dir_ln_sh->Fill(rebdautracktruedir_length);
 
     if(true_kaon_end_process==0 || true_kaon_end_process==1) { 
       h_peak_dir_sh->Fill(true_dau_dir.Angle(reco_dir));
-      h_peak_dir_cheat_sh->Fill(true_dau_dir.Angle(cheat_dir));
+      //h_peak_dir_cheat_sh->Fill(true_dau_dir.Angle(cheat_dir));
     }
   }
-  else{
+  else if(rebdautrack_pdg!=-9999){
     h_track_rebdau_ln_ot->Fill(rebdautrack_length);
     h_track_rebdau_cheat_ln_ot->Fill(rebdautracktrue_length);
     h_track_rebdau_cheat_dir_ln_ot->Fill(rebdautracktruedir_length);
@@ -602,21 +654,27 @@ void AddStackHistos(){
 
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_pi);
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_mu);
+  /*
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_pr);
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_sh);
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_ot);
+  */
 
   s_trkln_rebdau_cheat_dir->Add(h_track_rebdau_cheat_dir_ln_pi);
   s_trkln_rebdau_cheat_dir->Add(h_track_rebdau_cheat_dir_ln_mu);
+  /*
   s_trkln_rebdau_cheat_dir->Add(h_track_rebdau_cheat_dir_ln_pr);
   s_trkln_rebdau_cheat_dir->Add(h_track_rebdau_cheat_dir_ln_sh);
   s_trkln_rebdau_cheat_dir->Add(h_track_rebdau_cheat_dir_ln_ot);
+  */
 
   s_vtx_dis->Add(h_vtx_dis_ka);
+  /*
   s_vtx_dis->Add(h_vtx_dis_pr);
   s_vtx_dis->Add(h_vtx_dis_pi);
   s_vtx_dis->Add(h_vtx_dis_mu);
   s_vtx_dis->Add(h_vtx_dis_ot);
+  */
 
   s_peak_dir->Add(h_peak_dir_pi);
   s_peak_dir->Add(h_peak_dir_mu);
@@ -626,22 +684,25 @@ void AddStackHistos(){
 
   s_peak_dir_cheat->Add(h_peak_dir_cheat_pi);
   s_peak_dir_cheat->Add(h_peak_dir_cheat_mu);
+  /*
   s_peak_dir_cheat->Add(h_peak_dir_cheat_pr);
   s_peak_dir_cheat->Add(h_peak_dir_cheat_sh);
   s_peak_dir_cheat->Add(h_peak_dir_cheat_ot);
+  */
 
 }
 
 void AddLegend(){
   
-  l_ka = new TLegend(0.65,0.65,0.85,0.85);
+  l_ka = new TLegend(0.65,0.55,0.85,0.85);
   l_ka->SetBorderSize(0);
   l_ka->AddEntry(h_vtx_dis_ka, "True K^{+}"  , "l");
+  /*
   l_ka->AddEntry(h_vtx_dis_pr, "True p" , "l");
-  l_ka->AddEntry(h_vtx_dis_pi, "True #pi^{+}"   , "f");
-  l_ka->AddEntry(h_vtx_dis_mu, "True #mu^{-}"   , "f");
+  l_ka->AddEntry(h_vtx_dis_pi, "True #pi^{+}"   , "l");
+  l_ka->AddEntry(h_vtx_dis_mu, "True #mu^{-}"   , "l");
   l_ka->AddEntry(h_vtx_dis_ot, "Others"   , "l");
-  
+  */  
 
   l_pr_dau_ln = new TLegend(0.65,0.55,0.85,0.85);
   l_pr_dau_ln->SetBorderSize(0);
@@ -651,6 +712,11 @@ void AddLegend(){
   l_pr_dau_ln->AddEntry(h_track_dau_ln_sh, "True shower"   , "l");
   l_pr_dau_ln->AddEntry(h_track_dau_ln_ot, "Others"   , "l");
 
+  l_pr_dau_ln_cheat = new TLegend(0.65,0.55,0.85,0.85);
+  l_pr_dau_ln_cheat->SetBorderSize(0);
+  l_pr_dau_ln_cheat->AddEntry(h_track_dau_ln_mu, "True #mu^{+}"   , "f");
+  l_pr_dau_ln_cheat->AddEntry(h_track_dau_ln_pi, "True #pi^{+}"   , "f");
+
   h_reco_track_daughter_vtx_distance->SetLineColor(kRed);
   h_reco_track_daughter_distance->SetLineColor(kBlue);
   h_reco_track_length->SetLineColor(kBlack);
@@ -659,12 +725,14 @@ void AddLegend(){
 
 void DrawHistos(TCanvas* &c,TString output_name){
   
+  /*
   h_reco_track_daughter_vtx_distance->Draw();
   h_reco_track_daughter_distance->Draw("same");
   h_reco_track_length->Draw("same");
   c->Print(output_name);
   c->Modified();
   c->Update();
+  */
 
   //s_trkln_dau->SetMaximum(200.);
   //s_trkln_dau_old->SetMaximum(200.); 
@@ -676,16 +744,18 @@ void DrawHistos(TCanvas* &c,TString output_name){
   c->Update();
 
   s_trkln_rebdau_cheat->Draw("nostack");
-  l_pr_dau_ln->Draw();
+  l_pr_dau_ln_cheat->Draw();
   c->Print(output_name);
   c->Modified();
   c->Update();
 
   s_trkln_rebdau_cheat_dir->Draw("nostack");
-  l_pr_dau_ln->Draw();
+  l_pr_dau_ln_cheat->Draw();
   c->Print(output_name);
   c->Modified();
   c->Update();
+
+  c->SetLogy();
 
   s_peak_dir->Draw("nostack");
   l_pr_dau_ln->Draw();
@@ -694,10 +764,12 @@ void DrawHistos(TCanvas* &c,TString output_name){
   c->Update();
 
   s_peak_dir_cheat->Draw("nostack");
-  l_pr_dau_ln->Draw();
+  l_pr_dau_ln_cheat->Draw();
   c->Print(output_name);
   c->Modified();
   c->Update();
+
+  c->SetLogy(0);
 
   s_vtx_dis->Draw("nostack");
   l_ka->Draw();

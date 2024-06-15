@@ -1,0 +1,837 @@
+CCK.list
+
+#Events before preselection
+Associated K: 63490 
+Single K: 67018
+NuMI sample0: 182883
+NuMI sample1: 179393
+NuMI sample2: 184321
+
+-- All
+
+h_track_dau_ln_pr: 1941
+h_track_dau_ln_pi: 1024
+h_track_dau_ln_mu: 3084
+h_track_dau_ln_sh: 1425
+h_track_dau_ln_ot: 1185
+
+h_track_dau_ln_pr_hy: 1942
+h_track_dau_ln_pi_hy: 1017
+h_track_dau_ln_mu_hy: 3230
+h_track_dau_ln_sh_hy: 1412
+h_track_dau_ln_ot_hy: 1058
+
+h_track_dau_old_ln_pr: 1069
+h_track_dau_old_ln_pi: 333
+h_track_dau_old_ln_mu: 2213
+h_track_dau_old_ln_sh: 100
+h_track_dau_old_ln_ot: 430
+
+reco_old_true_length_mu: 1499
+reco_old_true_length_pi: 99
+reco_true_length_mu: 1677
+reco_true_length_pi: 296
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 919
+h_track_dau_ln_pi: 625
+h_track_dau_ln_mu: 2671
+h_track_dau_ln_sh: 172
+h_track_dau_ln_ot: 602
+
+h_track_dau_ln_pr_hy: 965
+h_track_dau_ln_pi_hy: 633
+h_track_dau_ln_mu_hy: 2868
+h_track_dau_ln_sh_hy: 173
+h_track_dau_ln_ot_hy: 550
+
+h_track_dau_old_ln_pr: 645
+h_track_dau_old_ln_pi: 254
+h_track_dau_old_ln_mu: 2142
+h_track_dau_old_ln_sh: 18
+h_track_dau_old_ln_ot: 295
+
+reco_old_true_length_mu: 1499
+reco_old_true_length_pi: 99
+reco_true_length_mu: 1677
+reco_true_length_pi: 296
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 765
+h_track_dau_ln_pi: 581
+h_track_dau_ln_mu: 2522
+h_track_dau_ln_sh: 160
+h_track_dau_ln_ot: 467
+
+h_track_dau_ln_pr_hy: 777
+h_track_dau_ln_pi_hy: 588
+h_track_dau_ln_mu_hy: 2703
+h_track_dau_ln_sh_hy: 158
+h_track_dau_ln_ot_hy: 419
+
+h_track_dau_old_ln_pr: 462
+h_track_dau_old_ln_pi: 210
+h_track_dau_old_ln_mu: 1967
+h_track_dau_old_ln_sh: 10
+h_track_dau_old_ln_ot: 174
+
+reco_old_true_length_mu: 1499
+reco_old_true_length_pi: 99
+reco_true_length_mu: 1677
+reco_true_length_pi: 296
+reco_true_length_mu_hy: 1685
+reco_true_length_pi_hy: 245
+
+-- IsK
+
+h_track_dau_ln_pr: 474
+h_track_dau_ln_pi: 618
+h_track_dau_ln_mu: 2739
+h_track_dau_ln_sh: 509
+h_track_dau_ln_ot: 457
+
+h_track_dau_ln_pr_hy: 482
+h_track_dau_ln_pi_hy: 613
+h_track_dau_ln_mu_hy: 2780
+h_track_dau_ln_sh_hy: 506
+h_track_dau_ln_ot_hy: 416
+
+h_track_dau_old_ln_pr: 267
+h_track_dau_old_ln_pi: 197
+h_track_dau_old_ln_mu: 2001
+h_track_dau_old_ln_sh: 34
+h_track_dau_old_ln_ot: 183
+
+reco_old_true_length_mu: 1499
+reco_old_true_length_pi: 99
+reco_true_length_mu: 1677
+reco_true_length_pi: 296
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 244
+h_track_dau_ln_pi: 425
+h_track_dau_ln_mu: 2391
+h_track_dau_ln_sh: 101
+h_track_dau_ln_ot: 254
+
+h_track_dau_ln_pr_hy: 262
+h_track_dau_ln_pi_hy: 429
+h_track_dau_ln_mu_hy: 2517
+h_track_dau_ln_sh_hy: 103
+h_track_dau_ln_ot_hy: 244
+
+h_track_dau_old_ln_pr: 170
+h_track_dau_old_ln_pi: 149
+h_track_dau_old_ln_mu: 1948
+h_track_dau_old_ln_sh: 11
+h_track_dau_old_ln_ot: 139
+
+reco_old_true_length_mu: 1499
+reco_old_true_length_pi: 99
+reco_true_length_mu: 1677
+reco_true_length_pi: 296
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 204
+h_track_dau_ln_pi: 409
+h_track_dau_ln_mu: 2269
+h_track_dau_ln_sh: 97
+h_track_dau_ln_ot: 196
+
+h_track_dau_ln_pr_hy: 204
+h_track_dau_ln_pi_hy: 412
+h_track_dau_ln_mu_hy: 2386
+h_track_dau_ln_sh_hy: 96
+h_track_dau_ln_ot_hy: 192
+
+h_track_dau_old_ln_pr: 107
+h_track_dau_old_ln_pi: 125
+h_track_dau_old_ln_mu: 1787
+h_track_dau_old_ln_sh: 6
+h_track_dau_old_ln_ot: 79
+
+reco_old_true_length_mu: 1499
+reco_old_true_length_pi: 99
+reco_true_length_mu: 1677
+reco_true_length_pi: 296
+reco_true_length_mu_hy: 1685
+reco_true_length_pi_hy: 245
+
+-- NotK
+
+h_track_dau_ln_pr: 1467
+h_track_dau_ln_pi: 406
+h_track_dau_ln_mu: 345
+h_track_dau_ln_sh: 916
+h_track_dau_ln_ot: 728
+
+h_track_dau_ln_pr_hy: 1460
+h_track_dau_ln_pi_hy: 404
+h_track_dau_ln_mu_hy: 450
+h_track_dau_ln_sh_hy: 906
+h_track_dau_ln_ot_hy: 642
+
+h_track_dau_old_ln_pr: 802
+h_track_dau_old_ln_pi: 136
+h_track_dau_old_ln_mu: 212
+h_track_dau_old_ln_sh: 66
+h_track_dau_old_ln_ot: 247
+
+reco_old_true_length_mu: 0
+reco_old_true_length_pi: 0
+reco_true_length_mu: 0
+reco_true_length_pi: 0
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 675
+h_track_dau_ln_pi: 200
+h_track_dau_ln_mu: 280
+h_track_dau_ln_sh: 71
+h_track_dau_ln_ot: 348
+
+h_track_dau_ln_pr_hy: 703
+h_track_dau_ln_pi_hy: 204
+h_track_dau_ln_mu_hy: 351
+h_track_dau_ln_sh_hy: 70
+h_track_dau_ln_ot_hy: 306
+
+h_track_dau_old_ln_pr: 475
+h_track_dau_old_ln_pi: 105
+h_track_dau_old_ln_mu: 194
+h_track_dau_old_ln_sh: 7
+h_track_dau_old_ln_ot: 156
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 561
+h_track_dau_ln_pi: 172
+h_track_dau_ln_mu: 253
+h_track_dau_ln_sh: 63
+h_track_dau_ln_ot: 271
+
+h_track_dau_ln_pr_hy: 573
+h_track_dau_ln_pi_hy: 176
+h_track_dau_ln_mu_hy: 317
+h_track_dau_ln_sh_hy: 62
+h_track_dau_ln_ot_hy: 227
+
+h_track_dau_old_ln_pr: 355
+h_track_dau_old_ln_pi: 85
+h_track_dau_old_ln_mu: 180
+h_track_dau_old_ln_sh: 4
+h_track_dau_old_ln_ot: 95
+
+-------------
+
+Associated K
+
+-- All 
+
+h_track_dau_ln_pr: 871
+h_track_dau_ln_pi: 508
+h_track_dau_ln_mu: 1214
+h_track_dau_ln_sh: 744
+h_track_dau_ln_ot: 649
+
+h_track_dau_ln_pr_hy: 872
+h_track_dau_ln_pi_hy: 501
+h_track_dau_ln_mu_hy: 1298
+h_track_dau_ln_sh_hy: 738
+h_track_dau_ln_ot_hy: 577
+
+h_track_dau_old_ln_pr: 424
+h_track_dau_old_ln_pi: 147
+h_track_dau_old_ln_mu: 821
+h_track_dau_old_ln_sh: 60
+h_track_dau_old_ln_ot: 234
+
+reco_old_true_length_mu: 551
+reco_old_true_length_pi: 29
+reco_true_length_mu: 664
+reco_true_length_pi: 130
+
+- with 25 cm cut
+
+h_track_dau_ln_pr: 384
+h_track_dau_ln_pi: 291
+h_track_dau_ln_mu: 1044
+h_track_dau_ln_sh: 90
+h_track_dau_ln_ot: 328
+
+h_track_dau_ln_pr_hy: 405
+h_track_dau_ln_pi_hy: 292
+h_track_dau_ln_mu_hy: 1133
+h_track_dau_ln_sh_hy: 94
+h_track_dau_ln_ot_hy: 301
+
+h_track_dau_old_ln_pr: 243
+h_track_dau_old_ln_pi: 111
+h_track_dau_old_ln_mu: 788
+h_track_dau_old_ln_sh: 7
+h_track_dau_old_ln_ot: 162
+
+reco_old_true_length_mu: 551
+reco_old_true_length_pi: 29
+reco_true_length_mu: 664
+reco_true_length_pi: 130
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 323
+h_track_dau_ln_pi: 263
+h_track_dau_ln_mu: 982
+h_track_dau_ln_sh: 84
+h_track_dau_ln_ot: 254
+
+h_track_dau_ln_pr_hy: 333
+h_track_dau_ln_pi_hy: 266
+h_track_dau_ln_mu_hy: 1063
+h_track_dau_ln_sh_hy: 85
+h_track_dau_ln_ot_hy: 225
+
+h_track_dau_old_ln_pr: 175
+h_track_dau_old_ln_pi: 88
+h_track_dau_old_ln_mu: 711
+h_track_dau_old_ln_sh: 2
+h_track_dau_old_ln_ot: 94
+
+reco_old_true_length_mu: 551
+reco_old_true_length_pi: 29
+reco_true_length_mu: 664
+reco_true_length_pi: 130
+reco_true_length_mu_hy: 663
+reco_true_length_pi_hy: 108
+
+-- IsK
+
+h_track_dau_ln_pr: 191
+h_track_dau_ln_pi: 255
+h_track_dau_ln_mu: 1088
+h_track_dau_ln_sh: 229
+h_track_dau_ln_ot: 196
+
+h_track_dau_ln_pr_hy: 195
+h_track_dau_ln_pi_hy: 251
+h_track_dau_ln_mu_hy: 1105
+h_track_dau_ln_sh_hy: 230
+h_track_dau_ln_ot_hy: 178
+
+h_track_dau_old_ln_pr: 97
+h_track_dau_old_ln_pi: 61
+h_track_dau_old_ln_mu: 736
+h_track_dau_old_ln_sh: 16
+h_track_dau_old_ln_ot: 76
+
+reco_old_true_length_mu: 551
+reco_old_true_length_pi: 29
+reco_true_length_mu: 664
+reco_true_length_pi: 130
+
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 89
+h_track_dau_ln_pi: 173
+h_track_dau_ln_mu: 940
+h_track_dau_ln_sh: 47
+h_track_dau_ln_ot: 108
+
+h_track_dau_ln_pr_hy: 98
+h_track_dau_ln_pi_hy: 173
+h_track_dau_ln_mu_hy: 987
+h_track_dau_ln_sh_hy: 51
+h_track_dau_ln_ot_hy: 102
+
+h_track_dau_old_ln_pr: 61
+h_track_dau_old_ln_pi: 45
+h_track_dau_old_ln_mu: 714
+h_track_dau_old_ln_sh: 4
+h_track_dau_old_ln_ot: 56
+
+reco_old_true_length_mu: 551
+reco_old_true_length_pi: 29
+reco_true_length_mu: 664
+reco_true_length_pi: 130
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 75
+h_track_dau_ln_pi: 165
+h_track_dau_ln_mu: 889
+h_track_dau_ln_sh: 44
+h_track_dau_ln_ot: 84
+
+h_track_dau_ln_pr_hy: 78
+h_track_dau_ln_pi_hy: 166
+h_track_dau_ln_mu_hy: 930
+h_track_dau_ln_sh_hy: 44
+h_track_dau_ln_ot_hy: 83
+
+h_track_dau_old_ln_pr: 39
+h_track_dau_old_ln_pi: 37
+h_track_dau_old_ln_mu: 645
+h_track_dau_old_ln_sh: 0
+h_track_dau_old_ln_ot: 33
+
+reco_old_true_length_mu: 551
+reco_old_true_length_pi: 29
+reco_true_length_mu: 664
+reco_true_length_pi: 130
+reco_true_length_mu_hy: 663
+reco_true_length_pi_hy: 108
+
+-- NotK
+
+h_track_dau_ln_pr: 680
+h_track_dau_ln_pi: 253
+h_track_dau_ln_mu: 126
+h_track_dau_ln_sh: 515
+h_track_dau_ln_ot: 453
+
+h_track_dau_ln_pr_hy: 677
+h_track_dau_ln_pi_hy: 250
+h_track_dau_ln_mu_hy: 193
+h_track_dau_ln_sh_hy: 508
+h_track_dau_ln_ot_hy: 399
+
+h_track_dau_old_ln_pr: 327
+h_track_dau_old_ln_pi: 86
+h_track_dau_old_ln_mu: 85
+h_track_dau_old_ln_sh: 44
+h_track_dau_old_ln_ot: 158
+
+reco_old_true_length_mu: 0
+reco_old_true_length_pi: 0
+reco_true_length_mu: 0
+reco_true_length_pi: 0
+
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 295
+h_track_dau_ln_pi: 118
+h_track_dau_ln_mu: 104
+h_track_dau_ln_sh: 43
+h_track_dau_ln_ot: 220
+
+h_track_dau_ln_pr_hy: 307
+h_track_dau_ln_pi_hy: 119
+h_track_dau_ln_mu_hy: 146
+h_track_dau_ln_sh_hy: 43
+h_track_dau_ln_ot_hy: 199
+
+h_track_dau_old_ln_pr: 182
+h_track_dau_old_ln_pi: 66
+h_track_dau_old_ln_mu: 74
+h_track_dau_old_ln_sh: 3
+h_track_dau_old_ln_ot: 106
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 248
+h_track_dau_ln_pi: 98
+h_track_dau_ln_mu: 93
+h_track_dau_ln_sh: 40
+h_track_dau_ln_ot: 170
+
+h_track_dau_ln_pr_hy: 255
+h_track_dau_ln_pi_hy: 100
+h_track_dau_ln_mu_hy: 133
+h_track_dau_ln_sh_hy: 41
+h_track_dau_ln_ot_hy: 142
+
+h_track_dau_old_ln_pr: 136
+h_track_dau_old_ln_pi: 51
+h_track_dau_old_ln_mu: 66
+h_track_dau_old_ln_sh: 2
+h_track_dau_old_ln_ot: 61
+
+----------
+
+Single K
+
+-- All
+
+h_track_dau_ln_pr: 1070
+h_track_dau_ln_pi: 516
+h_track_dau_ln_mu: 1870
+h_track_dau_ln_sh: 681
+h_track_dau_ln_ot: 536
+
+h_track_dau_ln_pr_hy: 1070
+h_track_dau_ln_pi_hy: 516
+h_track_dau_ln_mu_hy: 1932
+h_track_dau_ln_sh_hy: 674
+h_track_dau_ln_ot_hy: 481
+
+h_track_dau_old_ln_pr: 645
+h_track_dau_old_ln_pi: 186
+h_track_dau_old_ln_mu: 1392
+h_track_dau_old_ln_sh: 40
+h_track_dau_old_ln_ot: 196
+
+reco_old_true_length_mu: 948
+reco_old_true_length_pi: 70
+reco_true_length_mu: 1013
+reco_true_length_pi: 166
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 535
+h_track_dau_ln_pi: 334
+h_track_dau_ln_mu: 1627
+h_track_dau_ln_sh: 82
+h_track_dau_ln_ot: 274
+
+h_track_dau_ln_pr_hy: 560
+h_track_dau_ln_pi_hy: 341
+h_track_dau_ln_mu_hy: 1735
+h_track_dau_ln_sh_hy: 79
+h_track_dau_ln_ot_hy: 249
+
+h_track_dau_old_ln_pr: 402
+h_track_dau_old_ln_pi: 143
+h_track_dau_old_ln_mu: 1354
+h_track_dau_old_ln_sh: 11
+h_track_dau_old_ln_ot: 133
+
+reco_old_true_length_mu: 948
+reco_old_true_length_pi: 70
+reco_true_length_mu: 1013
+reco_true_length_pi: 166
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 442
+h_track_dau_ln_pi: 318
+h_track_dau_ln_mu: 1540
+h_track_dau_ln_sh: 76
+h_track_dau_ln_ot: 213
+
+h_track_dau_ln_pr_hy: 444
+h_track_dau_ln_pi_hy: 322
+h_track_dau_ln_mu_hy: 1640
+h_track_dau_ln_sh_hy: 73
+h_track_dau_ln_ot_hy: 194
+
+h_track_dau_old_ln_pr: 287
+h_track_dau_old_ln_pi: 122
+h_track_dau_old_ln_mu: 1256
+h_track_dau_old_ln_sh: 8
+h_track_dau_old_ln_ot: 80
+
+reco_old_true_length_mu: 948
+reco_old_true_length_pi: 70
+reco_true_length_mu: 1013
+reco_true_length_pi: 166
+reco_true_length_mu_hy: 1022
+reco_true_length_pi_hy: 137
+
+-- IsK
+
+h_track_dau_ln_pr: 283
+h_track_dau_ln_pi: 363
+h_track_dau_ln_mu: 1651
+h_track_dau_ln_sh: 280
+h_track_dau_ln_ot: 261
+
+h_track_dau_ln_pr_hy: 287
+h_track_dau_ln_pi_hy: 362
+h_track_dau_ln_mu_hy: 1675
+h_track_dau_ln_sh_hy: 276
+h_track_dau_ln_ot_hy: 238
+
+h_track_dau_old_ln_pr: 170
+h_track_dau_old_ln_pi: 136
+h_track_dau_old_ln_mu: 1265
+h_track_dau_old_ln_sh: 18
+h_track_dau_old_ln_ot: 107
+
+reco_old_true_length_mu: 948
+reco_old_true_length_pi: 70
+reco_true_length_mu: 1013
+reco_true_length_pi: 166
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 155
+h_track_dau_ln_pi: 252
+h_track_dau_ln_mu: 1451
+h_track_dau_ln_sh: 54
+h_track_dau_ln_ot: 146
+
+h_track_dau_ln_pr_hy: 164
+h_track_dau_ln_pi_hy: 256
+h_track_dau_ln_mu_hy: 1530
+h_track_dau_ln_sh_hy: 52
+h_track_dau_ln_ot_hy: 142
+
+h_track_dau_old_ln_pr: 109
+h_track_dau_old_ln_pi: 104
+h_track_dau_old_ln_mu: 1234
+h_track_dau_old_ln_sh: 7
+h_track_dau_old_ln_ot: 83
+
+reco_old_true_length_mu: 948
+reco_old_true_length_pi: 70
+reco_true_length_mu: 1013
+reco_true_length_pi: 166
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 129
+h_track_dau_ln_pi: 244
+h_track_dau_ln_mu: 1380
+h_track_dau_ln_sh: 53
+h_track_dau_ln_ot: 112
+
+h_track_dau_ln_pr_hy: 126
+h_track_dau_ln_pi_hy: 246
+h_track_dau_ln_mu_hy: 1456
+h_track_dau_ln_sh_hy: 52
+h_track_dau_ln_ot_hy: 109
+
+h_track_dau_old_ln_pr: 68
+h_track_dau_old_ln_pi: 88
+h_track_dau_old_ln_mu: 1142
+h_track_dau_old_ln_sh: 6
+h_track_dau_old_ln_ot: 46
+
+reco_old_true_length_mu: 948
+reco_old_true_length_pi: 70
+reco_true_length_mu: 1013
+reco_true_length_pi: 166
+reco_true_length_mu_hy: 1022
+reco_true_length_pi_hy: 137
+
+-- NotK
+
+h_track_dau_ln_pr: 787
+h_track_dau_ln_pi: 153
+h_track_dau_ln_mu: 219
+h_track_dau_ln_sh: 401
+h_track_dau_ln_ot: 275
+
+h_track_dau_ln_pr_hy: 783
+h_track_dau_ln_pi_hy: 154
+h_track_dau_ln_mu_hy: 257
+h_track_dau_ln_sh_hy: 398
+h_track_dau_ln_ot_hy: 243
+
+h_track_dau_old_ln_pr: 475
+h_track_dau_old_ln_pi: 50
+h_track_dau_old_ln_mu: 127
+h_track_dau_old_ln_sh: 22
+h_track_dau_old_ln_ot: 89
+
+reco_old_true_length_mu: 0
+reco_old_true_length_pi: 0
+reco_true_length_mu: 0
+reco_true_length_pi: 0
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 380
+h_track_dau_ln_pi: 82
+h_track_dau_ln_mu: 176
+h_track_dau_ln_sh: 28
+h_track_dau_ln_ot: 128
+
+h_track_dau_ln_pr_hy: 396
+h_track_dau_ln_pi_hy: 85
+h_track_dau_ln_mu_hy: 205
+h_track_dau_ln_sh_hy: 27
+h_track_dau_ln_ot_hy: 107
+
+h_track_dau_old_ln_pr: 293
+h_track_dau_old_ln_pi: 39
+h_track_dau_old_ln_mu: 120
+h_track_dau_old_ln_sh: 4
+h_track_dau_old_ln_ot: 50
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 313
+h_track_dau_ln_pi: 74
+h_track_dau_ln_mu: 160
+h_track_dau_ln_sh: 23
+h_track_dau_ln_ot: 101
+
+h_track_dau_ln_pr_hy: 318
+h_track_dau_ln_pi_hy: 76
+h_track_dau_ln_mu_hy: 184
+h_track_dau_ln_sh_hy: 21
+h_track_dau_ln_ot_hy: 85
+
+h_track_dau_old_ln_pr: 219
+h_track_dau_old_ln_pi: 34
+h_track_dau_old_ln_mu: 114
+h_track_dau_old_ln_sh: 2
+h_track_dau_old_ln_ot: 34
+
+---------
+
+NuMI
+
+- All 
+
+h_track_dau_ln_pr: 2385
+h_track_dau_ln_pi: 1004
+h_track_dau_ln_mu: 76
+h_track_dau_ln_sh: 1681
+h_track_dau_ln_ot: 877
+
+h_track_dau_ln_pr_hy: 2398
+h_track_dau_ln_pi_hy: 1002
+h_track_dau_ln_mu_hy: 178
+h_track_dau_ln_sh_hy: 1677
+h_track_dau_ln_ot_hy: 768
+
+h_track_dau_old_ln_pr: 1523
+h_track_dau_old_ln_pi: 368
+h_track_dau_old_ln_mu: 35
+h_track_dau_old_ln_sh: 126
+h_track_dau_old_ln_ot: 406
+
+reco_old_true_length_mu: 9
+reco_old_true_length_pi: 0
+reco_true_length_mu: 8
+reco_true_length_pi: 1
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 906
+h_track_dau_ln_pi: 490
+h_track_dau_ln_mu: 52
+h_track_dau_ln_sh: 175
+h_track_dau_ln_ot: 439
+
+h_track_dau_ln_pr_hy: 936
+h_track_dau_ln_pi_hy: 499
+h_track_dau_ln_mu_hy: 109
+h_track_dau_ln_sh_hy: 178
+h_track_dau_ln_ot_hy: 388
+
+h_track_dau_old_ln_pr: 714
+h_track_dau_old_ln_pi: 269
+h_track_dau_old_ln_mu: 32
+h_track_dau_old_ln_sh: 7
+h_track_dau_old_ln_ot: 246
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 785
+h_track_dau_ln_pi: 424
+h_track_dau_ln_mu: 42
+h_track_dau_ln_sh: 156
+h_track_dau_ln_ot: 351
+
+h_track_dau_ln_pr_hy: 804
+h_track_dau_ln_pi_hy: 432
+h_track_dau_ln_mu_hy: 91
+h_track_dau_ln_sh_hy: 155
+h_track_dau_ln_ot_hy: 310
+
+h_track_dau_old_ln_pr: 596
+h_track_dau_old_ln_pi: 193
+h_track_dau_old_ln_mu: 26
+h_track_dau_old_ln_sh: 3
+h_track_dau_old_ln_ot: 192
+
+- IsK
+
+h_track_dau_ln_pr: 6
+h_track_dau_ln_pi: 7
+h_track_dau_ln_mu: 31
+h_track_dau_ln_sh: 13
+h_track_dau_ln_ot: 5
+
+h_track_dau_ln_pr_hy: 6
+h_track_dau_ln_pi_hy: 8
+h_track_dau_ln_mu_hy: 34
+h_track_dau_ln_sh_hy: 13
+h_track_dau_ln_ot_hy: 1
+
+h_track_dau_old_ln_pr: 3
+h_track_dau_old_ln_pi: 1
+h_track_dau_old_ln_mu: 23
+h_track_dau_old_ln_sh: 1
+h_track_dau_old_ln_ot: 2
+
+reco_old_true_length_mu: 9
+reco_old_true_length_pi: 0
+reco_true_length_mu: 8
+reco_true_length_pi: 1
+
+- with 25cm && 75cm cut
+
+-- NotK
+
+h_track_dau_ln_pr: 2379
+h_track_dau_ln_pi: 997
+h_track_dau_ln_mu: 45
+h_track_dau_ln_sh: 1668
+h_track_dau_ln_ot: 872
+
+h_track_dau_ln_pr_hy: 2392
+h_track_dau_ln_pi_hy: 994
+h_track_dau_ln_mu_hy: 144
+h_track_dau_ln_sh_hy: 1664
+h_track_dau_ln_ot_hy: 767
+
+h_track_dau_old_ln_pr: 1520
+h_track_dau_old_ln_pi: 367
+h_track_dau_old_ln_mu: 12
+h_track_dau_old_ln_sh: 125
+h_track_dau_old_ln_ot: 404
+
+- with 25cm cut
+
+h_track_dau_ln_pr: 901
+h_track_dau_ln_pi: 485
+h_track_dau_ln_mu: 25
+h_track_dau_ln_sh: 175
+h_track_dau_ln_ot: 438
+
+h_track_dau_ln_pr_hy: 931
+h_track_dau_ln_pi_hy: 493
+h_track_dau_ln_mu_hy: 79
+h_track_dau_ln_sh_hy: 178
+h_track_dau_ln_ot_hy: 387
+
+h_track_dau_old_ln_pr: 711
+h_track_dau_old_ln_pi: 268
+h_track_dau_old_ln_mu: 9
+h_track_dau_old_ln_sh: 7
+h_track_dau_old_ln_ot: 245
+
+reco_old_true_length_mu: 0
+reco_old_true_length_pi: 0
+reco_true_length_mu: 0
+reco_true_length_pi: 0
+
+
+- with 25cm && 75cm cut
+
+h_track_dau_ln_pr: 780
+h_track_dau_ln_pi: 419
+h_track_dau_ln_mu: 15
+h_track_dau_ln_sh: 156
+h_track_dau_ln_ot: 351
+
+h_track_dau_ln_pr_hy: 799
+h_track_dau_ln_pi_hy: 426
+h_track_dau_ln_mu_hy: 61
+h_track_dau_ln_sh_hy: 155
+h_track_dau_ln_ot_hy: 309
+
+h_track_dau_old_ln_pr: 593
+h_track_dau_old_ln_pi: 192
+h_track_dau_old_ln_mu: 3
+h_track_dau_old_ln_sh: 3
+h_track_dau_old_ln_ot: 191

@@ -24,7 +24,7 @@ void ConvertToTrackTuple_alg_precut_cheat()
 
   TStopwatch clock;
 
-  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_debug.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug_test2.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_debug.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_tracktuple.root");

@@ -24,11 +24,11 @@ void ConvertToTrackTuple_alg_precut_debug()
 
   TStopwatch clock;
 
-  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_test.root");
-  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple.root");
-  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_rerunPID_tracktuple.root");
-  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_rerunPID_tracktuple.root");
-  //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_rerunPID_tracktuple.root");
+  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple.root");
+  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple.root");
+  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_rerunPID_tracktuple.root");
+  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_rerunPID_tracktuple.root");
+  ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_refined_KrecoAlg_parameter8_rerunPID.root","/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_rerunPID_tracktuple.root");
 
   //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana_old/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod.root", "rootfile/core.root");
   //ConvertToTrackTuple_alg_precut_debug("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_debug_2.root", "refine_debug_2.root");

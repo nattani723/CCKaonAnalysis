@@ -12,7 +12,7 @@
 
 void Initialise();
 //void GeneratePlots(TFile *f, TString pl, TCanvas* &c, TString output_name);
-void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name);
+void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &c, TString output_name, TChain *chain);
 //void DrawChi2(TFile *f, TString pr, TString pr2, TString pl, TString trdau, TCanvas* &c, TString output_name);
 void RebuildTrackHist_simple(TString input_name, TString output_name, TString pl, TString mode, bool IsHybrid);
 void LoadTree(TFile *f, TString pl, TTree* &t);
@@ -136,13 +136,13 @@ TH1D * h_reco_track_length;
 TH1D * h_reco_track_daughter_distance;
 TH1D * h_reco_track_daughter_vtx_distance;
 
-THStack * s_trkln_dau = new THStack("s_trkln_dau", ";Daughter Track Length (cm);Event");
-THStack * s_trkln_dau_old = new THStack("s_trkln_dau)old", ";Daughter Track Length (cm);Event");
-THStack * s_trkln_rebdau = new THStack("s_trkln_rebdau", ";Daughter Track Length (cm);Event");
-THStack * s_trkln_rebdau_cheat = new THStack("s_trkln_rebdau_cheat", ";Daughter Track Length (cm);Event");
-THStack * s_trkln_rebdau_cheat_dir = new THStack("s_trkln_rebdau_cheat_dir", ";Daughter Track Length (cm);Event");
-THStack * s_peak_dir = new THStack("s_peak_dir", ";Reconstructed - True direciton Opening angle (rad);Event");
-THStack * s_peak_dir_cheat = new THStack("s_peak_dir_cheat", ";Cheated - True direciton Opening angle (rad);Event");
+THStack * s_trkln_dau = new THStack("s_trkln_dau", ";Daughter Track Length (cm);Event (a.u.)");
+THStack * s_trkln_dau_old = new THStack("s_trkln_dau)old", ";Daughter Track Length (cm);Event (a.u.)");
+THStack * s_trkln_rebdau = new THStack("s_trkln_rebdau", ";Daughter Track Length (cm);Event (a.u.)");
+THStack * s_trkln_rebdau_cheat = new THStack("s_trkln_rebdau_cheat", ";Daughter Track Length (cm);Event (a.u.)");
+THStack * s_trkln_rebdau_cheat_dir = new THStack("s_trkln_rebdau_cheat_dir", ";Daughter Track Length (cm);Event (a.u.)");
+THStack * s_peak_dir = new THStack("s_peak_dir", ";Reconstructed - True direciton Opening angle (rad);Event (a.u.)");
+THStack * s_peak_dir_cheat = new THStack("s_peak_dir_cheat", ";Cheated - True direciton Opening angle (rad);Event (a.u.)");
 THStack * s_vtx_dis = new THStack("s_vtx_dis", ";Reconstructed - True Vertex Distance (cm)");
 
 /*
@@ -153,6 +153,7 @@ THStack * s_vtx_dis = new THStack("s_vtx_dis", ";Reconstructed - True Vertex Dis
 */
 
 TLegend * l_pr_dau_ln;
+TLegend * l_pr_dau_ln_cheat;
 TLegend * l_ka;
 
 //how to store PDG
