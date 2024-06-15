@@ -30,7 +30,7 @@ void RebuildTrackHist_simple()
   //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
   //RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora//CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track_debug5_debug.root", "debug5_debug.pdf", "3pl", "IsK", true);
 
-  RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug.root","Plots/assok_KReco.pdf", "3pl", "All", true);
+  RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug_test2.root","Plots/assok_KReco.pdf", "3pl", "All", true);
   //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple.root","Plots/singlek_KReco.pdf", "3pl", "IsK", true);
   //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root","Plots/numi_sample0_KReco.pdf", "3pl", "IsK", true);
 

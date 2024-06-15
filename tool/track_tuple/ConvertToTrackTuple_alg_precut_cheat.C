@@ -24,7 +24,7 @@ void ConvertToTrackTuple_alg_precut_cheat()
 
   TStopwatch clock;
 
-  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_debug.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug_test.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_debug.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug_test2.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root");
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_refined_KrecoAlg_parameter8.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_tracktuple.root");
@@ -588,7 +588,7 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
 
     //if(event.run==5025 || event.subrun==134 || event.event==6738) cout << "num_tracks: " << event.reco_ntracks << endl;
 
-    std::cout << "event.run: " << event.run << ", event.subrun: " << event.subrun << ", event.event: " << event.event << std::endl;
+    //std::cout << "event.run: " << event.run << ", event.subrun: " << event.subrun << ", event.event: " << event.event << std::endl;
 
     // Loop over tracks 
     //cout << "event.reco_ntracks: " << event.reco_ntracks << endl;
@@ -849,8 +849,70 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
 
       outtree->Fill();
 
-      // Reset track-level variables after filling the tree
-      reco_track_ndaughters = -1;
+      // Reset variables for the next track
+
+      reco_track_nhits0 = 0;
+      reco_track_nhits1 = 0;
+      reco_track_nhits2 = 0;
+      reco_track_distance = -9999;
+      reco_track_length = -9999;
+      reco_track_theta = -9999;
+      reco_track_phi = -9999;
+      reco_track_chi2ka_pl0 = -9999;
+      reco_track_chi2pr_pl0 = -9999;
+      reco_track_chi2pi_pl0 = -9999;
+      reco_track_chi2mu_pl0 = -9999;
+      reco_track_chi2ka_pl1 = -9999;
+      reco_track_chi2pr_pl1 = -9999;
+      reco_track_chi2pi_pl1 = -9999;
+      reco_track_chi2mu_pl1 = -9999;
+      reco_track_chi2ka_pl2 = -9999;
+      reco_track_chi2pr_pl2 = -9999;
+      reco_track_chi2pi_pl2 = -9999;
+      reco_track_chi2mu_pl2 = -9999;
+      reco_track_chi2ka_3pl = -9999;
+      reco_track_chi2pr_3pl = -9999;
+      reco_track_chi2pi_3pl = -9999;
+      reco_track_chi2mu_3pl = -9999;
+      reco_track_llrpid_3pl = -9999;
+      reco_track_llrpid_k_3pl = -9999;
+      reco_track_true_pdg = -9999;
+      reco_track_vtx_inTPC = false;
+      reco_track_vtx_in5cmTPC = false;
+      reco_track_vtx_inCCInclusiveTPC = false;
+      reco_track_end_inTPC = false;
+      reco_track_end_in5cmTPC = false;
+      reco_track_end_inCCInclusiveTPC = false;
+      reco_track_ndaughters = 0;
+
+      // Resetting other variables associated with a track
+      reco_track_kin0 = -9999;
+      reco_track_kin1 = -9999;
+      reco_track_kin2 = -9999;
+      reco_track_P_vtx = -9999;
+      reco_track_P_str = -9999;
+      reco_track_P_end = -9999;
+      reco_track_log_bragg_peak = -9999;
+      reco_track_Bragg_fwd_ka_pl0 = -9999;
+      reco_track_Bragg_fwd_pr_pl0 = -9999;
+      reco_track_Bragg_fwd_pi_pl0 = -9999;
+      reco_track_Bragg_fwd_mu_pl0 = -9999;
+      reco_track_Bragg_fwd_ka_pl1 = -9999;
+      reco_track_Bragg_fwd_pr_pl1 = -9999;
+      reco_track_Bragg_fwd_pi_pl1 = -9999;
+      reco_track_Bragg_fwd_mu_pl1 = -9999;
+      reco_track_Bragg_fwd_ka_pl2 = -9999;
+      reco_track_Bragg_fwd_pr_pl2 = -9999;
+      reco_track_Bragg_fwd_pi_pl2 = -9999;
+      reco_track_Bragg_fwd_mu_pl2 = -9999;
+      reco_track_MIP_pl0 = -9999;
+      reco_track_MIP_pl1 = -9999;
+      reco_track_MIP_pl2 = -9999;
+      reco_track_delta_dEdx_pl0 = -9999;
+      reco_track_delta_dEdx_pl1 = -9999;
+      reco_track_delta_dEdx_pl2 = -9999;
+
+      // Additional daughter-specific variables to reset
       reco_track_daughter_length = -9999;
       reco_track_daughter_distance = -9999;
       reco_track_daughter_vtx_distance = -9999;
@@ -882,9 +944,21 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
       reco_track_daughter_end_in5cmTPC = false;
       reco_track_daughter_end_inCCInclusiveTPC = false;
 
+      n_recoRebDauTracks = 0; // Assuming you count tracks here, reset to 0
+      rebdautrack_length = -9999;
+      rebdautracktrue_length = -9999;
+      rebdautracktruedir_length = -9999;
+      rebdautrack_pdg = -9999;
+      best_peak_x = -9999;
+      best_peak_y = -9999;
+      best_peak_z = -9999;
+      best_peak_x_true = -9999;
+      best_peak_y_true = -9999;
+      best_peak_z_true = -9999;
+
     }//end loop over tracks
 
-    // Reset event-level variables after each event is fully processed
+    // Reset event-level variables after processing each event
     true_nu_energy = -9999;
     true_kaon_length = -9999;
     true_kaon_daughter_length = -9999;
@@ -895,18 +969,39 @@ outtree->Branch("n_recoRebDauTracks",&n_recoRebDauTracks,"n_recoRebDauTracks/I")
     true_kaon_phi = -9999;
     true_dau_pip_length = -9999;
     true_dau_muon_length = -9999;
-    true_nu_ccnc = -9999;
+    eventnum = -9999;
+    run = -9999;
+    subrun = -9999;
     true_nu_pdg = -9999;
+    true_nu_ccnc = -9999;
     true_nu_mode = -9999;
     true_lepton_pdg = -9999;
     true_nkaons = -9999;
     true_nhyperons = -9999;
-    true_kaon_end_process = -9999;
-    true_kaon_ndaughters_inelastic = -9999;
     reco_ccmu_true_pdg = -9999;
-    eventnum = -9999;
-    run = -9999;
-    subrun = -9999;
+    true_kaon_end_process = -9999;
+    true_kaon_end_x = -9999;
+    true_kaon_end_y = -9999;
+    true_kaon_end_z = -9999;
+    true_dau_muon_end_x = -9999;
+    true_dau_muon_end_y = -9999;
+    true_dau_muon_end_z = -9999;
+    true_dau_muon_start_x = -9999;
+    true_dau_muon_start_y = -9999;
+    true_dau_muon_start_z = -9999;
+    true_dau_pip_end_x = -9999;
+    true_dau_pip_end_y = -9999;
+    true_dau_pip_end_z = -9999;
+    true_dau_pip_start_x = -9999;
+    true_dau_pip_start_y = -9999;
+    true_dau_pip_start_z = -9999;
+    true_dau_muon_theta = -9999;
+    true_dau_muon_phi = -9999;
+    true_dau_pip_theta = -9999;
+    true_dau_pip_phi = -9999;
+    true_nu_vtx_inCCInclusiveTPC = false;
+    true_kaon_end_inCCInclusiveTPC = false;
+    true_kaon_daughter_end_in5cmTPC = false;
 
   }//tree loop
 
