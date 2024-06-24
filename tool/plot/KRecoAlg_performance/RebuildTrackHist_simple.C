@@ -30,10 +30,10 @@ void RebuildTrackHist_simple()
   //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
   //RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora//CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track_debug5_debug.root", "debug5_debug.pdf", "3pl", "IsK", true);
 
-  //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug.root","Plots/assok_KReco_simple.pdf", "3pl", "All", true);
+  RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_parameter11.root","Plots/assok_KReco_simple_parameter11.pdf", "3pl", "All", true);
   //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple.root","Plots/singlek_KReco_simple.pdf", "3pl", "IsK", true);
   //RebuildTrackHist_simple("cck_simple.list","Plots/CCKReco_simple.pdf", "3pl", "IsK", true);
-  RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root","Plots/numi_sample0_KReco_simple.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root","Plots/numi_sample0_KReco_simple.pdf", "3pl", "IsK", true);
 
 }
 
@@ -107,13 +107,19 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
   for(int ientry=0; ientry<nentry; ++ientry){
 
     t->GetEntry(ientry);
-    //if( fname.Contains("7Nov") || (fname.Contains("TMVA") && BDT>0.32)){
+
+    if(ientry>0){
+      if(true_kaon_ke != true_kaon_ke_previous) HasStoredEventVariable = false;
+    }
+
+    true_kaon_ke_previous = true_kaon_ke;
+
     FillPrimaryTrack();
     
     //if(reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length))
     //add true track length
 
-    //if(reco_track_true_pdg==321) continue;
+    //if(reco_track_true_pdg!=321) continue;
     FillTrackLength();
     FillRebuildTrackLength();
     
@@ -535,16 +541,22 @@ void FillRebuildTrackLength(){
   else if(reco_track_true_pdg==221 || reco_track_true_pdg==-221) h_vtx_dis_mu->Fill(reco_vtx);
   else if(rebdautrack_pdg!=-9999) h_vtx_dis_ot->Fill(reco_vtx);
 
-  if(true_kaon_end_process==0){
-    h_track_rebdau_cheat_ln_mu->Fill(rebdautracktrue_length);
-    h_track_rebdau_cheat_dir_ln_mu->Fill(rebdautracktruedir_length);
-    h_peak_dir_cheat_mu->Fill(true_dau_dir.Angle(cheat_dir));
-  }
-  else if(true_kaon_end_process==1){
-    h_track_rebdau_cheat_ln_pi->Fill(rebdautracktrue_length);
-    h_track_rebdau_cheat_dir_ln_pi->Fill(rebdautracktruedir_length);
-    h_peak_dir_cheat_pi->Fill(true_dau_dir.Angle(cheat_dir));
-  }
+  //if(!HasStoredEventVariable){
+
+    //HasStoredEventVariable = true;
+    
+    if(true_kaon_end_process==0 && reco_track_true_pdg==321){
+      h_track_rebdau_cheat_ln_mu->Fill(rebdautracktrue_length);
+      h_track_rebdau_cheat_dir_ln_mu->Fill(rebdautracktruedir_length);
+      if(rebdautrack_length>0) h_peak_dir_cheat_mu->Fill(true_dau_dir.Angle(cheat_dir));
+    }
+    else if(true_kaon_end_process==1 && reco_track_true_pdg==321){
+      h_track_rebdau_cheat_ln_pi->Fill(rebdautracktrue_length);
+      h_track_rebdau_cheat_dir_ln_pi->Fill(rebdautracktruedir_length);
+      if(rebdautrack_length>0) h_peak_dir_cheat_pi->Fill(true_dau_dir.Angle(cheat_dir));
+    }
+
+    //}
 
   if(rebdautrack_pdg==2212){
     h_track_rebdau_ln_pr->Fill(rebdautrack_length);
@@ -654,6 +666,26 @@ void AddStackHistos(){
 
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_pi);
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_mu);
+  cout << h_track_rebdau_cheat_ln_mu->GetEntries() << " " << h_track_rebdau_cheat_ln_pi->GetEntries() << endl;
+
+  cout << endl;
+  cout << "h_peak_dir_mu->GetEntries(): " << h_peak_dir_mu->GetEntries() << endl;
+  cout << "h_peak_dir_mu->Integral(0, h_peak_dir_mu->FindBin(0.25)): " << h_peak_dir_mu->Integral(0, h_peak_dir_mu->FindBin(0.25)) << endl;
+  cout << endl;
+  cout << "h_peak_dir_pi->GetEntries(): " << h_peak_dir_pi->GetEntries() << endl;
+  cout << "h_peak_dir_pi->Integral(0, h_peak_dir_pi->FindBin(0.25)): " << h_peak_dir_pi->Integral(0, h_peak_dir_pi->FindBin(0.25)) << endl;
+  cout << endl;
+
+  cout << "h_peak_dir_cheat_mu->GetEntries(): " << h_peak_dir_cheat_mu->GetEntries() << endl;
+  cout << "h_peak_dir_cheat_mu->Integral(0, h_peak_dir_cheat_mu->FindBin(0.25)): " << h_peak_dir_cheat_mu->Integral(0, h_peak_dir_cheat_mu->FindBin(0.25)) << endl;
+  cout << endl;
+  cout << "h_peak_dir_cheat_pi->GetEntries(): " << h_peak_dir_cheat_pi->GetEntries() << endl;
+  cout << "h_peak_dir_cheat_pi->Integral(0, h_peak_dir_cheat_pi->FindBin(0.25)): " << h_peak_dir_cheat_pi->Integral(0, h_peak_dir_cheat_pi->FindBin(0.25)) << endl;
+  cout << endl;
+
+  cout << "h_vtx_dis_ka->GetEntries(): " << h_vtx_dis_ka->GetEntries() << endl;
+  cout << "h_vtx_dis_ka->Integral(0, h_vtx_dis_ka->FindBin(10)): " << h_vtx_dis_ka->Integral(0, h_vtx_dis_ka->FindBin(10)) << endl;
+
   /*
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_pr);
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_sh);
@@ -755,7 +787,7 @@ void DrawHistos(TCanvas* &c,TString output_name){
   c->Modified();
   c->Update();
 
-  c->SetLogy();
+  c->SetLogy(1);
 
   s_peak_dir->Draw("nostack");
   l_pr_dau_ln->Draw();

@@ -39,6 +39,9 @@ int reco_true_length_pi;
 int reco_old_true_length_mu;
 int reco_old_true_length_pi;
 
+bool HasStoredEventVariable = false;
+double true_kaon_ke_previous = -9;
+
   Float_t true_dau_pip_length;
   Float_t true_dau_muon_length;
 
