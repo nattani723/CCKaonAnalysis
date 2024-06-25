@@ -52,11 +52,11 @@ void BDTManager::WriteTrainingTrees(){
 
 void BDTManager::SetupTrainingTrees(){
 
-   system("mkdir -p SelectorMVA");
+   system("mkdir -p MVA");
 
-   f_Trees = TFile::Open( "SelectorMVA/Trees.root" , "RECREATE" );
-   t_Signal = new TTree("t_SelectorMVA_Signal","Signal");
-   t_Background = new TTree("t_SelectorMVA_Background","Background");
+   f_Trees = TFile::Open( "MVA/Trees.root" , "RECREATE" );
+   t_Signal = new TTree("t_MVA_Signal","Signal");
+   t_Background = new TTree("t_MVA_Background","Background");
 
    t_Signal->Branch("PrimaryTrack_Chi2_Kaon_3Plane",&v_PrimaryTrack_Chi2_Kaon_3Plane);
    t_Signal->Branch("PrimaryTrack_Chi2_Proton_3Plane",&v_PrimaryTrack_Chi2_Proton_3Plane);
@@ -196,7 +196,7 @@ void BDTManager::SetupBDT(std::string WeightsDir,std::string alg){
 
    if(WeightsDir == ""){ 
       std::cout << "No weights directory given, assuming default location" << std::endl;
-      fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/SelectorMVA/v1/dataset/weights";
+      fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/MVA/v1/dataset/weights";
    }
    else fWeightsDir = WeightsDir;  
 
