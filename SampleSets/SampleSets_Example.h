@@ -1,7 +1,7 @@
 
 // Put pre-defined sample sets in here.
 
-enum settings { sNuWroFullFHCvsData , sNuWroFullFHC };
+enum settings { sNuWroFullFHCvsData , sNuWroFullFHC , sBDTTest};
 
 std::vector<std::string> SampleNames,SampleTypes,SampleFiles,EventLists;
 
@@ -26,7 +26,7 @@ void ImportSamples(int Setting){
     
     SampleNames = { "Associated K Overlay" };
     SampleTypes = { "AssocKaon" };
-    SampleFiles = { "/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root" };
+    SampleFiles = { "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter10_ntuple.root" };
 
   }
 
