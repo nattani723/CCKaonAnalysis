@@ -436,8 +436,6 @@ bool SelectionManager::DaughterFiducialVolumeCut(const Event &e){
     auto isOutsideFiducialVolume = [&](const std::pair<RecoParticle, RecoParticle>& pair) {
       TVector3 DaughterTrackEnd;
       DaughterTrackEnd.SetXYZ(pair.second.TrackEndX, pair.second.TrackEndY, pair.second.TrackEndZ);
-      //std::cout << "primarytrackend: " << pair.first.TrackEndX << " " << pair.first.TrackEndY << " " << pair.first.TrackEndZ << " " << std::endl; 
-      //std::cout << "DaughterTrackEnd: " << DaughterTrackEnd.X() << " " <<  DaughterTrackEnd.Y() << " " <<  DaughterTrackEnd.Z() << std::endl;
       return !a_FiducialVolume.InFiducialVolume_5cm(DaughterTrackEnd);
     };
 
@@ -490,9 +488,6 @@ void SelectionManager::StorePrimaryDaughterTracksPair(const Event &e){
       TVector3 DaughterStart(DaughterTrack.X, DaughterTrack.Y, DaughterTrack.Z);
 
       if (IsWithinDistance(PrimaryEnd, DaughterStart, 10.0)) {
-	//std::cout << "PrimaryTrackEnd: " << PrimaryTrack.TrackEndX << " " << PrimaryTrack.TrackEndY << " " <<  PrimaryTrack.TrackEndZ << std::endl;
-	//std::cout << "DaughterEnd: " << DaughterTrack.TrackEndX << " " << DaughterTrack.TrackEndY << " " << DaughterTrack.TrackEndZ << std::endl;
-
 	bestDaughterTrack = &DaughterTrack;
 	VectorPair.emplace_back(PrimaryTrack, DaughterTrack); // Directly emplace_back to avoid extra copy
 	addedPairForThisPrimary = true;
@@ -579,6 +574,19 @@ bool SelectionManager::DaughterTrackLengthCut(const Event &e){
 bool SelectionManager::BDTCut(Event &e){
 
    bool passed = a_BDTManager.CalculateScore(e) > TheParams.p_BDT_Cut; 
+
+   UpdateCut(e,passed,"BDT");
+
+   return passed;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Calculate decay analysis BDT score and apply cut. This also stores BDT score for each Event.
+
+bool SelectionManager::BDTCut(Event &e, const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle){
+
+  bool passed = a_BDTManager.CalculateScore(e,PrimaryKaonTrackParticle,DaughterTrackParticle) > TheParams.p_BDT_Cut; 
 
    UpdateCut(e,passed,"BDT");
 
@@ -910,12 +918,13 @@ void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,RecoPar
       
   Hist_BDT_All->Fill(variable,weight*e.Weight);
   
-  if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
+  //if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
+  if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) 
     Hist_BDT_Signal->Fill(variable,weight*e.Weight);
 
 
-  FillEtoPCurve();
-  PlotEtoPCurve();
+  //FillEtoPCurve();
+  // PlotEtoPCurve();
   /*
     Hist_Efficiency_Left->Fill(variable,weight*e.Weight);
     Hist_Purity_Left->Fill(variable,weight*e.Weight);
@@ -933,21 +942,19 @@ void SelectionManager::FillEtoPCurve(){
 
   int nbin = Hist_BDT_All->GetNbinsX();
   double denominator = Hist_BDT_All->Integral(1,nbin+1);
+
   for (int bin=1; bin<=nbin+1; bin++) {
     double signal = Hist_BDT_Signal->Integral(bin,nbin+1);
     double all = Hist_BDT_All->Integral(bin,nbin+1);
     double efficiency = denominator>0 ? signal/denominator : 0;
     double purity = all>0 ? signal/all : 0;
+
     Hist_Efficiency->SetBinContent(bin,efficiency);
     Hist_Purity->SetBinContent(bin,purity);
     Hist_EtoP->SetBinContent(bin, efficiency*purity);
   }
 
   int binmax = Hist_EtoP->GetMaximumBin();
-  std::cout << "Cut at " << Hist_EtoP->GetXaxis()->GetBinCenter(binmax) << " gives " << std::endl;
-  std::cout << "Efficiency of " << Hist_Efficiency->GetBinContent(binmax) << std::endl;
-  std::cout << "Purity of " << Hist_Purity->GetBinContent(binmax) << std::endl;
-  std::cout << "E*P of " << Hist_EtoP->GetBinContent(binmax) << std::endl;
 
 }
 

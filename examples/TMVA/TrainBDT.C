@@ -29,6 +29,8 @@ void TrainBDT(){
 
    f_in->GetObject("SignalTree",t_Signal);
    f_in->GetObject("BackgroundTree",t_Background);
+   //f_in->GetObject("t_MVA_Signal",t_Signal);
+   //f_in->GetObject("t_MVA_Background",t_Background);
 
    int nSignal = t_Signal->GetEntries();
    int nBackground = t_Background->GetEntries();

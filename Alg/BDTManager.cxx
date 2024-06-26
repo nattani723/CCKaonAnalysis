@@ -196,7 +196,8 @@ void BDTManager::SetupBDT(std::string WeightsDir,std::string alg){
 
    if(WeightsDir == ""){ 
       std::cout << "No weights directory given, assuming default location" << std::endl;
-      fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/MVA/v1/dataset/weights";
+      //fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/MVA/v1/dataset/weights";
+      fWeightsDir = "/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/examples/TMVA/dataset/weights/";
    }
    else fWeightsDir = WeightsDir;  
 

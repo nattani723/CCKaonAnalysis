@@ -19,13 +19,13 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
   
   SampleNames.push_back("AssocKaon"); 
   SampleTypes.push_back("AssocKaon"); 
-  SampleFiles.push_back("/exp/uboone/app/users/taniuchi/51_pandora/srcs/ubana/ubana/CCKaonProduction/testarea/KaonTrees.root");
-  
-  SampleNames.push_back("GENIE Background"); 
-  SampleTypes.push_back("Background");
-  SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/KaonTrees.root");
+  SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_ntuple.root");
   
   /*
+    SampleNames.push_back("GENIE Background"); 
+    SampleTypes.push_back("Background");
+    SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/KaonTrees.root");
+
     SampleNames.push_back("GENIE Background");
     SampleTypes.push_back("Background");
     SampleFiles.push_back("run1_FHC/analysisOutputFHC_Overlay_GENIE_Background_All.root");
@@ -38,7 +38,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
   EventAssembler E;
   SelectionManager M(P);
   M.SetPOT(POT);
-  M.ImportBDTWeights(filllater);
+  M.ImportBDTWeights("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/examples/TMVA/dataset/weights/");
 
   // Setup the histograms
   M.SetupHistograms(20,-1,1,";BDT Score;Events");
@@ -71,21 +71,25 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       if(!M.NuCCInclusiveFilter(e)) continue;
       if(!M.DaughterTrackCut(e)) continue;
       if(!M.DaughterFiducialVolumeCut(e)) continue;
-      if(!M.BDTCut(e)) continue;
-      //if(!M.DaughterTrackLengthCut(e)) continue;
-      
-      double bdt = e.BDTScore;
-      M.FillHistograms(e,bdt);//add weight
 
-      for (const auto& pair : e.VectorPair) {
+      for (const auto& pair : M.VectorPair) {
 	RecoParticle PrimaryKaonTrackParticle = pair.first;
 	RecoParticle DaughterTrackParticle = pair.second;
-	M.FillHistogramsEtoP(e,bdt,weight,PrimaryKaonTrackParticle,DaughterTrackParticle);
-      }
+	M.BDTCut(e,PrimaryKaonTrackParticle,DaughterTrackParticle);
+      
+	double bdt = e.BDTScore;
+	std::cout << "BDT: " << bdt << std::endl;
+	
+	M.FillHistograms(e,bdt);//add weight
+	M.FillHistogramsEtoP(e,bdt,PrimaryKaonTrackParticle,DaughterTrackParticle,e.Weight);
+      }      
       
     }
     E.Close();
   }
+
+  M.FillEtoPCurve();
+  M.PlotEtoPCurve();
 
   M.DrawHistograms(label);
 

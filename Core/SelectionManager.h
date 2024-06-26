@@ -144,6 +144,7 @@ class SelectionManager {
       bool DaughterFiducialVolumeCut(const Event &e);
       bool DaughterTrackLengthCut(const Event &e);
       bool BDTCut(Event &e);
+      bool BDTCut(Event &e, const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle);
       bool EventListCut(const Event &e);
 
       void StorePrimaryDaughterTracksPair(const Event &e);

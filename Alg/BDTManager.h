@@ -29,7 +29,8 @@ class BDTManager {
    private:
 
       enum e_Algs{kLD,kBDT,kBDTG,kKNN,kLikelihood,kMLPBNN,kAlgMAX};
-      const std::vector<std::string> Algs_str = {"LD","BDT","BDTG","KNN","Likelihood","MLPBNN"};
+      //const std::vector<std::string> Algs_str = {"LD","BDT","BDTG","KNN","Likelihood","MLPBNN"};
+      const std::vector<std::string> Algs_str = {"BDT"};
       std::string Alg = "BDT";
 
       std::string fMode;
