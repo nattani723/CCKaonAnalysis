@@ -1,15 +1,18 @@
 #include <iostream>
 #include <TH2D.h>
+#include <TH1D.h>
+#include <THStack.h>
 #include <TFile.h>
 #include <TROOT.h>
 #include <TChain.h>
 #include <TTree.h>
 #include <TVectorT.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TGaxis.h>
+#include <TLegend.h>
 #include <vector>
-#include <iostream>
-#include <stdio.h>
-#include <string.h>
-
+#include <string>
 
 void Initialise();
 
@@ -32,103 +35,179 @@ void Initialise()
   gStyle->SetFillStyle(4000);
 }
 
+void DrawOverlayHistograms(TFile* file, const std::string& variable, const std::string& label)
+{
+  TH1D *sigHist = (TH1D*) file->Get(("dataset/Method_BDT/BDT/" + variable + "__Signal").c_str());
+  TH1D *bgHist = (TH1D*) file->Get(("dataset/Method_BDT/BDT/" + variable + "__Background").c_str());
+
+  if (!sigHist || !bgHist) {
+    std::cerr << "Histogram not found for variable: " << variable << std::endl;
+    return;
+  }
+
+  TCanvas *c = new TCanvas("c", "c", 800, 600);
+  c->SetFillStyle(4000);
+
+  sigHist->SetLineColor(kBlue);
+  sigHist->SetLineStyle(1);
+  sigHist->SetLineWidth(2);
+
+  bgHist->SetLineColor(kRed);
+  bgHist->SetLineStyle(1);
+  bgHist->SetLineWidth(2);
+
+  THStack *hs = new THStack("hs", variable.c_str());
+  hs->Add(sigHist, "HIST");
+  hs->Add(bgHist, "HIST");
+
+  double maximum = std::max(sigHist->GetMaximum(), bgHist->GetMaximum());
+  hs->SetMaximum(maximum * 1.25);
+  hs->SetMinimum(0);
+
+  hs->Draw("nostack HIST");
+  hs->GetXaxis()->SetTitle(label.c_str());
+  hs->GetYaxis()->SetTitle("Events");
+
+  TLegend *l = new TLegend(0.1, 0.8, 0.9, 0.99);
+  l->AddEntry(sigHist, "Signal", "L");
+  l->AddEntry(bgHist, "Background", "L");
+  l->SetNColumns(2);
+  l->SetBorderSize(0);
+  l->SetFillColor(0);
+  c->SetTopMargin(0.2);
+  l->Draw();
+
+  c->Update();
+  c->Print(outputpdf);
+  delete c;
+}
+
+void DrawBDTHistograms(TFile* file)
+{
+  TH1D *BDT_Test_Signal = (TH1D*) file->Get("dataset/Method_BDT/BDT/MVA_BDT_S");
+  TH1D *BDT_Train_Signal = (TH1D*) file->Get("dataset/Method_BDT/BDT/MVA_BDT_Train_S");
+  TH1D *BDT_Test_BG = (TH1D*) file->Get("dataset/Method_BDT/BDT/MVA_BDT_B");
+  TH1D *BDT_Train_BG = (TH1D*) file->Get("dataset/Method_BDT/BDT/MVA_BDT_Train_B");
+
+  if (!BDT_Test_Signal || !BDT_Train_Signal || !BDT_Test_BG || !BDT_Train_BG) {
+    std::cerr << "One or more BDT histograms not found." << std::endl;
+    return;
+  }
+
+  BDT_Test_Signal->SetLineColor(kBlue);
+  BDT_Test_Signal->SetLineStyle(1);
+  BDT_Test_Signal->SetLineWidth(2);
+
+  BDT_Train_Signal->SetLineColor(kCyan-7);
+  BDT_Train_Signal->SetLineStyle(10);
+  BDT_Train_Signal->SetLineWidth(2);
+
+  BDT_Test_BG->SetLineColor(kRed);
+  BDT_Test_BG->SetLineStyle(1);
+  BDT_Test_BG->SetLineWidth(2);
+
+  BDT_Train_BG->SetLineColor(kMagenta-4);
+  BDT_Train_BG->SetLineStyle(10);
+  BDT_Train_BG->SetLineWidth(2);
+
+  TCanvas *c = new TCanvas("c", "c", 800, 600);
+  c->SetFillStyle(4000);
+
+  THStack *hs = new THStack("hs", "BDT Overtraining Check");
+  hs->Add(BDT_Test_Signal, "HIST");
+  hs->Add(BDT_Train_Signal, "HIST");
+  hs->Add(BDT_Test_BG, "HIST");
+  hs->Add(BDT_Train_BG, "HIST");
+
+  double maximum = -1e10;
+  maximum = std::max(maximum, BDT_Test_Signal->GetMaximum());
+  maximum = std::max(maximum, BDT_Train_Signal->GetMaximum());
+  maximum = std::max(maximum, BDT_Test_BG->GetMaximum());
+  maximum = std::max(maximum, BDT_Train_BG->GetMaximum());
+
+  hs->SetMaximum(maximum * 1.25);
+  hs->SetMinimum(0);
+
+  hs->Draw("nostack HIST");
+  hs->GetXaxis()->SetTitle("BDT response score");
+  hs->GetYaxis()->SetTitle("Events");
+
+  TLegend *l = new TLegend(0.1, 0.8, 0.9, 0.99);
+  l->AddEntry(BDT_Test_Signal, "Signal, Test", "L");
+  l->AddEntry(BDT_Train_Signal, "Signal, Train", "L");
+  l->AddEntry(BDT_Test_BG, "Background, Test", "L");
+  l->AddEntry(BDT_Train_BG, "Background, Train", "L");
+  l->SetNColumns(2);
+  l->SetBorderSize(0);
+  l->SetFillColor(0);
+  c->SetTopMargin(0.2);
+  l->Draw();
+
+  c->Update();
+  c->Print(outputpdf);
+  delete c;
+}
 
 void BDTCutPlots_plane()
 {
   TGaxis::SetMaxDigits(3);
   gErrorIgnoreLevel = kWarning;
 
-  //output from PreCutHistos
-  TFile * f_mva = new TFile("/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/TMVA/Jun28/TMVA_all_pl2.root");
+  TFile *f_mva = new TFile("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/examples/TMVA/TMVA.root");
 
-  Initialise;
+  Initialise();
 
-  TCanvas * c = new TCanvas("c", "c", 800, 600);
-  c->SetFillStyle(4000);
-  //c->Print(Form("%s[", output_pdf_bdt_plane.Data()));
-  
-  TString fname(f_mva->GetName());
+  outputpdf = "BDT_overtrain_check.pdf";
+  TString openPdf = outputpdf + "[";
+  TString closePdf = outputpdf + "]";
+  TCanvas *c = new TCanvas();
+  c->Print(openPdf);
+  delete c;
 
-  /*
-  TTree * t_mva_train;
-  TTree * t_mva_tree;
-  t_mva_train = (TTree*) f_mva->Get("dataset_all_pl2/TrainTree");
-  t_mva_tree = (TTree*) f_mva->Get("dataset_all_pl2/TestTree");
+  std::vector<std::string> variables = {
+    "PrimaryTrack_Chi2_Kaon_3Plane",
+    "PrimaryTrack_Chi2_Proton_3Plane",
+    "PrimaryTrack_Chi2_Muon_3Plane",
+    "PrimaryTrack_Chi2_Pion_3Plane",
+    "DaughterTrack_Chi2_Kaon_3Plane",
+    "DaughterTrack_Chi2_Proton_3Plane",
+    "DaughterTrack_Chi2_Muon_3Plane",
+    "DaughterTrack_Chi2_Pion_3Plane",
+    "PrimaryTrack_LLR_PID",
+    "PrimaryTrack_LLR_PID_Kaon",
+    "DaughterTrack_LLR_PID",
+    "DaughterTrack_LLR_PID_Kaon",
+    "DaughterTrackLength",
+  };
 
-  int nentry_train = t_mva_train->GetEntries();
-  int nentry_tree = t_mva_tree->GetEntries();
-  */
+  std::vector<std::string> labels = {
+    "Primary Track Three Plane Kaon Hypothesis #Chi^{2} Score",
+    "Primary Track Three Plane Proton Hypothesis #Chi^{2} Score",
+    "Primary Track Three Plane Muon Hypothesis #Chi^{2} Score",
+    "Primary Track Three Plane Pion Hypothesis #Chi^{2} Score",
+    "Daughter Track Three Plane Kaon Hypothesis #Chi^{2} Score",
+    "Daughter Track Three Plane Proton Hypothesis #Chi^{2} Score",
+    "Daughter Track Three Plane Muon Hypothesis #Chi^{2} Score",
+    "Daughter Track Three Plane Pion Hypothesis #Chi^{2} Score",
+    "Primary Track Proton/Muon Separation LLR PID",
+    "Primary Track Proton/Kaon Separation LLR PID",
+    "Daughter Track Proton/Muon Separation LLR PID",
+    "Daughter Track Proton/Kaon Separation LLR PID",
+    "Daughter Track Length [cm]"
+  };
 
-  //under dataset/Method_BDT/ we have TH1Ds MVA_BDT_S/MVA_BDT_B/MVA_BDT_Train_S/MVA_BDT_Train_B
-  /*
-  TH1D * BDT_Test_Signal;
-  TH1D * BDT_Train_Signal;
-  TH1D * BDT_Test_BG;
-  TH1D * BDT_Train_BG;
-  */
+  //for (const auto& variable : variables) {
+  for(int i=0; i<variables.size(); i++){
+    DrawOverlayHistograms(f_mva, variables.at(i), labels.at(i));
+  }
+    //}
 
-  TH1D * BDT_Test_Signal = (TH1D*) f_mva->Get("dataset/Method_BDT/MVA_BDT_S");
-  TH1D * BDT_Train_Signal = (TH1D*) f_mva->Get("dataset/Method_BDT/MVA_BDT_Train_S");
-  TH1D * BDT_Test_BG = (TH1D*) f_mva->Get("dataset/Method_BDT/MVA_BDT_B");
-  TH1D * BDT_Train_BG = (TH1D*) f_mva->Get("dataset/Method_BDT/MVA_BDT_Train_B");
+  DrawBDTHistograms(f_mva);
 
-  BDT_Test_Signal->SetLineColor("kBlue");
-  BDT_Test_Signal->SetLineStyle(1);
-  BDT_Test_Signal->SetLineWidth(2);
-  BDT_Test_Signal->Draw("E");
+  c = new TCanvas();
+  c->Print(closePdf);
+  delete c;
 
-  BDT_Train_Signal->SetLineColor("kCyan-7");
-  BDT_Train_Signal->SetLineStyle(10);
-  BDT_Train_Signal->SetLineWidth(2);
-  BDT_Train_Signal->Draw("E");
-
-  BDT_Test_BG->SetLineColor("kRed");
-  BDT_Test_BG->SetLineStyle(1);
-  BDT_Test_BG->SetLineWidth(2);
-  BDT_Test_BG->Draw("E");
-  
-  BDT_Train_BG->SetLineColor("kMagenta-4");
-  BDT_Train_BG->SetLineStyle(10);
-  BDT_Train_BG->SetLineWidth(2);
-  BDT_Train_BG->Draw("E");
-
-  gStyle->SetOptStat(0);
-
-  THStack *hs = new THStack("hs",BDT_Test_Signal->GetTitle());
-  hs->Add(BDT_Test_Signal,"HIST");
-  hs->Add(BDT_Train_Signal,"HIST");
-  hs->Add(BDT_Test_BG,"HIST");
-  hs->Add(BDT_Train_BG,"HIST");
-
-  //double maximum = GetHistMaxError(hs);
-  
-  double maximum = -1e10;
-
-  for(int i_b=1;i_b<hs->GetNbinsX()+1;i_b++)
-    if(hs->GetBinContent(i_b)+hs->GetBinError(i_b) > maximum)
-      maximum = hs->GetBinContent(i_b)+hs->GetBinError(i_b);
-
-  return maximum;
-  
-  hs->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
-  hs->SetStats(0);
-
-  TLegend *l = new TLegend(0.1, 0.8, 0.9, 0.99);
-  l->AddEntry(BDT_Test_Signal,"Signal, Test","F");
-  l->AddEntry(BDT_Train_Signal,"Signal, Train","F");
-  l->AddEntry(BDT_Test_BG,"Background, Test","F");
-  l->AddEntry(BDT_Train_BG,"Backgroun, Train","F");
-  l->SetNColumns(2);
-  l->SetBorderSize(0);
-  l->SetFillColor(0);
-  c->SetTopMargin(0.2);
-
-  hs->Draw("nostack");
-  c->Update();
-  hs->GetXaxis()->SetTitle("BDT response score");
-  l->Draw();
-
-  c->Print(outputpdf);
-
-  //c->Print(Form("%s]", output_pdf_bdt_plane.Data()));
+  f_mva->Close();
+  delete f_mva;
 }

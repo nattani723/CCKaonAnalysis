@@ -37,6 +37,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       EventAssembler E;
       SelectionManager M(P);
+      M.ImportBDTWeights(P.p_BDT_WeightsDir);
       M.SetPOT(POT);
 
       // Setup the histograms

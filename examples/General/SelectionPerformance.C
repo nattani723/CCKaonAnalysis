@@ -42,20 +42,22 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       bool hasdata=false;
 
       std::string label = "eff_BG_cuts";
-      std::string plotdir = "Plots";
+      //std::string plotdir = "Plots";
+      std::string plotdir = "PlotsTest";
 
       EventAssembler E;
       SelectionManager M(P);
+      M.ImportBDTWeights(P.p_BDT_WeightsDir);
       M.SetPOT(POT);
 
       //M.ImportBDTWeights(P.p_BDT_WeightsDir);;
 
-      TEfficiency* Eff = new TEfficiency("Eff","",5,-0.5,4.5);
-      TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",5,-0.5,4.5);
+      TEfficiency* Eff = new TEfficiency("Eff","",6,-0.5,5.5);
+      TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",6,-0.5,5.5);
 
-      TH1D* h_Eff = new TH1D("Eff_hist","",5,-0.5,4.5);
-      TH1D* h_BG = new TH1D("BG_hist","",5,-0.5,4.5);
-      TH1D* h_Data = new TH1D("Data_hist","",5,-0.5,4.5);
+      TH1D* h_Eff = new TH1D("Eff_hist","",6,-0.5,5.5);
+      TH1D* h_BG = new TH1D("BG_hist","",6,-0.5,5.5);
+      TH1D* h_Data = new TH1D("Data_hist","",6,-0.5,5.5);
 
       // when you change the num of cuts, modify the eff nbin
       /*
@@ -100,8 +102,15 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(passed_FV) passed_NuCCFilter = M.NuCCInclusiveFilter(e);
             if(passed_NuCCFilter) passed_NDaughterTrack = M.DaughterTrackCut(e);
             if(passed_NDaughterTrack) passed_DaughterFV = M.DaughterFiducialVolumeCut(e);
+
             //if(passed_DaughterFV) passed_BDTCut = M.BDTCut(e);
             //if(passed_BDTCut) passed_DaughterTrackLength = M.DaughterTrackLengthCut(e);
+
+	    for (const auto& pair : M.VectorPair) {
+	      RecoParticle PrimaryKaonTrackParticle = pair.first;
+	      RecoParticle DaughterTrackParticle = pair.second;
+	      if(passed_DaughterFV) passed_BDTCut = M.BDTCut(e,PrimaryKaonTrackParticle,DaughterTrackParticle);
+	    }
 
 
             if(e.EventIsSignal){
@@ -110,7 +119,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
                Eff->FillWeighted(passed_NuCCFilter,e.Weight,2);
                Eff->FillWeighted(passed_NDaughterTrack,e.Weight,3);
                Eff->FillWeighted(passed_DaughterFV,e.Weight,4);
-               //Eff->FillWeighted(passed_BDTCut,e.Weight,5);
+               Eff->FillWeighted(passed_BDTCut,e.Weight,5);
                //Eff->FillWeighted(passed_DaughterTrackLength ,e.Weight,6);
 
             }
@@ -120,7 +129,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
                Background_Acceptance->FillWeighted(passed_NuCCFilter,e.Weight,2);
                Background_Acceptance->FillWeighted(passed_NDaughterTrack,e.Weight,3);
                Background_Acceptance->FillWeighted(passed_DaughterFV,e.Weight,4);
-               //Background_Acceptance->FillWeighted(passed_BDTCut,e.Weight,5);
+               Background_Acceptance->FillWeighted(passed_BDTCut,e.Weight,5);
                //Background_Acceptance->FillWeighted(passed_DaughterTrackLength ,e.Weight,6);
             }
          }

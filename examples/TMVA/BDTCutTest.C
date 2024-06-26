@@ -38,7 +38,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
   EventAssembler E;
   SelectionManager M(P);
   M.SetPOT(POT);
-  M.ImportBDTWeights("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/examples/TMVA/dataset/weights/");
+  M.ImportBDTWeights(P.p_BDT_WeightsDir);
 
   // Setup the histograms
   M.SetupHistograms(20,-1,1,";BDT Score;Events");
@@ -78,7 +78,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 	M.BDTCut(e,PrimaryKaonTrackParticle,DaughterTrackParticle);
       
 	double bdt = e.BDTScore;
-	std::cout << "BDT: " << bdt << std::endl;
 	
 	M.FillHistograms(e,bdt);//add weight
 	M.FillHistogramsEtoP(e,bdt,PrimaryKaonTrackParticle,DaughterTrackParticle,e.Weight);
