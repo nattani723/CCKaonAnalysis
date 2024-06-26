@@ -940,10 +940,15 @@ void SelectionManager::FillEtoPCurve(){
   }
 
   int binmax = Hist_EtoP->GetMaximumBin();
+  std::cout << "Cut at " << Hist_EtoP->GetXaxis()->GetBinCenter(binmax) << " gives " << std::endl;
+  std::cout << "Efficiency of " << Hist_Efficiency->GetBinContent(binmax) << std::endl;
+  std::cout << "Purity of " << Hist_Purity->GetBinContent(binmax) << std::endl;
+  std::cout << "E*P of " << Hist_EtoP->GetBinContent(binmax) << std::endl;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////                                                                                                                 
+
 void SelectionManager::PlotEtoPCurve(){
 
   TString output_pdf_bdtcut = "BDT_opt_cut.pdf";
