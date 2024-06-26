@@ -90,8 +90,8 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
   }
   
   SampleNames.push_back("AssocKaon"); 
-  SampleTypes.push_back("AssocKaon"); 
-  SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
+  SampleTypes.push_back("AssocKaon");
+  SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_ntuple.root");
   //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/test/KaonTrees.root");
   
   //SampleNames.push_back("GENIE Background"); 

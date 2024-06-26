@@ -21,7 +21,7 @@ run_root_macro() {
 
 # Call the function with different sets of parameters
 #run_root_macro "PrimaryLength" true 25 0 100 ";Track Length (cm);Events" true "TrackLength" 
-#run_root_macro "DaughterLength" true 25 0 100 ";Track Length (cm);Events" false "TrackLength" 
+run_root_macro "DaughterLength" true 25 0 100 ";Track Length (cm);Events" false "TrackLength" 
 
 #run_root_macro "PrimaryLLRPID" true 20 -1 1 ";LLRPID p/#mu;Events" true "LLRPID"
 #run_root_macro "PrimaryLLRPIDKaon" true 20 -1 1 ";LLRPID p/K;Events" true "LLRPIDKaon" 
@@ -54,5 +54,5 @@ run_root_macro() {
 #run_root_macro "PrimaryBraggPIDKaon" true 30 0 30 ";Bragg PID K^{+};Event" true "BraggPIDKaon"
 #run_root_macro "DaughterBraggPIDKaon" true 30 0 30 ";Bragg PID K^{+};Event" false "BraggPIDKaon"
 
-run_root_macro "PrimaryChi2KChi2Pr" false 25 0 50 ";#Chi_{p^{+}};#Chi_{K^{+}};" true "Chi2ProtonPlane2" 15 0 30 true "Chi2KaonPlane2"
-run_root_macro "DaughterChi2MuChi2Pr" false 30 0 150 ";#Chi_{p^{+}};#Chi_{#mu^{+}};" false "Chi2ProtonPlane2" 12 0 60 false "Chi2MuonPlane2"
+#run_root_macro "PrimaryChi2KChi2Pr" false 25 0 50 ";#Chi_{p^{+}};#Chi_{K^{+}};" true "Chi2ProtonPlane2" 15 0 30 true "Chi2KaonPlane2"
+#run_root_macro "DaughterChi2MuChi2Pr" false 30 0 150 ";#Chi_{p^{+}};#Chi_{#mu^{+}};" false "Chi2ProtonPlane2" 12 0 60 false "Chi2MuonPlane2"

@@ -9,6 +9,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 #include "Parameters.h"
 #include "SampleSets_Example.h"
 
+
 int PDGToBin(int pdg) {
   switch (pdg) {
   case 321: return 1;  // K+
@@ -48,11 +49,13 @@ void InitializeHistograms(std::map<std::string, TH1D*>& histograms) {
   }
 }
 
-void AnalyzeIndividualTrack(const TVector3& PrimaryTrackEnd, const RecoParticle& DaughterTrack, TH1D* histogram, double maxDistance) {
+void AnalyzeIndividualTrack(const TVector3& PrimaryTrackEnd, const RecoParticle& DaughterTrack, TH1D* histogram, double maxDistance, int& nentry) {
   
   TVector3 DaughterTrackStart(DaughterTrack.X, DaughterTrack.Y, DaughterTrack.Z);
   if ((PrimaryTrackEnd - DaughterTrackStart).Mag() > maxDistance) return;
 
+  //Fill straight forward
+  /*
   int bin1 = PDGToBin(DaughterTrack.MergePDG_1st) - 1;
   if(DaughterTrack.MergePDG_1st!=-1) histogram->Fill(bin1);
   
@@ -65,10 +68,22 @@ void AnalyzeIndividualTrack(const TVector3& PrimaryTrackEnd, const RecoParticle&
     int bin3 = PDGToBin(DaughterTrack.MergePDG_3rd) - 1;
     if(DaughterTrack.MergePDG_3rd!=-1) histogram->Fill(bin3);
   }
+  */
+
+  ++nentry;
+
+  int bin1 = PDGToBin(DaughterTrack.MergePDG_1st) - 1;
+  if(DaughterTrack.MergePDG_1st!=-1) histogram->Fill(bin1, DaughterTrack.MergeEnergyPurity_1st);
+
+  int bin2 = PDGToBin(DaughterTrack.MergePDG_2nd) - 1;
+  if(DaughterTrack.MergePDG_2nd!=-1) histogram->Fill(bin2, DaughterTrack.MergeEnergyPurity_2nd);
+
+  int bin3 = PDGToBin(DaughterTrack.MergePDG_3rd) - 1;
+  if(DaughterTrack.MergePDG_3rd!=-1) histogram->Fill(bin3, DaughterTrack.MergeEnergyPurity_3rd);
   
 }
 
-void AnalyzeTracks(const Event& e, std::map<std::string, TH1D*>& histograms) {
+void AnalyzeTracks(const Event& e, std::map<std::string, TH1D*>& histograms, int* nentry) {
   for (size_t i_tr = 0; i_tr < e.TrackPrimaryDaughters.size(); i_tr++) {
     RecoParticle PrimaryTrack = e.TrackPrimaryDaughters[i_tr];
     if (PrimaryTrack.TrackTruePDG != 321) continue; // Only interested in tracks with PDG == 321
@@ -76,19 +91,27 @@ void AnalyzeTracks(const Event& e, std::map<std::string, TH1D*>& histograms) {
 
     // Analyze daughter tracks
     for (size_t i_tr_dau = 0; i_tr_dau < e.TrackOthers.size(); i_tr_dau++) {
-      AnalyzeIndividualTrack(PrimaryTrackEnd, e.TrackOthers[i_tr_dau], histograms["h_daughter"], 10);
+      AnalyzeIndividualTrack(PrimaryTrackEnd, e.TrackOthers[i_tr_dau], histograms["h_daughter"], 10, nentry[0]);
     }
 
     // Analyze shower daughters
     for (size_t i_sh = 0; i_sh < e.ShowerOthers.size(); i_sh++) {
-      AnalyzeIndividualTrack(PrimaryTrackEnd, e.ShowerOthers[i_sh], histograms["h_shower"], 20);
+      AnalyzeIndividualTrack(PrimaryTrackEnd, e.ShowerOthers[i_sh], histograms["h_shower"], 20, nentry[1]);
     }
 
     // Analyze rebuilt daughter tracks
     for (size_t i_tr_dau = 0; i_tr_dau < e.TrackRebuiltOthers.size(); i_tr_dau++) {
-      AnalyzeIndividualTrack(PrimaryTrackEnd, e.TrackRebuiltOthers[i_tr_dau], histograms["h_rebdaughter"], 10);
+      AnalyzeIndividualTrack(PrimaryTrackEnd, e.TrackRebuiltOthers[i_tr_dau], histograms["h_rebdaughter"], 10, nentry[2]);
     }
   }
+
+  int i=0;
+  for(auto& pair : histograms){
+    TH1D* hist = pair.second;
+    hist->Scale(100/nentry[i]);
+    i++;
+  }
+
 }
 
 void PlotHistograms(const std::map<std::string, TH1D*>& histograms) {
@@ -154,13 +177,15 @@ void MergeCheckerPlot(){
   
   double POT = 1.0e21; // POT to scale samples to
   std::map<std::string, TH1D*> histograms;
+  int nentry[3] = {0,0,0};
 
   BuildTunes();
   SelectionParameters P = P_FHC_K_NOBDT_TEST;
   
   SampleNames.push_back("AssocKaon"); 
   SampleTypes.push_back("AssocKaon"); 
-  SampleFiles.push_back("/exp/uboone/data/users/taniuchi/test/KaonTrees.root");
+  SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_ntuple.root");
+  //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/test/KaonTrees.root");
   //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
   
   EventAssembler E;
@@ -191,6 +216,9 @@ void MergeCheckerPlot(){
       
       M.SetSignal(e);
       M.AddEvent(e);
+
+      //if(!e.EventIsSignal_NuMuP) continue;
+      if(!e.EventIsSignal_PiPPi0) continue;
       
       if(!M.FiducialVolumeCut(e)) continue;
       if(!M.NuCCInclusiveFilter(e)) continue;
@@ -202,157 +230,14 @@ void MergeCheckerPlot(){
       if(e.PrimaryKaonP.size()<=0) continue;
       if(e.EventIsSignal==false) continue;
 
-      AnalyzeTracks(e, histograms);
-
-      /*
-      for(size_t i_tr=0;i_tr<e.TrackPrimaryDaughters.size();i_tr++){
-
-	RecoParticle PrimaryTrack = e.TrackPrimaryDaughters.at(i_tr);
-	if(PrimaryTrack.TrackTruePDG != 321) continue;
-	TVector3 PrimaryTrackEnd(PrimaryTrack.TrackEndX, PrimaryTrack.TrackEndY, PrimaryTrack.TrackEndZ);
-
-	for(size_t i_tr_dau=0;i_tr_dau<e.TrackOthers.size();i_tr_dau++){ 
-
-	  RecoParticle DaughterTrack = e.TrackOthers.at(i_tr_dau);
-	  TVector3 DaughterTrackStart(DaughterTrack.X, DaughterTrack.Y, DaughterTrack.Z);
-
-	  if((PrimaryTrackEnd - DaughterTrackStart).Mag()>10) continue;
-
-	  //get merge info
-	  int MergePDG_1st = DaughterTrack.MergePDG_1st;
-	  int MergePDG_2nd = DaughterTrack.MergePDG_2nd;
-	  int MergePDG_3rd = DaughterTrack.MergePDG_3rd;
-	  double MergeEnergyPurity_1st = DaughterTrack.MergeEnergyPurity_1st;
-	  double MergeEnergyPurity_2ns = DaughterTrack.MergeEnergyPurity_2nd;
-	  double MergeEnergyPurity_3rd = DaughterTrack.MergeEnergyPurity_3rd;
-	  double MergeHitPurity_1st = DaughterTrack.MergeHitPurity_1st;
-	  double MergeHitPurity_2nd = DaughterTrack.MergeHitPurity_2nd;
-	  double MergeHitPurity_3rd = DaughterTrack.MergeHitPurity_3rd;
-
-	  int bin1 = PDGToBin(MergePDG_1st) - 1;
-	  int bin2 = PDGToBin(MergePDG_2nd) - 1;
-	  int bin3 = PDGToBin(MergePDG_3rd) - 1;
-
-	  h_daughter->Fill(bin1);
-	  if(MergeEnergyPurity_2nd>0.2) h_daughter->Fill(bin2);
-	  if(MergeEnergyPurity_3rd>0.2) h_daughter->Fill(bin3);
-
-	}
-
-	for(size_t i_sh=0;i_sh<e.ShowerOthers.size();i_sh++){
-
-	  RecoParticle DaughterShower = e.ShowerOthers.at(i_sh); 
-	  TVector3 DaughterShowerStart(DaughterShower.X, DaughterShower.Y, DaughterShower.Z);
-	  
-	  if((PrimaryTrackEnd - DaughterShowerStart).Mag()>20) continue;
-
-	  //get merge info
-	  int MergePDG_1st = DaughterTrack.MergePDG_1st;
-	  int MergePDG_2nd = DaughterTrack.MergePDG_2nd;
-	  int MergePDG_3rd = DaughterTrack.MergePDG_3rd;
-	  double MergeEnergyPurity_1st = DaughterTrack.MergeEnergyPurity_1st;
-	  double MergeEnergyPurity_2nd = DaughterTrack.MergeEnergyPurity_2nd;
-	  double MergeEnergyPurity_3rd = DaughterTrack.MergeEnergyPurity_3rd;
-	  double MergeHitPurity_1st = DaughterTrack.MergeHitPurity_1st;
-	  double MergeHitPurity_2nd = DaughterTrack.MergeHitPurity_2nd;
-	  double MergeHitPurity_3rd = DaughterTrack.MergeHitPurity_3rd;
-
-	  int bin1 = PDGToBin(MergePDG_1st) - 1;
-	  int bin2 = PDGToBin(MergePDG_2nd) - 1;
-	  int bin3 = PDGToBin(MergePDG_3rd) - 1;
-
-	  h_shower->Fill(bin1);
-	  if(MergeEnergyPurity_2nd>0.2) h_shower->Fill(bin2);
-	  if(MergeEnergyPurity_3rd>0.2) h_shower->Fill(bin3);
-	    
-	}
-
-	for(size_t i_tr_dau=0;i_tr_dau<e.TrackRebuiltOthers.size();i_tr_dau++){
-	
-	  RecoParticle DaughterTrack = e.TrackRebuiltOthers.at(i_tr_dau);
-	  TVector3 DaughterTrackStart(DaughterTrack.X, DaughterTrack.Y, DaughterTrack.Z);
-
-	  if((PrimaryTrackEnd - DaughterTrackStart).Mag()>10) continue;
-
-	  //get merge info
-	  int MergePDG_1st = DaughterTrack.MergePDG_1st;
-	  int MergePDG_2nd = DaughterTrack.MergePDG_2nd;
-	  int MergePDG_3rd = DaughterTrack.MergePDG_3rd;
-	  double MergeEnergyPurity_1st = DaughterTrack.MergeEnergyPurity_1st;
-	  double MergeEnergyPurity_2ns = DaughterTrack.MergeEnergyPurity_2nd;
-	  double MergeEnergyPurity_3rd = DaughterTrack.MergeEnergyPurity_3rd;
-	  double MergeHitPurity_1st = DaughterTrack.MergeHitPurity_1st;
-	  double MergeHitPurity_2nd = DaughterTrack.MergeHitPurity_2nd;
-	  double MergeHitPurity_3rd = DaughterTrack.MergeHitPurity_3rd;
-
-	  int bin1 = PDGToBin(MergePDG_1st) - 1;
-	  int bin2 = PDGToBin(MergePDG_2nd) - 1;
-	  int bin3 = PDGToBin(MergePDG_3rd) - 1;
-
-	  h_rebdaughter->Fill(bin1);
-	  if(MergeEnergyPurity_2nd>0.2) h_rebdaughter->Fill(bin2);
-	  if(MergeEnergyPurity_3rd>0.2) h_rebdaughter->Fill(bin3);
-	  
-	}
-
-      }
-      */
+      AnalyzeTracks(e, histograms, nentry);
       
     }
     E.Close();
   }
 
   PlotHistograms(histograms);
-  /*
-  TCanvas* c1 = new TCanvas("c1", "Canvas for Drawing Histograms", 800, 600);
-  c1->cd();
 
-  h_track->GetXaxis()->SetLabelSize(0.04);
-  h_track->GetYaxis()->SetLabelSize(0.04);
-  h_track->GetXaxis()->SetLabelFont(62);
-  h_track->GetYaxis()->SetLabelFont(62);
-  h_track->GetXaxis()->SetTitleFont(62);
-  h_track->GetYaxis()->SetTitleFont(62);
-  h_track->GetXaxis()->SetTitleOffset(1.0);
-  h_track->GetYaxis()->SetTitleOffset(1.5);
-  h_track->GetXaxis()->SetLabelSize(0.04);
-  h_track->GetYaxis()->SetLabelSize(0.04);
-
-  h_track->GetXaxis()->SetBinLabel(1, "K^{+}");
-  h_track->GetXaxis()->SetBinLabel(2, "#mu^{+}");
-  h_track->GetXaxis()->SetBinLabel(3, "#pi^{+}");
-  h_track->GetXaxis()->SetBinLabel(4, "proton");
-  h_track->GetXaxis()->SetBinLabel(5, "shower");
-  h_track->GetXaxis()->SetBinLabel(6, "Others");
-  
-  c1->Modified();
-  c1->Update();
-  c1->Print("Plots/MergeCheck_DaughterTrack.pdf");
-
-  h_rebtrack->GetXaxis()->SetLabelSize(0.04);
-  h_rebtrack->GetYaxis()->SetLabelSize(0.04);
-  h_rebtrack->GetXaxis()->SetLabelFont(62);
-  h_rebtrack->GetYaxis()->SetLabelFont(62);
-  h_rebtrack->GetXaxis()->SetTitleFont(62);
-  h_rebtrack->GetYaxis()->SetTitleFont(62);
-  h_rebtrack->GetXaxis()->SetTitleOffset(1.0);
-  h_rebtrack->GetYaxis()->SetTitleOffset(1.5);
-  h_rebtrack->GetXaxis()->SetLabelSize(0.04);
-  h_rebtrack->GetYaxis()->SetLabelSize(0.04);
-
-  h_rebtrack->GetXaxis()->SetBinLabel(1, "K^{+}");
-  h_rebtrack->GetXaxis()->SetBinLabel(2, "#mu^{+}");
-  h_rebtrack->GetXaxis()->SetBinLabel(3, "#pi^{+}");
-  h_rebtrack->GetXaxis()->SetBinLabel(4, "proton");
-  h_rebtrack->GetXaxis()->SetBinLabel(5, "shower");
-  h_rebtrack->GetXaxis()->SetBinLabel(6, "Others");
-  
-  c1->Modified();
-  c1->Update();
-  c1->Print("Plots/MergeCheck_DaughterTrack.pdf");
-
-  //M.DrawHistograms(label);
-  */
 }
 
 
