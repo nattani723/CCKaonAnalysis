@@ -913,26 +913,11 @@ void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,RecoPar
   std::string mode = EventType::GetType(e);
   if(mode == "Data") return;
 
-  //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
-  //RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
-      
   Hist_BDT_All->Fill(variable,weight*e.Weight);
   
   //if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
   if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) 
     Hist_BDT_Signal->Fill(variable,weight*e.Weight);
-
-
-  //FillEtoPCurve();
-  // PlotEtoPCurve();
-  /*
-    Hist_Efficiency_Left->Fill(variable,weight*e.Weight);
-    Hist_Purity_Left->Fill(variable,weight*e.Weight);
-    Hist_EtoP_Left->Fill(variable,weight*e.Weight);
-    Hist_Efficiency_Right->Fill(variable,weight*e.Weight);
-    Hist_Purity_Right->Fill(variable,weight*e.Weight);
-    Hist_EtoP_Right->Fill(variable,weight*e.Weight);
-  */
   
 }
 
@@ -967,12 +952,21 @@ void SelectionManager::PlotEtoPCurve(){
   c->SetFillStyle(4000);
 
   Hist_Efficiency->SetMinimum(0);
-  Hist_Efficiency->SetMaximum(1);
-  Hist_Efficiency->Draw("C");
-  Hist_Purity->Draw("C,SAME");
-  Hist_EtoP->Draw("C,SAME");
+  Hist_Efficiency->SetMaximum(1.1);
 
-  TLegend * legend = new TLegend(0.65,0.7,0.85,0.85);
+  Hist_Efficiency->SetLineColor(kRed);
+  Hist_Purity->SetLineColor(kBlue);
+  Hist_EtoP->SetLineColor(kBlack);
+  Hist_Efficiency->SetStats(0);
+  Hist_Purity->SetStats(0);
+  Hist_EtoP->SetStats(0);
+
+  Hist_Efficiency->Draw("");
+  Hist_Purity->Draw("SAME");
+  Hist_EtoP->Draw("SAME");
+
+  TLegend * legend = new TLegend(0.15,0.7,0.35,0.85);
+  legend->SetBorderSize(0);
   legend->AddEntry(Hist_Efficiency,"Efficiency","l");
   legend->AddEntry(Hist_Purity,"Purity","l");
   legend->AddEntry(Hist_EtoP,"Eff. #times Pur.","l");
