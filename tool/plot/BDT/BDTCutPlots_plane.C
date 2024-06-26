@@ -56,7 +56,7 @@ void DrawOverlayHistograms(TFile* file, const std::string& variable, const std::
   bgHist->SetLineStyle(1);
   bgHist->SetLineWidth(2);
 
-  THStack *hs = new THStack("hs", variable.c_str());
+  THStack *hs = new THStack("hs","");
   hs->Add(sigHist, "HIST");
   hs->Add(bgHist, "HIST");
 
@@ -71,6 +71,7 @@ void DrawOverlayHistograms(TFile* file, const std::string& variable, const std::
   TLegend *l = new TLegend(0.1, 0.8, 0.9, 0.99);
   l->AddEntry(sigHist, "Signal", "L");
   l->AddEntry(bgHist, "Background", "L");
+  l->SetTextSize(0.04);
   l->SetNColumns(2);
   l->SetBorderSize(0);
   l->SetFillColor(0);
@@ -113,7 +114,7 @@ void DrawBDTHistograms(TFile* file)
   TCanvas *c = new TCanvas("c", "c", 800, 600);
   c->SetFillStyle(4000);
 
-  THStack *hs = new THStack("hs", "BDT Overtraining Check");
+  THStack *hs = new THStack("hs", "");
   hs->Add(BDT_Test_Signal, "HIST");
   hs->Add(BDT_Train_Signal, "HIST");
   hs->Add(BDT_Test_BG, "HIST");
@@ -138,6 +139,7 @@ void DrawBDTHistograms(TFile* file)
   l->AddEntry(BDT_Test_BG, "Background, Test", "L");
   l->AddEntry(BDT_Train_BG, "Background, Train", "L");
   l->SetNColumns(2);
+  l->SetTextSize(0.04);
   l->SetBorderSize(0);
   l->SetFillColor(0);
   c->SetTopMargin(0.2);
