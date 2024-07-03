@@ -26,6 +26,26 @@ void Initialise()
 
 void RebuildTrackHist()
 {
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_parameter10.root",  "Plots/assocK_parameter10_all.pdf", "3pl", "All", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_parameter10.root",  "Plots/assocK_parameter10_IsK.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_rerunPID_tracktuple_parameter10.root",  "Plots/assocK_parameter10_NotK.pdf", "3pl", "NotK", true);
+  
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple_parameter10.root",  "Plots/singleK_parameter10_all.pdf", "3pl", "All", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple_parameter10.root",  "Plots/singleK_parameter10_IsK.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple_parameter10.root",  "Plots/singleK_parameter10_NotK.pdf", "3pl", "NotK", true);
+
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample012_parameter10rerunPID_tracktuple_parameter10.root", "Plots/NuMI012_parameter10_all.pdf", "3pl", "All", true); 
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample012_parameter10rerunPID_tracktuple_parameter10.root", "Plots/NuMI012_parameter10_IsK.pdf", "3pl", "IsK", true); 
+  RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample012_parameter10rerunPID_tracktuple_parameter10.root", "Plots/NuMI012_parameter10_NotK.pdf", "3pl", "NotK", true); 
+
+  //RebuildTrackHist("cck.list",  "Plots/CCK_parameter10_all.pdf", "3pl", "All", true);
+  //RebuildTrackHist("cck.list",  "Plots/CCK_parameter10_IsK.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("cck.list",  "Plots/CCK_parameter10_NotK.pdf", "3pl", "NotK", true);
+
+  //RebuildTrackHist("numi.list",  "Plots/NuMI_all.pdf", "3pl", "All", true);
+  //RebuildTrackHist("numi.list",  "Plots/NuMI_IsK.pdf", "3pl", "IsK", true);
+  //RebuildTrackHist("numi.list",  "Plots/NuMI_NotK.pdf", "3pl", "NotK", true);
+
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/KaonAna/KaonAnlysis/Ana/track_tuple/refine_debug_2.root", "test2.pdf", "3pl");
   //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana_old/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
   //RebuildTrackHist("/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/tool/track_tuple/rootfile/core.root", "core.pdf", "3pl", "All", true);
@@ -39,13 +59,6 @@ void RebuildTrackHist()
   //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple.root",  "Plots/singleK_IsK.pdf", "3pl", "IsK", true);
   //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_rerunPID_tracktuple.root",  "Plots/singleK_NotK.pdf", "3pl", "NotK", true);
 
-  //RebuildTrackHist("cck.list",  "Plots/CCK_all.pdf", "3pl", "All", true);
-  //RebuildTrackHist("cck.list",  "Plots/CCK_IsK.pdf", "3pl", "IsK", true);
-  //RebuildTrackHist("cck.list",  "Plots/CCK_NotK.pdf", "3pl", "NotK", true);
-
-  //RebuildTrackHist("numi.list",  "Plots/NuMI_all.pdf", "3pl", "All", true);
-  //RebuildTrackHist("numi.list",  "Plots/NuMI_IsK.pdf", "3pl", "IsK", true);
-  RebuildTrackHist("numi.list",  "Plots/NuMI_NotK.pdf", "3pl", "NotK", true);
 
 }
 
@@ -161,23 +174,23 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
 
   cout << "n0: " << n0 << ", " << "n1: " << n1 << ", " << "n2: " << n2 << ", " << "n3: " << n3 << ", " << "n4: " << n4 << ", " << "n5: " << n5 << endl;
 
-  cout << "h_track_dau_ln_pr: " << h_track_dau_ln_pr->GetEntries() << endl;
-  cout << "h_track_dau_ln_pi: " << h_track_dau_ln_pi->GetEntries() << endl;
   cout << "h_track_dau_ln_mu: " << h_track_dau_ln_mu->GetEntries() << endl;
+  cout << "h_track_dau_ln_pi: " << h_track_dau_ln_pi->GetEntries() << endl;
+  cout << "h_track_dau_ln_pr: " << h_track_dau_ln_pr->GetEntries() << endl;
   cout << "h_track_dau_ln_sh: " << h_track_dau_ln_sh->GetEntries() << endl;
   cout << "h_track_dau_ln_ot: " << h_track_dau_ln_ot->GetEntries() << endl;
   cout << endl;
 
-  cout << "h_track_dau_ln_pr_hy: " << h_track_dau_ln_pr_hy->GetEntries() << endl;
-  cout << "h_track_dau_ln_pi_hy: " << h_track_dau_ln_pi_hy->GetEntries() << endl;
   cout << "h_track_dau_ln_mu_hy: " << h_track_dau_ln_mu_hy->GetEntries() << endl;
+  cout << "h_track_dau_ln_pi_hy: " << h_track_dau_ln_pi_hy->GetEntries() << endl;
+  cout << "h_track_dau_ln_pr_hy: " << h_track_dau_ln_pr_hy->GetEntries() << endl;
   cout << "h_track_dau_ln_sh_hy: " << h_track_dau_ln_sh_hy->GetEntries() << endl;
   cout << "h_track_dau_ln_ot_hy: " << h_track_dau_ln_ot_hy->GetEntries() << endl;
   cout << endl;
 
-  cout << "h_track_dau_old_ln_pr: " << h_track_dau_old_ln_pr->GetEntries() << endl;
-  cout << "h_track_dau_old_ln_pi: " << h_track_dau_old_ln_pi->GetEntries() << endl;
   cout << "h_track_dau_old_ln_mu: " << h_track_dau_old_ln_mu->GetEntries() << endl;
+  cout << "h_track_dau_old_ln_pi: " << h_track_dau_old_ln_pi->GetEntries() << endl;
+  cout << "h_track_dau_old_ln_pr: " << h_track_dau_old_ln_pr->GetEntries() << endl;
   cout << "h_track_dau_old_ln_sh: " << h_track_dau_old_ln_sh->GetEntries() << endl;
   cout << "h_track_dau_old_ln_ot: " << h_track_dau_old_ln_ot->GetEntries() << endl;
   cout << endl;
@@ -188,6 +201,17 @@ void GeneratePlots(TFile *f, TString pl, TString mode, bool IsHybrid, TCanvas* &
   cout << "reco_true_length_pi: " << reco_true_length_pi << endl;
   cout << "reco_true_length_mu_hy: " << reco_true_length_mu_hy << endl;
   cout << "reco_true_length_pi_hy: " << reco_true_length_pi_hy << endl;
+  cout << endl;
+
+  cout << h_track_dau_ln_mu->GetEntries() << " " << h_track_dau_ln_pi->GetEntries() << " " << h_track_dau_ln_pr->GetEntries() << " " << h_track_dau_ln_sh->GetEntries() << " " << h_track_dau_ln_ot->GetEntries() << endl;
+  cout << h_track_dau_ln_mu_hy->GetEntries() << " " << h_track_dau_ln_pi_hy->GetEntries() << " " << h_track_dau_ln_pr_hy->GetEntries() << " " << h_track_dau_ln_sh_hy->GetEntries() << " " << h_track_dau_ln_ot_hy->GetEntries() << endl;
+  cout << h_track_dau_old_ln_mu->GetEntries() << " " << h_track_dau_old_ln_pi->GetEntries() << " " << h_track_dau_old_ln_pr->GetEntries() << " " << h_track_dau_old_ln_sh->GetEntries() << " " << h_track_dau_old_ln_ot->GetEntries() << endl;
+  cout << endl;
+
+  cout << reco_true_length_mu << " " << reco_true_length_pi << endl;
+  cout << reco_true_length_mu_hy << " " << reco_true_length_pi_hy << endl;
+  cout << reco_old_true_length_mu << " " << reco_old_true_length_pi << endl;
+  cout << endl;
 
 
   delete h_track_chi2ka_ka;
@@ -634,7 +658,8 @@ void FillHybridTrackLength(){
   }
   */
 
-  if(reco_track_daughter_old_length>50 && reco_track_daughter_old_length<75){
+  //if(reco_track_daughter_old_length>50 && reco_track_daughter_old_length<750){
+  if(reco_track_daughter_old_length>50){
     if(reco_track_daughter_old_true_pdg==2212)
       h_track_dau_ln_pr_hy->Fill(reco_track_daughter_old_length);
     else if(reco_track_daughter_old_true_pdg==-13)
@@ -650,8 +675,8 @@ void FillHybridTrackLength(){
     if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu_hy++;
 
   }
-  else if(reco_track_daughter_length>25 && reco_track_daughter_length<75){
-    //else{
+  //else if(reco_track_daughter_length>25 && reco_track_daughter_length<750){
+  else{
     
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi_hy++;
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu_hy++;
@@ -695,7 +720,7 @@ void FillHybridTrackLength(){
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
 
-    if(reco_track_daughter_length>25 && reco_track_daughter_length<75){
+    //if(reco_track_daughter_length>25 && reco_track_daughter_length<750){
   if(reco_track_daughter_true_pdg==2212){
     h_track_dau_ln_pr->Fill(reco_track_daughter_length);
     h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
@@ -721,14 +746,14 @@ void FillHybridTrackLength(){
     h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
     h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
   }
-  }
+  //}
 
 }
 
 
 void FillOldTrackLength(){
 
-  if(reco_track_daughter_old_length>25 && reco_track_daughter_old_length<75){
+  //if(reco_track_daughter_old_length>25 && reco_track_daughter_old_length<750){
   if(reco_track_daughter_old_true_pdg==2212){
     h_track_dau_old_ln_pr->Fill(reco_track_daughter_old_length);
     h_track_dau_old_llr_pr->Fill(reco_track_daughter_old_llrpid_3pl);
@@ -754,7 +779,7 @@ void FillOldTrackLength(){
     h_track_dau_old_llr_ot->Fill(reco_track_daughter_old_llrpid_3pl);
     h_track_dau_old_llrka_ot->Fill(reco_track_daughter_old_llrpid_k_3pl);
   }
-  }
+  //}
 
   if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==211 && std::abs(reco_track_daughter_old_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_old_true_length_pi++;
   if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_old_true_length_mu++;
@@ -767,6 +792,7 @@ void FillRebuiltTrackLength(){
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==211 && std::abs(reco_track_daughter_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi++;
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu++;
 
+    //if(reco_track_daughter_length>25 && reco_track_daughter_length<750){
   if(reco_track_daughter_true_pdg==2212){
     h_track_dau_ln_pr->Fill(reco_track_daughter_length);
     h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
@@ -792,6 +818,7 @@ void FillRebuiltTrackLength(){
     h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
     h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
   }
+  //}
   
 }
 

@@ -34,6 +34,8 @@ TString output_pdf_trk = "chi2_trk.pdf";
 TString output_pdf_dau = "chi2_dau.pdf";;
 
 int nentry=0;
+int n_endprocess_0=0;
+int n_endprocess_1=0;
 int reco_true_length_mu;
 int reco_true_length_pi;
 int reco_old_true_length_mu;

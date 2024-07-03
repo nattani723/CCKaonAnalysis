@@ -30,7 +30,12 @@ void RebuildTrackHist_simple()
   //RebuildTrackHist("/uboone/data/users/taniuchi/pandora_alg/ana/scan_fhc_run1_assok_match_roi20_debug6_max15_initial101_lsdis15_spineall_nospine_discon075_daughter40_lscon_ls_open23_peak3_min5_closest8_final50_prod_tracktuple.root", "test2.pdf", "3pl", "All", true);
   //RebuildTrackHist_simple("/exp/uboone/app/users/taniuchi/51_pandora//CCKaonAnalysis/tool/track_tuple/rootfile/assok_refined_KrecoAlg_track_debug5_debug.root", "debug5_debug.pdf", "3pl", "IsK", true);
 
-  RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_parameter11.root","Plots/assok_KReco_simple_parameter11.pdf", "3pl", "All", true);
+  //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_parameter10.root","Plots/assok_KReco_simple_parameter10.pdf", "3pl", "All", true);
+  RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple_parameter10.root","Plots/singlek_KReco_simple_parameter10.pdf", "3pl", "All", true);
+  //RebuildTrackHist_simple("cck_simple.list","Plots/CCKReco_simple.pdf", "3pl", "IsK", true);
+
+
+  //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_parameter11.root","Plots/assok_KReco_simple_parameter11.pdf", "3pl", "All", true);
   //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple.root","Plots/singlek_KReco_simple.pdf", "3pl", "IsK", true);
   //RebuildTrackHist_simple("cck_simple.list","Plots/CCKReco_simple.pdf", "3pl", "IsK", true);
   //RebuildTrackHist_simple("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple.root","Plots/numi_sample0_KReco_simple.pdf", "3pl", "IsK", true);
@@ -242,11 +247,11 @@ void SetHistos(){
   h_track_rebdau_cheat_dir_ln_sh = new TH1D("track_rebdau_cheat_dir_ln_sh", "; BDT Response; Number of Events", 50, 0, 100);
   h_track_rebdau_cheat_dir_ln_ot = new TH1D("track_rebdau_cheat_dir_ln_ot", "; BDT Response; Number of Events", 50, 0, 100);
 
-  h_vtx_dis_ka = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
-  h_vtx_dis_pr = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
-  h_vtx_dis_pi = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
-  h_vtx_dis_mu = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
-  h_vtx_dis_ot = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
+  h_vtx_dis_ka = new TH1D("vtx_dis_ka", "; true_pip_pin_theta; Number of Events", 30, 0, 30);
+  h_vtx_dis_pr = new TH1D("vtx_dis_pr", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
+  h_vtx_dis_pi = new TH1D("vtx_dis_pi", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
+  h_vtx_dis_mu = new TH1D("vtx_dis_mu", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
+  h_vtx_dis_ot = new TH1D("vtx_dis_ot", "; true_pip_pin_theta; Number of Events", 20, 0, 20);
 
   h_peak_dir_pr = new TH1D("peak_dir_pr", "; true_pip_pin_theta; Number of Events", 30, 0, 3.14);
   h_peak_dir_pi = new TH1D("peak_dir_pi", "; true_pip_pin_theta; Number of Events", 30, 0, 3.14);
@@ -491,7 +496,8 @@ void FillRebuildTrackLength(){
     reco_vtx = sqrt( dis_x*dis_x + dis_y*dis_y + dis_z*dis_z);
     //}
 
-  if(true_kaon_end_process==0){
+  if(true_kaon_end_process==0 && reco_track_true_pdg==321){
+    n_endprocess_0++;
     //cout << "true_dau_muon_end_x: " << true_dau_muon_end_x << ", true_dau_muon_start_x: " << true_dau_muon_start_x << endl;
     Double_t true_dau_muon_dir_x = true_dau_muon_end_x - true_dau_muon_start_x;
     Double_t true_dau_muon_dir_y = true_dau_muon_end_y - true_dau_muon_start_y;
@@ -504,16 +510,18 @@ void FillRebuildTrackLength(){
     //cout << "best_peak_x, y, z: " << best_peak_x << " " << best_peak_y << " " << best_peak_z << endl;
     //cout << "best_peak_x_true, y, z: " << best_peak_x_true << " " << best_peak_y_true << " " << best_peak_z_true <<endl;
   }
-  if(true_kaon_end_process==1){
+  if(true_kaon_end_process==1 && reco_track_true_pdg==321){
+    n_endprocess_1++;
     Double_t true_dau_pip_dir_x = true_dau_pip_end_x - true_dau_pip_start_x;
     Double_t true_dau_pip_dir_y = true_dau_pip_end_y - true_dau_pip_start_y;
     Double_t true_dau_pip_dir_z = true_dau_pip_end_z - true_dau_pip_start_z;
-    true_dau_dir.SetXYZ(true_dau_pip_dir_x, true_dau_pip_dir_y, true_dau_pip_dir_z);
-    //true_dau_dir.SetMagThetaPhi(1, true_dau_pip_theta, true_dau_pip_phi);
+    //true_dau_dir.SetXYZ(true_dau_pip_dir_x, true_dau_pip_dir_y, true_dau_pip_dir_z);
+    true_dau_dir.SetMagThetaPhi(1, true_dau_pip_theta, true_dau_pip_phi);
     cheat_dir.SetXYZ(best_peak_x_true, best_peak_y_true, best_peak_z_true);
     reco_dir.SetXYZ(best_peak_x, best_peak_y, best_peak_z);
     //if(true_kaon_end_process==1&& reco_dir!=initvec&&true_dau_dir!=initvec && cheat_dir!=initvec) cout << cheat_dir.X() << " " << cheat_dir.Y() << " " << cheat_dir.Z() << endl;
   }
+  reco_dir.SetXYZ(best_peak_x, best_peak_y, best_peak_z);
 
 
   if(true_kaon_end_process==0 || true_kaon_end_process==1){
@@ -548,12 +556,14 @@ void FillRebuildTrackLength(){
     if(true_kaon_end_process==0 && reco_track_true_pdg==321){
       h_track_rebdau_cheat_ln_mu->Fill(rebdautracktrue_length);
       h_track_rebdau_cheat_dir_ln_mu->Fill(rebdautracktruedir_length);
-      if(rebdautrack_length>0) h_peak_dir_cheat_mu->Fill(true_dau_dir.Angle(cheat_dir));
+      //if(rebdautrack_length>0) h_peak_dir_cheat_mu->Fill(true_dau_dir.Angle(cheat_dir));
+      if(rebdautracktrue_length>0) h_peak_dir_cheat_mu->Fill(true_dau_dir.Angle(cheat_dir));
     }
     else if(true_kaon_end_process==1 && reco_track_true_pdg==321){
       h_track_rebdau_cheat_ln_pi->Fill(rebdautracktrue_length);
       h_track_rebdau_cheat_dir_ln_pi->Fill(rebdautracktruedir_length);
-      if(rebdautrack_length>0) h_peak_dir_cheat_pi->Fill(true_dau_dir.Angle(cheat_dir));
+      //if(rebdautrack_length>0) h_peak_dir_cheat_pi->Fill(true_dau_dir.Angle(cheat_dir));
+      if(rebdautracktrue_length>0) h_peak_dir_cheat_pi->Fill(true_dau_dir.Angle(cheat_dir));
     }
 
     //}
@@ -564,8 +574,8 @@ void FillRebuildTrackLength(){
     h_track_rebdau_cheat_dir_ln_pr->Fill(rebdautracktruedir_length);
 
     if(true_kaon_end_process==0 || true_kaon_end_process==1) { 
-      h_peak_dir_pr->Fill(true_dau_dir.Angle(reco_dir));
-      h_peak_dir_cheat_pr->Fill(true_dau_dir.Angle(cheat_dir));
+      if(rebdautrack_length>0) h_peak_dir_pr->Fill(true_dau_dir.Angle(reco_dir));
+      if(rebdautracktrue_length>0) h_peak_dir_cheat_pr->Fill(true_dau_dir.Angle(cheat_dir));
     }
   }
   else if(rebdautrack_pdg==-13){
@@ -580,22 +590,22 @@ void FillRebuildTrackLength(){
   }
   else if(rebdautrack_pdg==211){
     h_track_rebdau_ln_pi->Fill(rebdautrack_length);
-    h_track_rebdau_cheat_ln_pi->Fill(rebdautracktrue_length);
-    h_track_rebdau_cheat_dir_ln_pi->Fill(rebdautracktruedir_length);
+    //h_track_rebdau_cheat_ln_pi->Fill(rebdautracktrue_length);
+    //h_track_rebdau_cheat_dir_ln_pi->Fill(rebdautracktruedir_length);
 
     if(true_kaon_end_process==0 || true_kaon_end_process==1) { 
       h_peak_dir_pi->Fill(true_dau_dir.Angle(reco_dir));
-      h_peak_dir_cheat_pi->Fill(true_dau_dir.Angle(cheat_dir));
+      //h_peak_dir_cheat_pi->Fill(true_dau_dir.Angle(cheat_dir));
     }
   }
   else if(rebdautrack_pdg==22 || rebdautrack_pdg==11 || rebdautrack_pdg==-11 || rebdautrack_pdg==111){
     h_track_rebdau_ln_sh->Fill(rebdautrack_length);
-    //h_track_rebdau_cheat_ln_sh->Fill(rebdautracktrue_length);
-    //h_track_rebdau_cheat_dir_ln_sh->Fill(rebdautracktruedir_length);
+    h_track_rebdau_cheat_ln_sh->Fill(rebdautracktrue_length);
+    h_track_rebdau_cheat_dir_ln_sh->Fill(rebdautracktruedir_length);
 
     if(true_kaon_end_process==0 || true_kaon_end_process==1) { 
-      h_peak_dir_sh->Fill(true_dau_dir.Angle(reco_dir));
-      //h_peak_dir_cheat_sh->Fill(true_dau_dir.Angle(cheat_dir));
+      if(rebdautrack_length>0) h_peak_dir_sh->Fill(true_dau_dir.Angle(reco_dir));
+      if(rebdautracktrue_length>0) h_peak_dir_cheat_sh->Fill(true_dau_dir.Angle(cheat_dir));
     }
   }
   else if(rebdautrack_pdg!=-9999){
@@ -604,8 +614,8 @@ void FillRebuildTrackLength(){
     h_track_rebdau_cheat_dir_ln_ot->Fill(rebdautracktruedir_length);
 
     if(true_kaon_end_process==0 || true_kaon_end_process==1) { 
-      h_peak_dir_ot->Fill(true_dau_dir.Angle(reco_dir));
-      h_peak_dir_cheat_ot->Fill(true_dau_dir.Angle(cheat_dir));
+      if(rebdautrack_length>0) h_peak_dir_ot->Fill(true_dau_dir.Angle(reco_dir));
+      if(rebdautracktrue_length>0) h_peak_dir_cheat_ot->Fill(true_dau_dir.Angle(cheat_dir));
     }
   }
 
@@ -683,8 +693,13 @@ void AddStackHistos(){
   cout << "h_peak_dir_cheat_pi->Integral(0, h_peak_dir_cheat_pi->FindBin(0.25)): " << h_peak_dir_cheat_pi->Integral(0, h_peak_dir_cheat_pi->FindBin(0.25)) << endl;
   cout << endl;
 
-  cout << "h_vtx_dis_ka->GetEntries(): " << h_vtx_dis_ka->GetEntries() << endl;
-  cout << "h_vtx_dis_ka->Integral(0, h_vtx_dis_ka->FindBin(10)): " << h_vtx_dis_ka->Integral(0, h_vtx_dis_ka->FindBin(10)) << endl;
+  cout << "h_vtx_dis_ka->GetEntries(): " << h_vtx_dis_ka->Integral(0, 40) << endl;
+  cout << "h_vtx_dis_ka->Integral(0, h_vtx_dis_ka->FindBin(10)): " << h_vtx_dis_ka->Integral(0, 10) << endl;
+  cout << "h_vtx_dis_ka->Integral(0, h_vtx_dis_ka->FindBin(20)): " << h_vtx_dis_ka->Integral(10, 30) << endl;
+  cout << endl;
+
+  cout << "n_endprocess_0: " << n_endprocess_0 << ", n_endprocess_1: " << n_endprocess_1 << endl;
+  cout << "h_track_rebdau_cheat_ln_mu->GetEntries(): " << h_track_rebdau_cheat_ln_mu->GetEntries() << ", h_track_rebdau_cheat_ln_pi->GetEntries(): " << h_track_rebdau_cheat_ln_pi->GetEntries() << endl;
 
   /*
   s_trkln_rebdau_cheat->Add(h_track_rebdau_cheat_ln_pr);
