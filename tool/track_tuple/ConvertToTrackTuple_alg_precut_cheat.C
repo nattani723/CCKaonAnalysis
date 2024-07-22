@@ -24,10 +24,11 @@ void ConvertToTrackTuple_alg_precut_cheat()
 
   TStopwatch clock;
 
-  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter11.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_parameter11.root");
-  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter10.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple_parameter10.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter10.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_parameter10.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter10.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_tracktuple_parameter10.root");
   ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_refined_KrecoAlg_parameter10.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample0_tracktuple_parameter10.root");
-  //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_refined_KrecoAlg_parameter10.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_tracktuple_parameter10.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_refined_KrecoAlg_parameter10.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample1_tracktuple_parameter10.root");
+  ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_refined_KrecoAlg_parameter10.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample2_tracktuple_parameter10.root");
 
 
   //ConvertToTrackTuple_alg_precut_cheat("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_debug.root", "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_tracktuple_debug.root");

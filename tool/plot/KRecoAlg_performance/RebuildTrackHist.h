@@ -40,6 +40,7 @@ int n3 = 0;
 int n4 = 0;
 //int n5 = 0;
 double n5=0;
+double weight=1.;
 
 int nentry=0;
 int reco_true_length_mu;

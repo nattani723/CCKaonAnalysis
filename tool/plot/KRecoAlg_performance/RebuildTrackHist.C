@@ -36,11 +36,11 @@ void RebuildTrackHist()
 
   //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample012_parameter10rerunPID_tracktuple_parameter10.root", "Plots/NuMI012_parameter10_all.pdf", "3pl", "All", true); 
   //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample012_parameter10rerunPID_tracktuple_parameter10.root", "Plots/NuMI012_parameter10_IsK.pdf", "3pl", "IsK", true); 
-  RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample012_parameter10rerunPID_tracktuple_parameter10.root", "Plots/NuMI012_parameter10_NotK.pdf", "3pl", "NotK", true); 
+  //RebuildTrackHist("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/numi_sample012_parameter10rerunPID_tracktuple_parameter10.root", "Plots/NuMI012_parameter10_NotK.pdf", "3pl", "NotK", true); 
 
   //RebuildTrackHist("cck.list",  "Plots/CCK_parameter10_all.pdf", "3pl", "All", true);
   //RebuildTrackHist("cck.list",  "Plots/CCK_parameter10_IsK.pdf", "3pl", "IsK", true);
-  //RebuildTrackHist("cck.list",  "Plots/CCK_parameter10_NotK.pdf", "3pl", "NotK", true);
+  RebuildTrackHist("cck.list",  "Plots/CCK_parameter10_NotK.pdf", "3pl", "NotK", true);
 
   //RebuildTrackHist("numi.list",  "Plots/NuMI_all.pdf", "3pl", "All", true);
   //RebuildTrackHist("numi.list",  "Plots/NuMI_IsK.pdf", "3pl", "IsK", true);
@@ -86,6 +86,8 @@ void RebuildTrackHist(TString input_name, TString output_name, TString pl, TStri
 	  chain_TMVA->Add(line.c_str());
 	} else {
 	  chain_Standard->Add(line.c_str());
+	  if (line.find("asso") != std::string::npos) weight = 1;
+	  if (line.find("single") != std::string::npos) weight = 2.381/5.371;
 	}
       }
     }
@@ -661,15 +663,15 @@ void FillHybridTrackLength(){
   //if(reco_track_daughter_old_length>50 && reco_track_daughter_old_length<750){
   if(reco_track_daughter_old_length>50){
     if(reco_track_daughter_old_true_pdg==2212)
-      h_track_dau_ln_pr_hy->Fill(reco_track_daughter_old_length);
+      h_track_dau_ln_pr_hy->Fill(reco_track_daughter_old_length,weight);
     else if(reco_track_daughter_old_true_pdg==-13)
-      h_track_dau_ln_mu_hy->Fill(reco_track_daughter_old_length);
+      h_track_dau_ln_mu_hy->Fill(reco_track_daughter_old_length,weight);
     else if(reco_track_daughter_old_true_pdg==211)
-      h_track_dau_ln_pi_hy->Fill(reco_track_daughter_old_length);  
+      h_track_dau_ln_pi_hy->Fill(reco_track_daughter_old_length,weight);  
     else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22)
-      h_track_dau_ln_sh_hy->Fill(reco_track_daughter_old_length);
+      h_track_dau_ln_sh_hy->Fill(reco_track_daughter_old_length,weight);
     else if(reco_track_daughter_old_true_pdg!=-9999)
-      h_track_dau_ln_ot_hy->Fill(reco_track_daughter_old_length);
+      h_track_dau_ln_ot_hy->Fill(reco_track_daughter_old_length,weight);
 
     if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==211 && std::abs(reco_track_daughter_old_length-true_dau_pip_length)<0.2*true_dau_pip_length)) reco_true_length_pi_hy++;
     if(reco_track_true_pdg==321 && (reco_track_daughter_old_true_pdg==-13 && std::abs(reco_track_daughter_old_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu_hy++;
@@ -682,38 +684,38 @@ void FillHybridTrackLength(){
     if(reco_track_true_pdg==321 && (reco_track_daughter_true_pdg==-13 && std::abs(reco_track_daughter_length-true_dau_muon_length)<0.2*true_dau_muon_length)) reco_true_length_mu_hy++;
 
     if(reco_track_daughter_true_pdg==2212){
-      h_track_dau_ln_pr_hy->Fill(reco_track_daughter_length);
+      h_track_dau_ln_pr_hy->Fill(reco_track_daughter_length,weight);
       //h_track_dis_ln_pr->Fill(reco_track_distance);
       //h_track_dau_dis_ln_pr->Fill(reco_track_daughter_distance);
-      h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
-      h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl);
+      h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl,weight);
+      h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl,weight);
     }
     //else if(reco_track_daughter_true_pdg==-13){
     else if( (reco_track_daughter_true_pdg==-13 || reco_track_daughter_true_pdg==13) ){
-      h_track_dau_ln_mu_hy->Fill(reco_track_daughter_length);
+      h_track_dau_ln_mu_hy->Fill(reco_track_daughter_length,weight);
       //h_track_dis_ln_mu->Fill(reco_track_distance);
       //h_track_dau_dis_ln_mu->Fill(reco_track_daughter_distance);
-      h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl);
-      h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl);
+      h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl,weight);
+      h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl,weight);
     }
     else if(reco_track_daughter_true_pdg==211){
-      h_track_dau_ln_pi_hy->Fill(reco_track_daughter_length);
+      h_track_dau_ln_pi_hy->Fill(reco_track_daughter_length,weight);
       //h_track_dis_ln_pi->Fill(reco_track_distance);
       //h_track_dau_dis_ln_pi->Fill(reco_track_daughter_distance);
-      h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl);
-      h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl);
+      h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl,weight);
+      h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl,weight);
     }
     else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22){
-      h_track_dau_ln_sh_hy->Fill(reco_track_daughter_length);
-      h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl);
-      h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl);
+      h_track_dau_ln_sh_hy->Fill(reco_track_daughter_length,weight);
+      h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl,weight);
+      h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl,weight);
     }
     else if(reco_track_daughter_true_pdg!=-9999){
-      h_track_dau_ln_ot_hy->Fill(reco_track_daughter_length);
+      h_track_dau_ln_ot_hy->Fill(reco_track_daughter_length,weight);
       //h_track_dis_ln_ot->Fill(reco_track_distance);
       //h_track_dau_dis_ln_ot->Fill(reco_track_daughter_distance);
-      h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
-      h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
+      h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl,weight);
+      h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl,weight);
     }
   }
   
@@ -722,29 +724,29 @@ void FillHybridTrackLength(){
 
     //if(reco_track_daughter_length>25 && reco_track_daughter_length<750){
   if(reco_track_daughter_true_pdg==2212){
-    h_track_dau_ln_pr->Fill(reco_track_daughter_length);
-    h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl);
+    h_track_dau_ln_pr->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl,weight);
   }
   else if(reco_track_daughter_true_pdg==-13){
-    h_track_dau_ln_mu->Fill(reco_track_daughter_length);
-    h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl);
+    h_track_dau_ln_mu->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl,weight);
   }
   else if(reco_track_daughter_true_pdg==211){
-    h_track_dau_ln_pi->Fill(reco_track_daughter_length);
-    h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl);
+    h_track_dau_ln_pi->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl,weight);
   }
   else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22){
-    h_track_dau_ln_sh->Fill(reco_track_daughter_length);
-    h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl);	  
+    h_track_dau_ln_sh->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl,weight);	  
   }
   else if(reco_track_daughter_true_pdg!=-9999){
-    h_track_dau_ln_ot->Fill(reco_track_daughter_length);
-    h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
+    h_track_dau_ln_ot->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl,weight);
   }
   //}
 
@@ -755,29 +757,29 @@ void FillOldTrackLength(){
 
   //if(reco_track_daughter_old_length>25 && reco_track_daughter_old_length<750){
   if(reco_track_daughter_old_true_pdg==2212){
-    h_track_dau_old_ln_pr->Fill(reco_track_daughter_old_length);
-    h_track_dau_old_llr_pr->Fill(reco_track_daughter_old_llrpid_3pl);
-    h_track_dau_old_llrka_pr->Fill(reco_track_daughter_old_llrpid_k_3pl);
+    h_track_dau_old_ln_pr->Fill(reco_track_daughter_old_length,weight);
+    h_track_dau_old_llr_pr->Fill(reco_track_daughter_old_llrpid_3pl,weight);
+    h_track_dau_old_llrka_pr->Fill(reco_track_daughter_old_llrpid_k_3pl,weight);
   }
   else if(reco_track_daughter_old_true_pdg==-13){
-    h_track_dau_old_ln_mu->Fill(reco_track_daughter_old_length);
-    h_track_dau_old_llr_mu->Fill(reco_track_daughter_old_llrpid_3pl);
-    h_track_dau_old_llrka_mu->Fill(reco_track_daughter_old_llrpid_k_3pl);
+    h_track_dau_old_ln_mu->Fill(reco_track_daughter_old_length,weight);
+    h_track_dau_old_llr_mu->Fill(reco_track_daughter_old_llrpid_3pl,weight);
+    h_track_dau_old_llrka_mu->Fill(reco_track_daughter_old_llrpid_k_3pl,weight);
 	}
   else if(reco_track_daughter_old_true_pdg==211){
-    h_track_dau_old_ln_pi->Fill(reco_track_daughter_old_length);
-    h_track_dau_old_llr_pi->Fill(reco_track_daughter_old_llrpid_3pl);
-    h_track_dau_old_llrka_pi->Fill(reco_track_daughter_old_llrpid_k_3pl);
+    h_track_dau_old_ln_pi->Fill(reco_track_daughter_old_length,weight);
+    h_track_dau_old_llr_pi->Fill(reco_track_daughter_old_llrpid_3pl,weight);
+    h_track_dau_old_llrka_pi->Fill(reco_track_daughter_old_llrpid_k_3pl,weight);
   }
   else if(reco_track_daughter_old_true_pdg==11 || reco_track_daughter_old_true_pdg==-11 || reco_track_daughter_old_true_pdg==22){
-    h_track_dau_old_ln_sh->Fill(reco_track_daughter_old_length);
-    h_track_dau_old_llr_sh->Fill(reco_track_daughter_old_llrpid_3pl);
-    h_track_dau_old_llrka_sh->Fill(reco_track_daughter_old_llrpid_k_3pl);	  
+    h_track_dau_old_ln_sh->Fill(reco_track_daughter_old_length,weight);
+    h_track_dau_old_llr_sh->Fill(reco_track_daughter_old_llrpid_3pl,weight);
+    h_track_dau_old_llrka_sh->Fill(reco_track_daughter_old_llrpid_k_3pl,weight);	  
   }
   else if(reco_track_daughter_old_true_pdg!=-9999){
-    h_track_dau_old_ln_ot->Fill(reco_track_daughter_old_length);
-    h_track_dau_old_llr_ot->Fill(reco_track_daughter_old_llrpid_3pl);
-    h_track_dau_old_llrka_ot->Fill(reco_track_daughter_old_llrpid_k_3pl);
+    h_track_dau_old_ln_ot->Fill(reco_track_daughter_old_length,weight);
+    h_track_dau_old_llr_ot->Fill(reco_track_daughter_old_llrpid_3pl,weight);
+    h_track_dau_old_llrka_ot->Fill(reco_track_daughter_old_llrpid_k_3pl,weight);
   }
   //}
 
@@ -794,29 +796,29 @@ void FillRebuiltTrackLength(){
 
     //if(reco_track_daughter_length>25 && reco_track_daughter_length<750){
   if(reco_track_daughter_true_pdg==2212){
-    h_track_dau_ln_pr->Fill(reco_track_daughter_length);
-    h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl);
+    h_track_dau_ln_pr->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_pr->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_pr->Fill(reco_track_daughter_llrpid_k_3pl,weight);
   }
   else if(reco_track_daughter_true_pdg==-13){
-    h_track_dau_ln_mu->Fill(reco_track_daughter_length);
-    h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl);
+    h_track_dau_ln_mu->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_mu->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_mu->Fill(reco_track_daughter_llrpid_k_3pl,weight);
   }
   else if(reco_track_daughter_true_pdg==211){
-    h_track_dau_ln_pi->Fill(reco_track_daughter_length);
-    h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl);
+    h_track_dau_ln_pi->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_pi->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_pi->Fill(reco_track_daughter_llrpid_k_3pl,weight);
   }
   else if(reco_track_daughter_true_pdg==11 || reco_track_daughter_true_pdg==-11 || reco_track_daughter_true_pdg==22){
-    h_track_dau_ln_sh->Fill(reco_track_daughter_length);
-    h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl);	  
+    h_track_dau_ln_sh->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_sh->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_sh->Fill(reco_track_daughter_llrpid_k_3pl,weight);	  
   }
   else if(reco_track_daughter_true_pdg!=-9999){
-    h_track_dau_ln_ot->Fill(reco_track_daughter_length);
-    h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl);
-    h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl);
+    h_track_dau_ln_ot->Fill(reco_track_daughter_length,weight);
+    h_track_dau_llr_ot->Fill(reco_track_daughter_llrpid_3pl,weight);
+    h_track_dau_llrka_ot->Fill(reco_track_daughter_llrpid_k_3pl,weight);
   }
   //}
   
@@ -1241,13 +1243,13 @@ void DrawHistos(TCanvas* &c,TString output_name){
   maximum *= 1.05;
 
   s_trkln_dau->SetMaximum(maximum);
-  s_trkln_dau->Draw("nostack");
+  s_trkln_dau->Draw("nostack hist");
   l_pr_dau_ln->Draw();
   c->Print(output_name);
   
   //s_trkln_dau->Draw();
   s_trkln_dau_hy->SetMaximum(maximum);
-  s_trkln_dau_hy->Draw("nostack");
+  s_trkln_dau_hy->Draw("nostack hist");
   l_pr_dau_ln->Draw();
   c->Print(output_name);
   
@@ -1280,7 +1282,7 @@ void DrawHistos(TCanvas* &c,TString output_name){
   
   //s_trkln_dau_old->Draw();
   s_trkln_dau_old->SetMaximum(maximum); 
-  s_trkln_dau_old->Draw("nostack");
+  s_trkln_dau_old->Draw("nostack hist");
   l_pr_dau_ln->Draw();
   c->Print(output_name);
   

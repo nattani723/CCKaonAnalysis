@@ -387,6 +387,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TEfficiency* Efficiency_DaughterTrackLength = new TEfficiency("eff_DaughterTrackLength",";;Selected/All",1,0,1.0);
       */
 
+      TH1D *h_RecoKaonMomentum_NDaughterTrack = new TH1D("h_RecoKaonMomentum_NDaughterTrack","",60,0.0,2.0);
+      TH1D *h_SelectedRecoKaonMomentum_NDaughterTrack = new TH1D("h_SelectedRecoKaonMomentum_NDaughterTrack","",60,0.0,2.0);
+      TEfficiency* Efficiency_RecoKaonMomentum_NDaughterTrack = new TEfficiency("RecoKaonMomentum_eff_NDaughterTrack",";Reconstructed K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
+
+
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       E.SetFile("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root", "KAON");
@@ -815,6 +820,16 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          if(passed_DaughterTrackLength) h_Selected_DaughterTrackLength->Fill(0.5,e.Weight);
 	 */
 
+	 for (const auto& pair : M.VectorPair) {
+	   RecoParticle PrimaryKaonTrack = pair.first;
+	   double RecoKaonMomentum = PrimaryKaonTrack.KaonMomentum;
+	   
+	   h_RecoKaonMomentum_NDaughterTrack->Fill(RecoKaonMomentum,e.Weight); 
+	   Efficiency_RecoKaonMomentum_NDaughterTrack->FillWeighted(passed_All,e.Weight,RecoKaonMomentum);
+	   if(passed_All)  h_SelectedRecoKaonMomentum_NDaughterTrack->Fill(RecoKaonMomentum,e.Weight);
+
+	 }
+
       }
 
       //close the event assembler
@@ -924,6 +939,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayPionMomentum_DaughterTrackLength,h_SelectedDecayPionMomentum_DaughterTrackLength,Efficiency_DecayPionMomentum_DaughterTrackLength,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_DaughterTrackLength",Mode,POT);
       DrawEfficiencyPlot(h_DaughterTrackLength,h_Selected_DaughterTrackLength,Efficiency_DaughterTrackLength,";;Events",label + "_DaughterTrackLength",Mode,POT);
       */
+
+      DrawEfficiencyPlot(h_RecoKaonMomentum_NDaughterTrack,h_SelectedRecoKaonMomentum_NDaughterTrack,Efficiency_RecoKaonMomentum_NDaughterTrack,";Reconstructed K^{+} Momentum (GeV/c,Mode,POT);Events",label + "_RecoKaonMomentum_NDaughterTrack",Mode,POT);
+
 
    }
 

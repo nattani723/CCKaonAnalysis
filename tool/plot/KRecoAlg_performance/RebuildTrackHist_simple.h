@@ -36,10 +36,13 @@ TString output_pdf_dau = "chi2_dau.pdf";;
 int nentry=0;
 int n_endprocess_0=0;
 int n_endprocess_1=0;
+int reco_true_length_mu_20=0;
+int reco_true_length_pi_20=0;
 int reco_true_length_mu;
 int reco_true_length_pi;
 int reco_old_true_length_mu;
 int reco_old_true_length_pi;
+double weight_single=1.;
 
 bool HasStoredEventVariable = false;
 double true_kaon_ke_previous = -9;
@@ -90,6 +93,9 @@ TH1D * h_track_dau_ln_pi;
 TH1D * h_track_dau_ln_mu;
 TH1D * h_track_dau_ln_sh;
 TH1D * h_track_dau_ln_ot;
+
+TH1D * h_true_track_dau_ln_mu;
+TH1D * h_true_track_dau_ln_pi;
 
 TH1D * h_track_dau_old_ln_pr;
 TH1D * h_track_dau_old_ln_pi;
@@ -142,13 +148,13 @@ TH1D * h_reco_track_daughter_distance;
 TH1D * h_reco_track_daughter_vtx_distance;
 
 THStack * s_trkln_dau = new THStack("s_trkln_dau", ";Daughter Track Length (cm);Event (a.u.)");
-THStack * s_trkln_dau_old = new THStack("s_trkln_dau)old", ";Daughter Track Length (cm);Event (a.u.)");
+THStack * s_trkln_dau_old = new THStack("s_trkln_dau_old", ";Daughter Track Length (cm);Event (a.u.)");
 THStack * s_trkln_rebdau = new THStack("s_trkln_rebdau", ";Daughter Track Length (cm);Event (a.u.)");
 THStack * s_trkln_rebdau_cheat = new THStack("s_trkln_rebdau_cheat", ";Daughter Track Length (cm);Event (a.u.)");
 THStack * s_trkln_rebdau_cheat_dir = new THStack("s_trkln_rebdau_cheat_dir", ";Daughter Track Length (cm);Event (a.u.)");
 THStack * s_peak_dir = new THStack("s_peak_dir", ";Reconstructed - True direciton Opening angle (rad);Event (a.u.)");
 THStack * s_peak_dir_cheat = new THStack("s_peak_dir_cheat", ";Cheated - True direciton Opening angle (rad);Event (a.u.)");
-THStack * s_vtx_dis = new THStack("s_vtx_dis", ";Reconstructed - True Vertex Distance (cm)");
+THStack * s_vtx_dis = new THStack("s_vtx_dis", ";Reconstructed - True Vertex Distance (cm); Event (a.u.)");
 
 /*
   THStack * s_braggka = new THStack();
@@ -159,6 +165,7 @@ THStack * s_vtx_dis = new THStack("s_vtx_dis", ";Reconstructed - True Vertex Dis
 
 TLegend * l_pr_dau_ln;
 TLegend * l_pr_dau_ln_cheat;
+TLegend * l_pr_dau_ln_cheat_simple;
 TLegend * l_ka;
 
 //how to store PDG

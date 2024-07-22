@@ -13,8 +13,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 int PDGToBin(int pdg);
 std::string PDGLabel(int bin);
 void InitializeHistograms(std::map<std::string, TH1D*>& histograms);
-void AnalyzeIndividualTrack(const TVector3& PrimaryTrackEnd, const RecoParticle& DaughterTrack, TH1D* histogram, double maxDistance, int& nentry);
-void AnalyzeTracks(const Event& e, std::map<std::string, TH1D*>& histograms, int* nentry);
+void AnalyzeIndividualTrack(const TVector3& PrimaryTrackEnd, const RecoParticle& DaughterTrack, TH1D* histogram, double maxDistance, int& nentry, double weight);
+void AnalyzeTracks(const Event& e, std::map<std::string, TH1D*>& histograms, int* nentry, double weight);
 void PlotHistograms(const std::map<std::string, TH1D*>& histograms);
 void HighlightBins(TH1D* hist, int bin, int color);
 void MergeCheckerPlot();
@@ -63,7 +63,7 @@ void InitializeHistograms(std::map<std::string, TH1D*>& histograms) {
 }
 
 // Analyze individual track
-void AnalyzeIndividualTrack(const TVector3& PrimaryTrackEnd, const RecoParticle& DaughterTrack, TH1D* histogram, double maxDistance, int& nentry) {
+void AnalyzeIndividualTrack(const TVector3& PrimaryTrackEnd, const RecoParticle& DaughterTrack, TH1D* histogram, double maxDistance, int& nentry, double weight) {
   if (!histogram) {
     std::cerr << "Error: Histogram pointer is null." << std::endl;
     return;
@@ -75,17 +75,17 @@ void AnalyzeIndividualTrack(const TVector3& PrimaryTrackEnd, const RecoParticle&
   ++nentry;
 
   int bin1 = PDGToBin(DaughterTrack.MergePDG_1st) - 1;
-  if (DaughterTrack.MergePDG_1st != -1) histogram->Fill(bin1, DaughterTrack.MergeEnergyPurity_1st);
+  if (DaughterTrack.MergePDG_1st != -1) histogram->Fill(bin1, DaughterTrack.MergeEnergyPurity_1st*weight);
 
   int bin2 = PDGToBin(DaughterTrack.MergePDG_2nd) - 1;
-  if (DaughterTrack.MergePDG_2nd != -1) histogram->Fill(bin2, DaughterTrack.MergeEnergyPurity_2nd);
+  if (DaughterTrack.MergePDG_2nd != -1) histogram->Fill(bin2, DaughterTrack.MergeEnergyPurity_2nd*weight);
 
   int bin3 = PDGToBin(DaughterTrack.MergePDG_3rd) - 1;
-  if (DaughterTrack.MergePDG_3rd != -1) histogram->Fill(bin3, DaughterTrack.MergeEnergyPurity_3rd);
+  if (DaughterTrack.MergePDG_3rd != -1) histogram->Fill(bin3, DaughterTrack.MergeEnergyPurity_3rd*weight);
 }
 
 // Analyze tracks
-void AnalyzeTracks(const Event& e, std::map<std::string, TH1D*>& histograms, int* nentry) {
+void AnalyzeTracks(const Event& e, std::map<std::string, TH1D*>& histograms, int* nentry, double weight) {
   for (size_t i_tr = 0; i_tr < e.TrackPrimaryDaughters.size(); i_tr++) {
     RecoParticle PrimaryTrack = e.TrackPrimaryDaughters[i_tr];
     if (PrimaryTrack.TrackTruePDG != 321) continue; // Only interested in tracks with PDG == 321
@@ -93,17 +93,17 @@ void AnalyzeTracks(const Event& e, std::map<std::string, TH1D*>& histograms, int
 
     // Analyze daughter tracks
     for (size_t i_tr_dau = 0; i_tr_dau < e.TrackOthers.size(); i_tr_dau++) {
-      AnalyzeIndividualTrack(PrimaryTrackEnd, e.TrackOthers[i_tr_dau], histograms["h_daughter"], 10, nentry[0]);
+      AnalyzeIndividualTrack(PrimaryTrackEnd, e.TrackOthers[i_tr_dau], histograms["h_daughter"], 10, nentry[0], weight);
     }
 
     // Analyze shower daughters
     for (size_t i_sh = 0; i_sh < e.ShowerOthers.size(); i_sh++) {
-      AnalyzeIndividualTrack(PrimaryTrackEnd, e.ShowerOthers[i_sh], histograms["h_shower"], 20, nentry[1]);
+      AnalyzeIndividualTrack(PrimaryTrackEnd, e.ShowerOthers[i_sh], histograms["h_shower"], 20, nentry[1], weight);
     }
 
     // Analyze rebuilt daughter tracks
     for (size_t i_tr_dau = 0; i_tr_dau < e.TrackRebuiltOthers.size(); i_tr_dau++) {
-      AnalyzeIndividualTrack(PrimaryTrackEnd, e.TrackRebuiltOthers[i_tr_dau], histograms["h_rebdaughter"], 10, nentry[2]);
+      AnalyzeIndividualTrack(PrimaryTrackEnd, e.TrackRebuiltOthers[i_tr_dau], histograms["h_rebdaughter"], 10, nentry[2], weight);
     }
   }
 }
@@ -162,7 +162,7 @@ void PlotHistograms(const std::map<std::string, TH1D*>& histograms) {
 
     // Highlight specific bins
     HighlightBins(h, 2, TColor::GetColorDark(kCyan));  // Highlight "mu+" bin
-    HighlightBins(h, 3, TColor::GetColorDark(kGreen));  // Highlight "pi+" bin
+    //HighlightBins(h, 3, TColor::GetColorDark(kGreen));  // Highlight "pi+" bin
     if (entry.first == "h_shower") HighlightBins(h, 5, kMagenta);  // Highlight "shower" bin
 
     // Update the canvas to reflect changes
@@ -170,9 +170,9 @@ void PlotHistograms(const std::map<std::string, TH1D*>& histograms) {
     c->Update();
 
     // Save the canvas as a PDF or an image file
-    //std::string filename = "Plots/CCK_" + entry.first + "_NuMuP.pdf";
+    std::string filename = "Plots/CCK_" + entry.first + "_NuMuP.pdf";
     //std::string filename = "Plots/CCK_" + entry.first + "_PiPPi0.pdf";
-    std::string filename = "Plots/CCK_" + entry.first + "_BothDCY.pdf";
+    //std::string filename = "Plots/CCK_" + entry.first + "_BothDCY.pdf";
     c->Print(filename.c_str());
 
     // Optionally clear the canvas for the next histogram
@@ -192,13 +192,19 @@ void MergeCheckerPlot() {
   BuildTunes();
   SelectionParameters P = P_FHC_K_NOBDT_TEST;
 
-  SampleNames.push_back("AsoscKaon");
+  double weight=0;
+  std::vector<double> weights;
+
+  SampleNames.push_back("AssocKaon");
   SampleTypes.push_back("AssocKaon");
   SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter10_ntuple.root");
+  weights.push_back(1.0);
 
   SampleNames.push_back("SingleKaon");
   SampleTypes.push_back("SingleKaon");
   SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/singlek_refined_KrecoAlg_parameter10_ntuple.root");
+  weights.push_back(2.381/5.371);
+
   //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/cck_refined_KrecoAlg_parameter10_ntuple.root");
   //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/test/KaonTrees.root");
   //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root");
@@ -213,6 +219,9 @@ void MergeCheckerPlot() {
   for (size_t i_s = 0; i_s < SampleNames.size(); i_s++) {
     E.SetFile(SampleFiles.at(i_s), "KAON"); // 2nd parameter is dummy
 
+    //if (SampleTypes.at(i_s) == "AssocKaon") weight = 1.0;
+    //if (SampleTypes.at(i_s) == "SingleKaon") weight = 2.381/5.371;
+
     if (SampleTypes.at(i_s) == "SingleKaon") M.AddSample("SingleKaon", "SingleKaon", POT);
     //if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
     else if (SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s), SampleTypes.at(i_s), Data_POT);
@@ -220,6 +229,8 @@ void MergeCheckerPlot() {
 
     M.UseFluxWeight(false);
     M.UseGenWeight(false);
+
+    weight = weights.at(i_s);
 
     // Event Loop
     for (int i = 0; i < E.GetNEvents(); i++) {
@@ -230,9 +241,9 @@ void MergeCheckerPlot() {
       M.SetSignal(e);
       M.AddEvent(e);
 
-      //if(!e.EventIsSignal_NuMuP) continue;
+      if(!e.EventIsSignal_NuMuP) continue;
       //if (!e.EventIsSignal_PiPPi0) continue;
-      if (!e.EventIsSignal_NuMuP && !e.EventIsSignal_PiPPi0) continue;
+      //if (!e.EventIsSignal_NuMuP && !e.EventIsSignal_PiPPi0) continue;
 
       if (!M.FiducialVolumeCut(e)) continue;
       if (!M.NuCCInclusiveFilter(e)) continue;
@@ -244,7 +255,7 @@ void MergeCheckerPlot() {
       if (e.PrimaryKaonP.size() <= 0) continue;
       if (e.EventIsSignal == false) continue;
 
-      AnalyzeTracks(e, histograms, nentry);
+      AnalyzeTracks(e, histograms, nentry, weight);
     }
     E.Close();
   }
