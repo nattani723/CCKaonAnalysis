@@ -47,12 +47,12 @@ double GetVariableValue(const RecoParticle& particle, const std::string& variabl
   }
   else if (variableName == "Chi2Kaon3Plane") {
     return particle.Track_Chi2_Kaon_3Plane;
-	  }
+  }
   else if (variableName == "Chi2Proton3Plane") {
     return particle.Track_Chi2_Proton_3Plane;
   }
   else if (variableName == "Chi2Muon3Plane") {
-	    return particle.Track_Chi2_Muon_3Plane;
+    return particle.Track_Chi2_Muon_3Plane;
   }
   else if (variableName == "Chi2Pion3Plane") {
     return particle.Track_Chi2_Pion_3Plane;
@@ -61,7 +61,10 @@ double GetVariableValue(const RecoParticle& particle, const std::string& variabl
     return particle.Track_Bragg_PID_Kaon;
   }
   else if (variableName == "MeandEdX3Plane") {
-	    return particle.MeandEdX_ThreePlane;
+    return particle.MeandEdX_ThreePlane;
+  }
+  else if (variableName == "PDG") {
+    return particle.TrackTruePDG;
   }
   
   
@@ -75,9 +78,12 @@ double GetVariableValue(const RecoParticle& particle, const std::string& variabl
 
 void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double xlow, double xhigh, std::string title, bool IsPrimaryX, std::string variableNameX, int nbinsY = 0, double ylow = 0, double yhigh = 0, bool IsPrimaryY = true, std::string variableNameY = "defaultY") {
 
+  std::string plotdir = "BDTXPlots";
+
   double POT = 1.0e21; // POT to scale samples to
   BuildTunes();
   SelectionParameters P = P_FHC_K_NOBDT_TEST;
+  ImportSamples(sFHCRun1BDTTest);
     
   EventAssembler E;
   SelectionManager M(P);
@@ -89,10 +95,11 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
     M.Setup2DHistograms(nbinsX, xlow, xhigh, nbinsY, ylow, yhigh, title);
   }
   
+  /*
   SampleNames.push_back("AssocKaon"); 
   SampleTypes.push_back("AssocKaon");
   SampleFiles.push_back("/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter8_ntuple.root");
-  //SampleFiles.push_back("/exp/uboone/data/users/taniuchi/test/KaonTrees.root");
+  */
   
   //SampleNames.push_back("GENIE Background"); 
   //SampleTypes.push_back("Background");
@@ -101,22 +108,20 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
   TEfficiency* Eff = new TEfficiency("Eff","",2,-0.5,1.5);
   TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",2,-0.5,1.5); 
 
-  // Setup the histograms
-  //M.SetupHistogramsPDG(25,0.0,50,";#Chi_{K^{+}};Events");
-  //M.SetupHistogramsPDG(20,-1,1,";LLRPID p/#mu;Events");
-  //M.SetupHistogramsPDG(30,0.0,30,";Three Plane Mean dE/dx;Events");
-  //M.Setup2DHistograms(25,0,50,15,0,30,";#Chi_{p^{+}};#Chi_{K^{+}};");
-  //M.Setup2DHistograms(30,0,150,12,0,60,";#Chi_{p^{+}};#Chi_{#mu^{+}};");
-
   
   // Sample Loop
   for(size_t i_s=0;i_s<SampleNames.size();i_s++){
     
     E.SetFile(SampleFiles.at(i_s), "KAON");
-    if( SampleTypes.at(i_s) == "AssocKaon") M.AddSample("AssocKaon","AssocKaon",POT);
-    //if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
+
+    if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),POT); 
+    /*
+    if( SampleTypes.at(i_s) == "AssocKaon") M.AddSample("AssocKaon","AssocKaon",E.GetPOT());
+    else if(SampleTypes.at(i_s) == "SingleKaonSig" || SampleTypes.at(i_s) == "SingleKaonBG") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT()/5);
+    else if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
     else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
     else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
+    */
     
     M.UseFluxWeight(false);
     M.UseGenWeight(false);
@@ -159,49 +164,39 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
 	  else valueToFillY = GetVariableValue(DaughterTrack, variableNameY);
 	}
 
+	if(label == "PrimaryPDGDaughterPDG"){
 
-	/*
-	double PrimaryTrackLength = PrimaryKaonTrack.TrackLength;
-	double PrimaryTrackLLRPID = PrimaryKaonTrack.Track_LLR_PID;
-	double PrimaryTrackLLRPIDKaon = PrimaryKaonTrack.Track_LLR_PID_Kaon;
-	double PrimaryTrackChi2KaonPlane2 = PrimaryKaonTrack.Track_Chi2_Kaon_Plane2;
-	double PrimaryTrackChi2ProtonPlane2 = PrimaryKaonTrack.Track_Chi2_Proton_Plane2;
-	double PrimaryTrackChi2MuonPlane2 = PrimaryKaonTrack.Track_Chi2_Muon_Plane2;
-	double PrimaryTrackChi2PionPlane2 = PrimaryKaonTrack.Track_Chi2_Pion_Plane2;
-	double PrimaryTrackChi2Kaon3Plane = PrimaryKaonTrack.Track_Chi2_Kaon_3Plane;
-	double PrimaryTrackChi2Proton3Plane = PrimaryKaonTrack.Track_Chi2_Proton_3Plane;
-	double PrimaryTrackChi2Pion3Plane = PrimaryKaonTrack.Track_Chi2_Pion_3Plane;
-	double PrimaryTrackChi2Muon3Plane = PrimaryKaonTrack.Track_Chi2_Muon_3Plane;
-	double PrimaryTrackBraggPIDKaon = PrimaryKaonTrack.Track_Bragg_PID_Kaon;
-	double PrimaryMeandEdX3Plane = PrimaryKaonTrack.MeandEdX_ThreePlane;
-	
-	double DaughterTrackLength = DaughterTrack.TrackLength;
-	double DaughterTrackLLRPID = DaughterTrack.Track_LLR_PID;
-	double DaughterTrackLLRPIDKaon = DaughterTrack.Track_LLR_PID_Kaon;
-	double DaughterTrackChi2KaonPlane2 = DaughterTrack.Track_Chi2_Kaon_Plane2;
-	double DaughterTrackChi2ProtonPlane2 = DaughterTrack.Track_Chi2_Proton_Plane2;
-	double DaughterTrackChi2PionPlane2 = DaughterTrack.Track_Chi2_Pion_Plane2;
-	double DaughterTrackChi2MuonPlane2 = DaughterTrack.Track_Chi2_Muon_Plane2;
-	double DaughterTrackChi2Kaon3Plane = DaughterTrack.Track_Chi2_Kaon_3Plane;
-	double DaughterTrackChi2Proton3Plane = DaughterTrack.Track_Chi2_Proton_3Plane;
-	double DaughterTrackChi2Pion3Plane = DaughterTrack.Track_Chi2_Pion_3Plane;
-	double DaughterTrackChi2Muon3Plane = DaughterTrack.Track_Chi2_Muon_3Plane;
-	double DaughterTrackBraggPIDKaon = DaughterTrack.Track_Bragg_PID_Kaon;
-	double DaughterMeandEdX3Plane = DaughterTrack.MeandEdX_ThreePlane;
-	*/	
+	  //int xbin = PDGToBin(PrimaryKaonTrackPDG) - 1;
+	  //int ybin = PDGToBin(DaughterTrackPDG) - 1;
+	  int xbin = PDGToBin(valueToFillX) - 1;
+	  int ybin = PDGToBin(valueToFillY) - 1;
+	  //h->Fill(xbin, ybin);
+	  
+	  // Set bin labels
+	  M.Fill2DHistograms(e,xbin,ybin,PrimaryKaonTrack,DaughterTrack);
+
+	  /*
+	  h->GetXaxis()->SetBinLabel(1, "K^{+}");
+	  h->GetXaxis()->SetBinLabel(2, "#mu^{+}");
+	  h->GetXaxis()->SetBinLabel(3, "#pi^{+}");
+	  h->GetXaxis()->SetBinLabel(4, "proton");
+	  h->GetXaxis()->SetBinLabel(5, "shower");
+	  h->GetXaxis()->SetBinLabel(6, "Others");
+	  
+	  h->GetYaxis()->SetBinLabel(1, "K^{+}");
+	  h->GetYaxis()->SetBinLabel(2, "#mu^{+}");
+	  h->GetYaxis()->SetBinLabel(3, "#pi^{+}");
+	  h->GetYaxis()->SetBinLabel(4, "proton");
+	  h->GetYaxis()->SetBinLabel(5, "shower");
+	  h->GetYaxis()->SetBinLabel(6, "Others");
+	  */
+
+	  continue;
+	}
 
 	if(IsHistosPDG) M.FillHistogramsPDG(e,valueToFillX,PrimaryKaonTrack,DaughterTrack);
 	else M.Fill2DHistograms(e,valueToFillX,valueToFillY,PrimaryKaonTrack,DaughterTrack);
 
-
-	//M.FillHistogramsPDG(e,PrimaryMeandEdX3Plane,PrimaryKaonTrack,DaughterTrack);
-
-	//M.FillHistogramsPDG(e,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack);
-	//M.FillHistogramsPDG(e,PrimaryTrackLLRPID,PrimaryKaonTrack,DaughterTrack);
-	//M.Fill2DHistograms(e,PrimaryTrackChi2Proton3Plane,PrimaryTrackChi2Kaon3Plane,PrimaryKaonTrack,DaughterTrack);
-
-	//M.Fill2DHistograms(e,PrimaryTrackChi2ProtonPlane2,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack,1);
-	//M.Fill2DHistograms(e,DaughterTrackChi2ProtonPlane2,DaughterTrackChi2MuonPlane2,PrimaryKaonTrack,DaughterTrack,1);
 		
 	//condition for passed
 	bool passed_PrimaryMeandEdX = false;
@@ -212,27 +207,7 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
 	else Background_Acceptance->FillWeighted(true,e.Weight,0);  
 	if(e.EventIsSignal) Eff->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
 	else Background_Acceptance->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
-
-	/*
-	int xbin = PDGToBin(PrimaryKaonTrackPDG) - 1;
-	int ybin = PDGToBin(DaughterTrackPDG) - 1;
-	h->Fill(xbin, ybin);
-
-	// Set bin labels
-	h->GetXaxis()->SetBinLabel(1, "K^{+}");
-	h->GetXaxis()->SetBinLabel(2, "#mu^{+}");
-	h->GetXaxis()->SetBinLabel(3, "#pi^{+}");
-	h->GetXaxis()->SetBinLabel(4, "proton");
-	h->GetXaxis()->SetBinLabel(5, "shower");
-	h->GetXaxis()->SetBinLabel(6, "Others");
-
-	h->GetYaxis()->SetBinLabel(1, "K^{+}");
-	h->GetYaxis()->SetBinLabel(2, "#mu^{+}");
-	h->GetYaxis()->SetBinLabel(3, "#pi^{+}");
-	h->GetYaxis()->SetBinLabel(4, "proton");
-	h->GetYaxis()->SetBinLabel(5, "shower");
-	h->GetYaxis()->SetBinLabel(6, "Others");
-	*/
+       	
 
       }
     }
@@ -253,7 +228,13 @@ void BDTXCheckPlotList(std::string label, bool IsHistosPDG, int nbinsX, double x
     
   }
     
+  M.PlotDir=plotdir;
+
   if (IsHistosPDG) M.DrawHistogramsPDG(label);
+  else if (label == "PrimaryPDGDaughterPDG") {
+    std::vector<std::string> binlabels = {"K^{+}", "#mu^{+}", "#pi^{+}", "proton", "shower", "Others"};
+    M.Draw2DHistograms(label, 1, 1, binlabels);
+  }
   else M.Draw2DHistograms(label);
 
   /*

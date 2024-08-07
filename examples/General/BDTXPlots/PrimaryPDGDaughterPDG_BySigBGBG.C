@@ -1,0 +1,121 @@
+void PrimaryPDGDaughterPDG_BySigBGBG()
+{
+//=========Macro generated from canvas: c/c
+//=========  (Mon Aug  5 12:21:08 2024) by ROOT version 6.16/00
+   TCanvas *c = new TCanvas("c", "c",1,1,800,576);
+   c->Range(-0.7500001,-0.7500001,6.75,6.75);
+   c->SetFillColor(0);
+   c->SetBorderMode(0);
+   c->SetBorderSize(2);
+   c->SetFrameBorderMode(0);
+   c->SetFrameBorderMode(0);
+   
+   TH2D *h_BG = new TH2D("h_BG","",6,0,6,6,0,6);
+   h_BG->SetBinContent(9,502);
+   h_BG->SetBinContent(10,23);
+   h_BG->SetBinContent(11,8);
+   h_BG->SetBinContent(12,113);
+   h_BG->SetBinContent(13,25);
+   h_BG->SetBinContent(14,141);
+   h_BG->SetBinContent(18,87);
+   h_BG->SetBinContent(19,19);
+   h_BG->SetBinContent(20,342);
+   h_BG->SetBinContent(21,39);
+   h_BG->SetBinContent(22,138);
+   h_BG->SetBinContent(26,8);
+   h_BG->SetBinContent(27,717);
+   h_BG->SetBinContent(28,322);
+   h_BG->SetBinContent(29,54);
+   h_BG->SetBinContent(30,155);
+   h_BG->SetBinContent(33,683);
+   h_BG->SetBinContent(34,45);
+   h_BG->SetBinContent(35,491);
+   h_BG->SetBinContent(36,3378);
+   h_BG->SetBinContent(37,107);
+   h_BG->SetBinContent(38,942);
+   h_BG->SetBinContent(41,450);
+   h_BG->SetBinContent(42,171);
+   h_BG->SetBinContent(43,448);
+   h_BG->SetBinContent(44,391);
+   h_BG->SetBinContent(45,260);
+   h_BG->SetBinContent(46,242);
+   h_BG->SetBinContent(49,247);
+   h_BG->SetBinContent(50,42);
+   h_BG->SetBinContent(51,85);
+   h_BG->SetBinContent(52,263);
+   h_BG->SetBinContent(53,57);
+   h_BG->SetBinContent(54,1020);
+   h_BG->SetEntries(12015);
+   h_BG->SetStats(0);
+   h_BG->SetContour(20);
+   h_BG->SetContourLevel(0,0);
+   h_BG->SetContourLevel(1,168.9);
+   h_BG->SetContourLevel(2,337.8);
+   h_BG->SetContourLevel(3,506.7);
+   h_BG->SetContourLevel(4,675.6);
+   h_BG->SetContourLevel(5,844.5);
+   h_BG->SetContourLevel(6,1013.4);
+   h_BG->SetContourLevel(7,1182.3);
+   h_BG->SetContourLevel(8,1351.2);
+   h_BG->SetContourLevel(9,1520.1);
+   h_BG->SetContourLevel(10,1689);
+   h_BG->SetContourLevel(11,1857.9);
+   h_BG->SetContourLevel(12,2026.8);
+   h_BG->SetContourLevel(13,2195.7);
+   h_BG->SetContourLevel(14,2364.6);
+   h_BG->SetContourLevel(15,2533.5);
+   h_BG->SetContourLevel(16,2702.4);
+   h_BG->SetContourLevel(17,2871.3);
+   h_BG->SetContourLevel(18,3040.2);
+   h_BG->SetContourLevel(19,3209.1);
+   
+   TPaletteAxis *palette = new TPaletteAxis(6.0375,0,6.375,6,h_BG);
+   palette->SetLabelColor(1);
+   palette->SetLabelFont(42);
+   palette->SetLabelOffset(0.005);
+   palette->SetLabelSize(0.035);
+   palette->SetTitleOffset(1);
+   palette->SetTitleSize(0.035);
+
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
+   ci = TColor::GetColor("#f9f90e");
+   palette->SetFillColor(ci);
+   palette->SetFillStyle(1001);
+   h_BG->GetListOfFunctions()->Add(palette,"br");
+
+   ci = TColor::GetColor("#000099");
+   h_BG->SetLineColor(ci);
+   h_BG->GetXaxis()->SetTitle("Primary Track PDG");
+   h_BG->GetXaxis()->SetBinLabel(1,"K^{+}");
+   h_BG->GetXaxis()->SetBinLabel(2,"#mu^{+}");
+   h_BG->GetXaxis()->SetBinLabel(3,"#pi^{+}");
+   h_BG->GetXaxis()->SetBinLabel(4,"proton");
+   h_BG->GetXaxis()->SetBinLabel(5,"shower");
+   h_BG->GetXaxis()->SetBinLabel(6,"Others");
+   h_BG->GetXaxis()->SetLabelFont(42);
+   h_BG->GetXaxis()->SetLabelSize(0.035);
+   h_BG->GetXaxis()->SetTitleSize(0.035);
+   h_BG->GetXaxis()->SetTitleOffset(1);
+   h_BG->GetXaxis()->SetTitleFont(42);
+   h_BG->GetYaxis()->SetTitle("Daughter PDG");
+   h_BG->GetYaxis()->SetBinLabel(1,"K^{+}");
+   h_BG->GetYaxis()->SetBinLabel(2,"#mu^{+}");
+   h_BG->GetYaxis()->SetBinLabel(3,"#pi^{+}");
+   h_BG->GetYaxis()->SetBinLabel(4,"proton");
+   h_BG->GetYaxis()->SetBinLabel(5,"shower");
+   h_BG->GetYaxis()->SetBinLabel(6,"Others");
+   h_BG->GetYaxis()->SetLabelFont(42);
+   h_BG->GetYaxis()->SetLabelSize(0.035);
+   h_BG->GetYaxis()->SetTitleSize(0.035);
+   h_BG->GetYaxis()->SetTitleFont(42);
+   h_BG->GetZaxis()->SetLabelFont(42);
+   h_BG->GetZaxis()->SetLabelSize(0.035);
+   h_BG->GetZaxis()->SetTitleSize(0.035);
+   h_BG->GetZaxis()->SetTitleOffset(1);
+   h_BG->GetZaxis()->SetTitleFont(42);
+   h_BG->Draw("COLZ");
+   c->Modified();
+   c->cd();
+   c->SetSelected(c);
+}

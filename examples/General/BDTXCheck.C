@@ -29,6 +29,7 @@ void BDTXCheck(){
 
   BuildTunes();
   SelectionParameters P = P_FHC_K_NOBDT_TEST;
+  //ImportSamples(sFHCRun1BDTTest); 
   
   SampleNames.push_back("AssocKaon"); 
   SampleTypes.push_back("AssocKaon"); 
@@ -43,6 +44,7 @@ void BDTXCheck(){
   SelectionManager M(P);
   M.SetPOT(POT);
 
+  //update the nbin regarding your selection criteria
   TEfficiency* Eff = new TEfficiency("Eff","",2,-0.5,1.5);
   TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",2,-0.5,1.5); 
 
@@ -61,8 +63,9 @@ void BDTXCheck(){
   for(size_t i_s=0;i_s<SampleNames.size();i_s++){
     
     E.SetFile(SampleFiles.at(i_s), "KAON");
-    if( SampleTypes.at(i_s) == "AssocKaon") M.AddSample("AssocKaon","AssocKaon",POT);
-    //if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
+    if( SampleTypes.at(i_s) == "AssocKaon") M.AddSample("AssocKaon","AssocKaon",E.GetPOT);
+    else if(SampleTypes.at(i_s) == "SingleKaonSig" || SampleTypes.at(i_s) == "SingleKaonBG") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT()/10);
+    else if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
     else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
     else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
     
@@ -98,8 +101,7 @@ void BDTXCheck(){
 
 	//RecoParticle PrimaryKaonTrack = M.GetPrimaryKaonTrackParticle();
 	//RecoParticle DaughterTrack = M.GetDaughterTrackParticle();
-
-      //if(DaughterTrack.TrackLength<=0 || PrimaryKaonTrack.TrackLength<=0) continue;
+	//if(DaughterTrack.TrackLength<=0 || PrimaryKaonTrack.TrackLength<=0) continue;
 
 	double PrimaryTrackLength = PrimaryKaonTrack.TrackLength;
 	double PrimaryTrackLLRPID = PrimaryKaonTrack.Track_LLR_PID;
@@ -131,8 +133,8 @@ void BDTXCheck(){
 	
 	//if(PrimaryTrackChi2KaonPlane2>0 && PrimaryTrackChi2KaonPlane2<3) std::cout << PrimaryKaonTrack.TrackTruePDG << " " << PrimaryTrackChi2KaonPlane2 << std::endl;
 	//if(PrimaryKaonTrack.TrackTruePDG == 321) std::cout << PrimaryTrackChi2KaonPlane2 << std::endl;
-	//M.FillHistogramsPDG(e,PrimaryMeandEdX3Plane,PrimaryKaonTrack,DaughterTrack);
 
+	//M.FillHistogramsPDG(e,PrimaryMeandEdX3Plane,PrimaryKaonTrack,DaughterTrack);
 	//M.FillHistogramsPDG(e,PrimaryTrackChi2KaonPlane2,PrimaryKaonTrack,DaughterTrack);
 	M.FillHistogramsPDG(e,PrimaryTrackLLRPID,PrimaryKaonTrack,DaughterTrack);
 	//M.Fill2DHistograms(e,PrimaryTrackChi2Proton3Plane,PrimaryTrackChi2Kaon3Plane,PrimaryKaonTrack,DaughterTrack);
@@ -141,18 +143,22 @@ void BDTXCheck(){
 	//M.Fill2DHistograms(e,DaughterTrackChi2ProtonPlane2,DaughterTrackChi2MuonPlane2,PrimaryKaonTrack,DaughterTrack,1);
 		
 	//calculation for efficiency and purity
-	//bool passed=false;
-	//condition for passed
-	
-	
-	bool passed_PrimaryMeandEdX = false;
-	
-	if(PrimaryMeandEdX3Plane<15) passed_PrimaryMeandEdX = true;
+		
+	/* define your selection here */
+
+	bool passed_PrimaryChiK, passed_PrimaryChiProton, passed_DaughterChiProton, passed_DaughterTrkln, passed_PrimaryLLRPIDKP;
+	//bool passed_PrimaryMeandEdX = false;	
+	//if(PrimaryMeandEdX3Plane<15) passed_PrimaryMeandEdX = true;
+
+	passed_PrimaryChiK = PrimaryTrackChi2Kaon3Plane < 15.;
+	if(passed_PrimaryChiK) passed_PrimaryChiProton = PrimaryTrackChi2Proton3Plane > 7.;
+	if(passed_PrimaryChiProton) passed_DaughterChiProton = DaughterTrackChi2Proton3Plane > 40;
+	if(passed_DaughterChiProton) passed_DaughterTrkln = DaughterTrackLength > 25;
 	
 	if(e.EventIsSignal) Eff->FillWeighted(true,e.Weight,0);
 	else Background_Acceptance->FillWeighted(true,e.Weight,0);  
-	if(e.EventIsSignal) Eff->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
-	else Background_Acceptance->FillWeighted(passed_PrimaryMeandEdX,e.Weight,1);
+	if(e.EventIsSignal) Eff->FillWeighted(passed_DaughterTrkln,e.Weight,1);
+	else Background_Acceptance->FillWeighted(passed_DaughterTrkln,e.Weight,1);
 
 	/*
 	int xbin = PDGToBin(PrimaryKaonTrackPDG) - 1;
