@@ -129,10 +129,11 @@ std::string GetProc(const Event &e){
    
  }
 
- std::string GetSigBG(const RecoParticle &p_track, const RecoParticle &p_daughter){
+ std::string GetSigBG(const Event &e,const RecoParticle &p_track, const RecoParticle &p_daughter){
 
    if(p_track.TrackTruePDG == 321 && (p_daughter.TrackTruePDG == -13 || p_daughter.TrackTruePDG == 211) ) return "Signal";
-   //if(p_track.TrackTruePDG == 321) return "Signal";
+   //if(p_track.TrackTruePDG == 321 && (p_daughter.TrackTruePDG == 211 || p_daughter.TrackTruePDG == 211) ) return "Signal";
+   //if(e.EventIsSignal && p_track.TrackTruePDG == 321 && (p_daughter.TrackTruePDG == -13 || p_daughter.TrackTruePDG == 211) ) return "Signal";
    return "BG";
    
  }

@@ -36,7 +36,7 @@ class EventAssembler {
    public:
 
       EventAssembler();
-      EventAssembler(bool loadweights);
+      EventAssembler(bool loadweights, bool hasnewbranches);
 
       // Setters and getters
       void SetFile(string infilename,string sampletype);
@@ -50,6 +50,7 @@ class EventAssembler {
 
       std::string SampleType;
       const bool LoadWeights;
+      const bool HasNewBranches;
 
       // General Info
       Bool_t          IsData;
@@ -80,6 +81,9 @@ class EventAssembler {
       vector<bool>* IsSignal=0;
       vector<bool>* IsSignal_NuMuP=0;
       vector<bool>* IsSignal_PiPPi0=0;
+      vector<bool>* IsSignal_CC=0;
+      vector<bool>* IsSignal_NuMuP_CC=0;
+      vector<bool>* IsSignal_PiPPi0_CC=0;
 
       Bool_t GoodReco;
       Bool_t GoodReco_NuMuP;
@@ -111,6 +115,10 @@ class EventAssembler {
       std::vector<SimParticle>* KaonPDecay=0;
       std::vector<SimParticle>* KaonPDecay_NuMuP=0;
       std::vector<SimParticle>* KaonPDecay_PiPPi0=0;
+      std::vector<SimParticle>* KaonPInelasticDecay=0;
+      std::vector<SimParticle>* KaonPInelasticDecay_NuMuP=0;
+      std::vector<SimParticle>* KaonPInelasticDecay_PiPPi0=0;
+      std::vector<SimParticle>* InelasticKaonP=0;      
       std::vector<SimParticle>* KaonMDecay=0;
       std::vector<SimParticle>* Kaon0Decay=0;
       std::vector<SimParticle>* NeutralKaonDecayK0SL=0;
@@ -143,6 +151,11 @@ class EventAssembler {
       vector<string>* SysDials=0;
       //vector<vector<double>>* SysWeights=0;
       vector<vector<vector<double>>>* SysWeights=0;
+
+      float PPFX_CV;
+      std::map<std::string, std::vector<double>>* Weights;
+      std::vector<unsigned short>* WeightsPPFX;
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

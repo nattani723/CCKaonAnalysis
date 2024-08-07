@@ -57,6 +57,9 @@ struct Event {
   vector<bool> IsSignal;
   vector<bool> IsSignal_NuMuP;
   vector<bool> IsSignal_PiPPi0;
+  vector<bool> IsSignal_CC;
+  vector<bool> IsSignal_NuMuP_CC;
+  vector<bool> IsSignal_PiPPi0_CC;
   Bool_t GoodReco;
   Bool_t GoodReco_NuMuP;
   Bool_t GoodReco_PiPPi0;
@@ -79,6 +82,10 @@ struct Event {
   std::vector<SimParticle> KaonPDecay;
   std::vector<SimParticle> KaonPDecay_NuMuP;
   std::vector<SimParticle> KaonPDecay_PiPPi0;
+  std::vector<SimParticle> KaonPInelasticDecay;
+  std::vector<SimParticle> KaonPInelasticDecay_NuMuP;
+  std::vector<SimParticle> KaonPInelasticDecay_PiPPi0;
+  std::vector<SimParticle> InelasticKaonP;
   std::vector<SimParticle> KaonMDecay;
   std::vector<SimParticle> Kaon0Decay;
   std::vector<SimParticle> NeutralKaonDecayK0SL;
@@ -121,6 +128,9 @@ struct Event {
   vector<string> SysDials;
   //vector<vector<double>> SysWeights;
   vector<vector<vector<double>>> SysWeights;
+  float PPFX_CV;
+  std::map<std::string, std::vector<double>> Weights;
+  std::vector<unsigned short> WeightsPPFX;
   
   void Print(){ std::cout << run << "  " << subrun << "  " << event << std::endl; }
   

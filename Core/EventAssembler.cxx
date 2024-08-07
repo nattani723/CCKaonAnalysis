@@ -4,13 +4,15 @@
 #include "EventAssembler.h"
 
 EventAssembler::EventAssembler() :
-LoadWeights(false)
+  LoadWeights(false),
+  HasNewBranches(false)
 {
 
 }
 
-EventAssembler::EventAssembler(bool loadweights) :
-LoadWeights(loadweights)
+EventAssembler::EventAssembler(bool loadweights, bool hasnewbranches) :
+  LoadWeights(loadweights),
+  HasNewBranches(hasnewbranches)
 {
 
 }
@@ -52,11 +54,10 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("KaonPDecay_PiPPi0",1);
    t_in->SetBranchStatus("KaonMDecay",1);
    t_in->SetBranchStatus("Kaon0Decay",1);
-   t_in->SetBranchStatus("KaonPDecay",1);
    t_in->SetBranchStatus("NeutralKaonDecayK0SL",1);
 
-   //t_in->SetBranchStatus("TracklikePrimaryDaughters",1);
-   //t_in->SetBranchStatus("ShowerlikePrimaryDaughters",1);
+   t_in->SetBranchStatus("TracklikePrimaryDaughters",1);
+   t_in->SetBranchStatus("ShowerlikePrimaryDaughters",1);
    t_in->SetBranchStatus("TrackOthers",1);
    t_in->SetBranchStatus("TrackRebuiltOthers",1);
    t_in->SetBranchStatus("ShowerOthers",1);
@@ -121,10 +122,22 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("NOtherRebuiltTracks",1);
    t_in->SetBranchStatus("NOtherShowers",1);
 
+   if(HasNewBranches){
+     t_in->SetBranchStatus("KaonPInelasticDecay",1);
+     t_in->SetBranchStatus("KaonPInelasticDecay_NuMuP",1);
+     t_in->SetBranchStatus("KaonPInelasticDecay_PiPPi0",1);
+     t_in->SetBranchStatus("InelasticKaonP",1);
+     t_in->SetBranchStatus("IsSignal_CC",1);
+     t_in->SetBranchStatus("IsSignal_NuMuP_CC",1);
+     t_in->SetBranchStatus("IsSignal_PiPPi0_CC",1);     
+   }
 
    if(LoadWeights){
-   t_in->SetBranchStatus("SysDials",1);
-   t_in->SetBranchStatus("SysWeights",1);
+     t_in->SetBranchStatus("SysDials",1);
+     t_in->SetBranchStatus("SysWeights",1);
+     t_in->SetBranchStatus("PPFX_CV",1); 
+     t_in->SetBranchStatus("Weights",1); 
+     t_in->SetBranchStatus("WeightsPPFX",1); 
    }
 
    t_in->SetBranchAddress("IsData", &IsData);
@@ -212,9 +225,22 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("ShowerOthers",&ShowerOthers);
    t_in->SetBranchAddress("CCMuTrack",&CCMuTrack);
 
+   if(HasNewBranches){
+     t_in->SetBranchAddress("KaonPInelasticDecay",&KaonPInelasticDecay);
+     t_in->SetBranchAddress("KaonPInelasticDecay_NuMuP",&KaonPInelasticDecay_NuMuP);
+     t_in->SetBranchAddress("KaonPInelasticDecay_PiPPi0",&KaonPInelasticDecay_PiPPi0);
+     t_in->SetBranchAddress("InelasticKaonP",&InelasticKaonP);
+     t_in->SetBranchAddress("IsSignal_CC", &IsSignal_CC);
+     t_in->SetBranchAddress("IsSignal_NuMuP_CC", &IsSignal_NuMuP_CC);
+     t_in->SetBranchAddress("IsSignal_PiPPi0_CC", &IsSignal_PiPPi0_CC);
+   }
+   
    if(LoadWeights){
-   t_in->SetBranchAddress("SysDials", &SysDials);
-   t_in->SetBranchAddress("SysWeights", &SysWeights);
+     t_in->SetBranchAddress("SysDials", &SysDials);
+     t_in->SetBranchAddress("SysWeights", &SysWeights);
+     t_in->SetBranchAddress("PPFX_CV", &PPFX_CV);
+     t_in->SetBranchAddress("Weights", &Weights);
+     t_in->SetBranchAddress("WeightsPPFX", &WeightsPPFX);
    }
    // Get the metadata tree
 
@@ -362,9 +388,22 @@ Event EventAssembler::GetEvent(int i){
    e.ShowerOthers = *ShowerOthers;
    e.CCMuTrack = *CCMuTrack;
 
+   if(HasNewBranches){
+     e.KaonPInelasticDecay = *KaonPInelasticDecay;
+     e.KaonPInelasticDecay_NuMuP = *KaonPInelasticDecay_NuMuP;
+     e.KaonPInelasticDecay_PiPPi0 = *KaonPInelasticDecay_PiPPi0;
+     e.InelasticKaonP = *InelasticKaonP;
+     e.IsSignal_CC = *IsSignal_CC;
+     e.IsSignal_NuMuP_CC = *IsSignal_NuMuP_CC;
+     e.IsSignal_PiPPi0_CC = *IsSignal_PiPPi0_CC;
+   }
+
    if(LoadWeights){
-   e.SysDials = *SysDials;
-   e.SysWeights = *SysWeights;
+     e.SysDials = *SysDials;
+     e.SysWeights = *SysWeights;
+     e.PPFX_CV = PPFX_CV;
+     e.Weights = *Weights;
+     e.WeightsPPFX = *WeightsPPFX;
    }
 
    return e;
