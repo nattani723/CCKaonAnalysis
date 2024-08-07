@@ -1,7 +1,7 @@
 
 // Put pre-defined sample sets in here.
 
-enum settings { sNuWroFullFHCvsData , sNuWroFullFHC , sBDTTest};
+enum settings { sNuWroFullFHCvsData , sNuWroFullFHC , sBDTTest, sFHCRun1BDTTest, sFHCRun1BDTTest2};
 
 std::vector<std::string> SampleNames,SampleTypes,SampleFiles,EventLists;
 
@@ -22,11 +22,48 @@ std::vector<std::vector<std::pair<int,int>>> CommonRSLists;
 
 void ImportSamples(int Setting){
 
+  if(Setting == sFHCRun1BDTTest){
+    
+    SampleNames = { "Associated K NoCosmic", "Signle K NoCosmic", "Associated K Background", "Signle K Background", "FHC Run1 NuMI Overlay"};
+    SampleTypes = { "AssocKaonSig", "SingleKaonSig", "AssocKaonBG" , "SingleKaonBG", "GenericNuMI"};
+    //SampleNames = { "Associated K NoCosmic", "Signle K NoCosmic", "Associated K Background", "Signle K Background"};
+    //SampleTypes = { "AssocKaonSig", "SingleKaonSig", "AssocKaonBG" , "SingleKaonBG"};
+    SampleFiles = { 
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/assocK_events_numi_run1_fhc_signal_nocosmic_resample_reco2_ReRunReco_ntuple_all.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/singleK_events_numi_run1_fhc_signal_nocosmic_reco2_ReRunReco_ntuple.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/assocK_events_numi_run1_fhc_bg_nocosmic_resample_reco2_ReRunReco_ntuple_all.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/singleK_events_numi_run1_fhc_bg_nocosmic_reco2_ReRunReco_ntuple.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/numi_fhc_run1_sample012_refined_KrecoAlg_parameter10_ReRunReco_reco_ntuple.root" 
+};
+
+  }
+
+  if(Setting == sFHCRun1BDTTest2){
+    
+    SampleNames = { "Associated K NoCosmic", "Signle K NoCosmic", "Associated K Background", "Associated K Background", "Signle K Background", "FHC Run1 NuMI Overlay"};
+    SampleTypes = { "AssocKaonSig", "SingleKaonSig", "AssocKaonBG", "AssocKaonBG", "SingleKaonBG", "GenericNuMI"};
+    SampleFiles = { 
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/assocK_events_numi_run1_fhc_signal_nocosmic_resample_reco2_ReRunReco_ntuple_all.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/singleK_events_numi_run1_fhc_signal_nocosmic_reco2_ReRunReco_ntuple.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/assocK_events_numi_run1_fhc_bg_nocosmic_resample_reco2_ReRunReco_ntuple_all.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/assocK_events_numi_run1_fhc_bg_ProtonScatter_nocosmic_resample_reco2_ReRunReco_ntuple.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/singleK_events_numi_run1_fhc_bg_nocosmic_reco2_ReRunReco_ntuple.root",
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/numi_fhc_run1_sample012_refined_KrecoAlg_parameter10_ReRunReco_reco_ntuple.root" 
+};
+
+  }
+
   if(Setting == sBDTTest){
     
-    SampleNames = { "Associated K Overlay" };
-    SampleTypes = { "AssocKaon" };
-    SampleFiles = { "/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter10_ntuple.root" };
+    SampleNames = { "Associated K Overlay"};
+    SampleTypes = { "AssocKaon"};
+    SampleFiles = { 
+      "/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/assocK_events_numi_run1_fhc_signal_nocosmic_resample_reco2_ReRunReco_ntuple_all.root"
+      //"/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/singleK_events_numi_run1_fhc_signal_nocosmic_reco2_ReRunReco_ntuple.root",
+      //"/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/singleK_events_numi_run1_fhc_bg_nocosmic_reco2_ReRunReco_ntuple.root",
+      //"/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/assocK_events_numi_run1_fhc_signal_nocosmic_resample_reco2_ReRunReco_pt2_ntuple.root"
+      //"/exp/uboone/data/users/taniuchi/taniuchi/pandora_alg/ana/assok_refined_KrecoAlg_parameter10_ntuple.root" 
+};
 
   }
 
