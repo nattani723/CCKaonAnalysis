@@ -337,6 +337,7 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
    c->Update();
 
    Float_t rightmax = 1.1;
+   //Float_t rightmax = 0.3;
    //Float_t rightmax = 1.1 * h_Eff->GetMaximum();
    Float_t scale = gPad->GetUymax()/rightmax;
    h_Ratio->Scale(scale);

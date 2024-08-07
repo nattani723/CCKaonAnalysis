@@ -63,6 +63,16 @@ void BDTManager::SetupTrainingTrees(){
    t_Signal->Branch("PrimaryTrack_Chi2_Muon_3Plane",&v_PrimaryTrack_Chi2_Muon_3Plane);
    t_Signal->Branch("PrimaryTrack_Chi2_Pion_3Plane",&v_PrimaryTrack_Chi2_Pion_3Plane);
 
+   t_Signal->Branch("PrimaryTrack_Chi2_Kaon_Plane0",&v_PrimaryTrack_Chi2_Kaon_Plane0);
+   t_Signal->Branch("PrimaryTrack_Chi2_Proton_Plane0",&v_PrimaryTrack_Chi2_Proton_Plane0);
+   t_Signal->Branch("PrimaryTrack_Chi2_Muon_Plane0",&v_PrimaryTrack_Chi2_Muon_Plane0);
+   t_Signal->Branch("PrimaryTrack_Chi2_Pion_Plane0",&v_PrimaryTrack_Chi2_Pion_Plane0);
+
+   t_Signal->Branch("PrimaryTrack_Chi2_Kaon_Plane1",&v_PrimaryTrack_Chi2_Kaon_Plane1);
+   t_Signal->Branch("PrimaryTrack_Chi2_Proton_Plane",&v_PrimaryTrack_Chi2_Proton_Plane1);
+   t_Signal->Branch("PrimaryTrack_Chi2_Muon_Plane1",&v_PrimaryTrack_Chi2_Muon_Plane1);
+   t_Signal->Branch("PrimaryTrack_Chi2_Pion_Plane1",&v_PrimaryTrack_Chi2_Pion_Plane1);
+
    t_Signal->Branch("PrimaryTrack_Chi2_Kaon_Plane2",&v_PrimaryTrack_Chi2_Kaon_Plane2);
    t_Signal->Branch("PrimaryTrack_Chi2_Proton_Plane2",&v_PrimaryTrack_Chi2_Proton_Plane2);
    t_Signal->Branch("PrimaryTrack_Chi2_Muon_Plane2",&v_PrimaryTrack_Chi2_Muon_Plane2);
@@ -72,6 +82,16 @@ void BDTManager::SetupTrainingTrees(){
    t_Signal->Branch("DaughterTrack_Chi2_Proton_3Plane",&v_DaughterTrack_Chi2_Proton_3Plane);
    t_Signal->Branch("DaughterTrack_Chi2_Muon_3Plane",&v_DaughterTrack_Chi2_Muon_3Plane);
    t_Signal->Branch("DaughterTrack_Chi2_Pion_3Plane",&v_DaughterTrack_Chi2_Pion_3Plane);
+
+   t_Signal->Branch("DaughterTrack_Chi2_Kaon_Plane0",&v_DaughterTrack_Chi2_Kaon_Plane0);
+   t_Signal->Branch("DaughterTrack_Chi2_Proton_Plane0",&v_DaughterTrack_Chi2_Proton_Plane0);
+   t_Signal->Branch("DaughterTrack_Chi2_Muon_Plane0",&v_DaughterTrack_Chi2_Muon_Plane0);
+   t_Signal->Branch("DaughterTrack_Chi2_Pion_Plane0",&v_DaughterTrack_Chi2_Pion_Plane0);
+
+   t_Signal->Branch("DaughterTrack_Chi2_Kaon_Plane1",&v_DaughterTrack_Chi2_Kaon_Plane1);
+   t_Signal->Branch("DaughterTrack_Chi2_Proton_Plane1",&v_DaughterTrack_Chi2_Proton_Plane1);
+   t_Signal->Branch("DaughterTrack_Chi2_Muon_Plane1",&v_DaughterTrack_Chi2_Muon_Plane1);
+   t_Signal->Branch("DaughterTrack_Chi2_Pion_Plane1",&v_DaughterTrack_Chi2_Pion_Plane1);
 
    t_Signal->Branch("DaughterTrack_Chi2_Kaon_Plane2",&v_DaughterTrack_Chi2_Kaon_Plane2);
    t_Signal->Branch("DaughterTrack_Chi2_Proton_Plane2",&v_DaughterTrack_Chi2_Proton_Plane2);
@@ -93,6 +113,16 @@ void BDTManager::SetupTrainingTrees(){
    t_Background->Branch("PrimaryTrack_Chi2_Muon_3Plane",&v_PrimaryTrack_Chi2_Muon_3Plane);
    t_Background->Branch("PrimaryTrack_Chi2_Pion_3Plane",&v_PrimaryTrack_Chi2_Pion_3Plane);
 
+   t_Background->Branch("PrimaryTrack_Chi2_Kaon_Plane0",&v_PrimaryTrack_Chi2_Kaon_Plane0);
+   t_Background->Branch("PrimaryTrack_Chi2_Proton_Plane0",&v_PrimaryTrack_Chi2_Proton_Plane0);
+   t_Background->Branch("PrimaryTrack_Chi2_Muon_Plane0",&v_PrimaryTrack_Chi2_Muon_Plane0);
+   t_Background->Branch("PrimaryTrack_Chi2_Pion_Plane0",&v_PrimaryTrack_Chi2_Pion_Plane0);
+
+   t_Background->Branch("PrimaryTrack_Chi2_Kaon_Plane1",&v_PrimaryTrack_Chi2_Kaon_Plane1);
+   t_Background->Branch("PrimaryTrack_Chi2_Proton_Plane1",&v_PrimaryTrack_Chi2_Proton_Plane1);
+   t_Background->Branch("PrimaryTrack_Chi2_Muon_Plane1",&v_PrimaryTrack_Chi2_Muon_Plane1);
+   t_Background->Branch("PrimaryTrack_Chi2_Pion_Plane1",&v_PrimaryTrack_Chi2_Pion_Plane1);
+
    t_Background->Branch("PrimaryTrack_Chi2_Kaon_Plane2",&v_PrimaryTrack_Chi2_Kaon_Plane2);
    t_Background->Branch("PrimaryTrack_Chi2_Proton_Plane2",&v_PrimaryTrack_Chi2_Proton_Plane2);
    t_Background->Branch("PrimaryTrack_Chi2_Muon_Plane2",&v_PrimaryTrack_Chi2_Muon_Plane2);
@@ -102,6 +132,16 @@ void BDTManager::SetupTrainingTrees(){
    t_Background->Branch("DaughterTrack_Chi2_Proton_3Plane",&v_DaughterTrack_Chi2_Proton_3Plane);
    t_Background->Branch("DaughterTrack_Chi2_Muon_3Plane",&v_DaughterTrack_Chi2_Muon_3Plane);
    t_Background->Branch("DaughterTrack_Chi2_Pion_3Plane",&v_DaughterTrack_Chi2_Pion_3Plane);
+
+   t_Background->Branch("DaughterTrack_Chi2_Kaon_Plane0",&v_DaughterTrack_Chi2_Kaon_Plane0);
+   t_Background->Branch("DaughterTrack_Chi2_Proton_Plane0",&v_DaughterTrack_Chi2_Proton_Plane0);
+   t_Background->Branch("DaughterTrack_Chi2_Muon_Plane0",&v_DaughterTrack_Chi2_Muon_Plane0);
+   t_Background->Branch("DaughterTrack_Chi2_Pion_Plane0",&v_DaughterTrack_Chi2_Pion_Plane0);
+
+   t_Background->Branch("DaughterTrack_Chi2_Kaon_Plane1",&v_DaughterTrack_Chi2_Kaon_Plane1);
+   t_Background->Branch("DaughterTrack_Chi2_Proton_Plane1",&v_DaughterTrack_Chi2_Proton_Plane1);
+   t_Background->Branch("DaughterTrack_Chi2_Muon_Plane1",&v_DaughterTrack_Chi2_Muon_Plane1);
+   t_Background->Branch("DaughterTrack_Chi2_Pion_Plane1",&v_DaughterTrack_Chi2_Pion_Plane1);
 
    t_Background->Branch("DaughterTrack_Chi2_Kaon_Plane2",&v_DaughterTrack_Chi2_Kaon_Plane2);
    t_Background->Branch("DaughterTrack_Chi2_Proton_Plane2",&v_DaughterTrack_Chi2_Proton_Plane2);
@@ -128,13 +168,15 @@ void BDTManager::FillTree(const Event &e, const RecoParticle &PrimaryKaonTrackPa
    assert(fMode == "Train");
 
    // Only train this alg on events with real reconstructed decays
-   if(!e.GoodReco) return;
+   //std::cout << "e.GoodReco: " << e.GoodReco << std::endl;
+   //if(!e.GoodReco) return;
 
    if( t_Signal == nullptr || t_Background == nullptr ){ std::cout << "Trees not setup, exiting" << std::endl; return; }
 
    if(!SetVariables(PrimaryKaonTrackParticle, DaughterTrackParticle)) return;
 
-   if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) t_Signal->Fill();
+   if(PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) t_Signal->Fill();
+   //if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) t_Signal->Fill();
    //if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
    //t_Signal->Fill();
    else t_Background->Fill();
@@ -159,15 +201,35 @@ bool BDTManager::SetVariables(const RecoParticle &PrimaryKaonTrackParticle, cons
    v_PrimaryTrack_Chi2_Muon_3Plane = PrimaryKaonTrackParticle.Track_Chi2_Muon_3Plane;
    v_PrimaryTrack_Chi2_Pion_3Plane = PrimaryKaonTrackParticle.Track_Chi2_Pion_3Plane;
 
+   v_PrimaryTrack_Chi2_Kaon_Plane0 = PrimaryKaonTrackParticle.Track_Chi2_Kaon_Plane0;
+   v_PrimaryTrack_Chi2_Proton_Plane0 = PrimaryKaonTrackParticle.Track_Chi2_Proton_Plane0;
+   v_PrimaryTrack_Chi2_Muon_Plane0 = PrimaryKaonTrackParticle.Track_Chi2_Muon_Plane0;
+   v_PrimaryTrack_Chi2_Pion_Plane0 = PrimaryKaonTrackParticle.Track_Chi2_Pion_Plane0;
+
+   v_PrimaryTrack_Chi2_Kaon_Plane1 = PrimaryKaonTrackParticle.Track_Chi2_Kaon_Plane1;
+   v_PrimaryTrack_Chi2_Proton_Plane1 = PrimaryKaonTrackParticle.Track_Chi2_Proton_Plane1;
+   v_PrimaryTrack_Chi2_Muon_Plane1 = PrimaryKaonTrackParticle.Track_Chi2_Muon_Plane1;
+   v_PrimaryTrack_Chi2_Pion_Plane1 = PrimaryKaonTrackParticle.Track_Chi2_Pion_Plane1;
+
    v_PrimaryTrack_Chi2_Kaon_Plane2 = PrimaryKaonTrackParticle.Track_Chi2_Kaon_Plane2;
    v_PrimaryTrack_Chi2_Proton_Plane2 = PrimaryKaonTrackParticle.Track_Chi2_Proton_Plane2;
    v_PrimaryTrack_Chi2_Muon_Plane2 = PrimaryKaonTrackParticle.Track_Chi2_Muon_Plane2;
    v_PrimaryTrack_Chi2_Pion_Plane2 = PrimaryKaonTrackParticle.Track_Chi2_Pion_Plane2;
 
+   v_DaughterTrack_Chi2_Kaon_Plane0 = DaughterTrackParticle.Track_Chi2_Kaon_Plane0;
+   v_DaughterTrack_Chi2_Proton_Plane0 = DaughterTrackParticle.Track_Chi2_Proton_Plane0;
+   v_DaughterTrack_Chi2_Muon_Plane0 = DaughterTrackParticle.Track_Chi2_Muon_Plane0;
+   v_DaughterTrack_Chi2_Pion_Plane0 = DaughterTrackParticle.Track_Chi2_Pion_Plane0;
+
    v_DaughterTrack_Chi2_Kaon_3Plane = DaughterTrackParticle.Track_Chi2_Kaon_3Plane;
    v_DaughterTrack_Chi2_Proton_3Plane = DaughterTrackParticle.Track_Chi2_Proton_3Plane;
    v_DaughterTrack_Chi2_Muon_3Plane = DaughterTrackParticle.Track_Chi2_Muon_3Plane;
    v_DaughterTrack_Chi2_Pion_3Plane = DaughterTrackParticle.Track_Chi2_Pion_3Plane;
+
+   v_DaughterTrack_Chi2_Kaon_Plane1 = DaughterTrackParticle.Track_Chi2_Kaon_Plane1;
+   v_DaughterTrack_Chi2_Proton_Plane1 = DaughterTrackParticle.Track_Chi2_Proton_Plane1;
+   v_DaughterTrack_Chi2_Muon_Plane1 = DaughterTrackParticle.Track_Chi2_Muon_Plane1;
+   v_DaughterTrack_Chi2_Pion_Plane1 = DaughterTrackParticle.Track_Chi2_Pion_Plane1;
 
    v_DaughterTrack_Chi2_Kaon_Plane2 = DaughterTrackParticle.Track_Chi2_Kaon_Plane2;
    v_DaughterTrack_Chi2_Proton_Plane2 = DaughterTrackParticle.Track_Chi2_Proton_Plane2;
@@ -191,13 +253,13 @@ bool BDTManager::SetVariables(const RecoParticle &PrimaryKaonTrackParticle, cons
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void BDTManager::SetupBDT(std::string WeightsDir,std::string alg){
-
    assert(fMode == "Test");
 
    if(WeightsDir == ""){ 
       std::cout << "No weights directory given, assuming default location" << std::endl;
       //fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/MVA/v1/dataset/weights";
-      fWeightsDir = "/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/examples/TMVA/dataset/weights/";
+      //fWeightsDir = "/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/examples/TMVA/dataset/weights/";
+      fWeightsDir = "/exp/uboone/app/users/taniuchi/51_pandora/CCKaonAnalysis/examples/TMVA/dataset/weights";
    }
    else fWeightsDir = WeightsDir;  
 
@@ -213,11 +275,24 @@ void BDTManager::SetupBDT(std::string WeightsDir,std::string alg){
    reader->AddVariable("DaughterTrack_Chi2_Proton_3Plane",&v_DaughterTrack_Chi2_Proton_3Plane);
    reader->AddVariable("DaughterTrack_Chi2_Muon_3Plane",&v_DaughterTrack_Chi2_Muon_3Plane);
    reader->AddVariable("DaughterTrack_Chi2_Pion_3Plane",&v_DaughterTrack_Chi2_Pion_3Plane);
+
+   reader->AddVariable("PrimaryTrack_Chi2_Kaon_Plane2",&v_PrimaryTrack_Chi2_Kaon_Plane2);
+   reader->AddVariable("PrimaryTrack_Chi2_Proton_Plane2",&v_PrimaryTrack_Chi2_Proton_Plane2);
+   reader->AddVariable("PrimaryTrack_Chi2_Muon_Plane2",&v_PrimaryTrack_Chi2_Muon_Plane2);
+   reader->AddVariable("PrimaryTrack_Chi2_Pion_Plane2",&v_PrimaryTrack_Chi2_Pion_Plane2);
+   reader->AddVariable("DaughterTrack_Chi2_Kaon_Plane2",&v_DaughterTrack_Chi2_Kaon_Plane2);
+   reader->AddVariable("DaughterTrack_Chi2_Proton_Plane2",&v_DaughterTrack_Chi2_Proton_Plane2);
+   reader->AddVariable("DaughterTrack_Chi2_Muon_Plane2",&v_DaughterTrack_Chi2_Muon_Plane2);
+   reader->AddVariable("DaughterTrack_Chi2_Pion_Plane2",&v_DaughterTrack_Chi2_Pion_Plane2);
+
    reader->AddVariable("PrimaryTrack_LLR_PID",&v_PrimaryTrack_LLR_PID);
    reader->AddVariable("PrimaryTrack_LLR_PID_Kaon",&v_PrimaryTrack_LLR_PID_Kaon);
    reader->AddVariable("DaughterTrack_LLR_PID",&v_DaughterTrack_LLR_PID);
    reader->AddVariable("DaughterTrack_LLR_PID_Kaon",&v_DaughterTrack_LLR_PID_Kaon);
-   reader->AddVariable("DaughterTrackLength",&v_DaughterTrackLength);
+   //reader->AddVariable("DaughterTrackLength",&v_DaughterTrackLength);
+
+   reader->AddVariable("PrimaryTrack_dEdX",&v_PrimaryTrack_dEdX);
+   reader->AddVariable("DaughterTrack_dEdX",&v_DaughterTrack_dEdX);
 
    std::map<std::string,int> Use;
    for(size_t i_a=0;i_a<Algs_str.size();i_a++)

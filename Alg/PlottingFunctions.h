@@ -643,12 +643,25 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
 // colors = list of colors for the histograms
 // binlabels = bin labels
 
-void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale){
+ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,vector<string> binlabels){
 
    assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
    for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
 
-   const int nbins = hist_v.at(0)->GetNbinsX();
+   const int nbinsx = hist_v.at(0)->GetNbinsX();
+   const int nbinsy = hist_v.at(0)->GetNbinsY();
+
+   // Set the bin labels
+   if(binlabels.size()){
+      for(int i=1;i<nbinsx+1;i++){
+	for(size_t i_h=0;i_h<hist_v.size();i_h++) 
+	  hist_v.at(i_h)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
+      }
+      for(int i=1;i<nbinsy+1;i++){
+	for(size_t i_h=0;i_h<hist_v.size();i_h++) 
+	  hist_v.at(i_h)->GetYaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
+      }
+   }
 
    // Setup the canvas
    TCanvas *c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
@@ -701,6 +714,7 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
    // Draw everything
    p_legend->Draw();
    p_legend->cd();
+   l_Watermark->Draw();
    l->Draw();
    c->cd();
    p_plot->Draw();
@@ -722,7 +736,6 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
        hist_v.at(i_h)->Scale(1.0 / total);
      }
      */
-
      std::string histname = label + EventType::SigBG.at(i_h);
      hist_v.at(i_h)->SetStats(0);
      hist_v.at(i_h)->Draw("COLZ");
@@ -745,6 +758,9 @@ void Draw2DHistogram(std::vector<TH2D*> hist_v, vector<string> captions,string p
      c->Clear();
 
    }
+
+   //p_legend->cd();
+   //l_Watermark->Draw();
    
    c->Close();
 
