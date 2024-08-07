@@ -25,13 +25,14 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       const double POT = 1e21; // POT to scale samples to
       const int Mode = kFHC;
 
-      SelectionParameters P = P_FHC_K_NOBDT_TEST;
+      //SelectionParameters P = P_FHC_K_NOBDT_TEST;
+      SelectionParameters P = P_FHC_RUN1_BDT_TEST;
 
       // Setup selection manager. Set POT to scale sample to
       EventAssembler E;
       SelectionManager M(P);
+      M.ImportBDTWeights(P.p_BDT_WeightsDir);
       M.SetPOT(POT);
-      //M.ImportBDTWeights(P.p_BDTCutBDT_WeightsDir);
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -120,9 +121,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_SelectedMuonBeamPhi_FV = new TH1D("h_SelectedMuonBeamPhi_FV","",60,-3.1415,3.1415);
       TEfficiency* Efficiency_MuonBeamPhi_FV = new TEfficiency("MuonBeamPhi_eff_FV",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_KaonMomentum_FV = new TH1D("h_TrueKaonMomentum_FV","",60,0.0,2.0);
-      TH1D *h_SelectedKaonMomentum_FV = new TH1D("h_SelectedKaonMomentum_FV","",60,0.0,2.0);
-      TEfficiency* Efficiency_KaonMomentum_FV = new TEfficiency("KaonMomentum_eff_FV",";True K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
+      TH1D *h_KaonMomentum_FV = new TH1D("h_TrueKaonMomentum_FV","",25,0.0,2.5);
+      TH1D *h_SelectedKaonMomentum_FV = new TH1D("h_SelectedKaonMomentum_FV","",25,0.0,2.5);
+      TEfficiency* Efficiency_KaonMomentum_FV = new TEfficiency("KaonMomentum_eff_FV",";True K^{+} Momentum (GeV/c);Selected/All",25,0.0,2.5);
 
       TH1D *h_DecayMuonMomentum_FV = new TH1D("h_TrueDecayMuonMomentum_FV","",60,0.3,1.5);
       TH1D *h_SelectedDecayMuonMomentum_FV = new TH1D("h_SelectedDecayMuonMomentum_FV","",60,0.3,1.5);
@@ -170,9 +171,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_SelectedMuonBeamPhi_NuCCFilter = new TH1D("h_SelectedMuonBeamPhi_NuCCFilter","",60,-3.1415,3.1415);
       TEfficiency* Efficiency_MuonBeamPhi_NuCCFilter = new TEfficiency("MuonBeamPhi_eff_NuCCFilter",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_KaonMomentum_NuCCFilter = new TH1D("h_TrueKaonMomentum_NuCCFilter","",60,0.0,2.0);
-      TH1D *h_SelectedKaonMomentum_NuCCFilter = new TH1D("h_SelectedKaonMomentum_NuCCFilter","",60,0.0,2.0);
-      TEfficiency* Efficiency_KaonMomentum_NuCCFilter = new TEfficiency("KaonMomentum_eff_NuCCFilter",";True K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
+      TH1D *h_KaonMomentum_NuCCFilter = new TH1D("h_TrueKaonMomentum_NuCCFilter","",25,0.0,2.5);
+      TH1D *h_SelectedKaonMomentum_NuCCFilter = new TH1D("h_SelectedKaonMomentum_NuCCFilter","",25,0.0,2.5);
+      TEfficiency* Efficiency_KaonMomentum_NuCCFilter = new TEfficiency("KaonMomentum_eff_NuCCFilter",";True K^{+} Momentum (GeV/c);Selected/All",25,0.0,2.5);
 
       TH1D *h_DecayMuonMomentum_NuCCFilter = new TH1D("h_TrueDecayMuonMomentum_NuCCFilter","",60,0.3,1.5);
       TH1D *h_SelectedDecayMuonMomentum_NuCCFilter = new TH1D("h_SelectedDecayMuonMomentum_NuCCFilter","",60,0.3,1.5);
@@ -220,9 +221,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_SelectedMuonBeamPhi_NDaughterTrack = new TH1D("h_SelectedMuonBeamPhi_NDaughterTrack","",60,-3.1415,3.1415);
       TEfficiency* Efficiency_MuonBeamPhi_NDaughterTrack = new TEfficiency("MuonBeamPhi_eff_NDaughterTrack",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_KaonMomentum_NDaughterTrack = new TH1D("h_TrueKaonMomentum_NDaughterTrack","",60,0.0,2.0);
-      TH1D *h_SelectedKaonMomentum_NDaughterTrack = new TH1D("h_SelectedKaonMomentum_NDaughterTrack","",60,0.0,2.0);
-      TEfficiency* Efficiency_KaonMomentum_NDaughterTrack = new TEfficiency("KaonMomentum_eff_NDaughterTrack",";True K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
+      TH1D *h_KaonMomentum_NDaughterTrack = new TH1D("h_TrueKaonMomentum_NDaughterTrack","",25,0.0,2.5);
+      TH1D *h_SelectedKaonMomentum_NDaughterTrack = new TH1D("h_SelectedKaonMomentum_NDaughterTrack","",25,0.0,2.5);
+      TEfficiency* Efficiency_KaonMomentum_NDaughterTrack = new TEfficiency("KaonMomentum_eff_NDaughterTrack",";True K^{+} Momentum (GeV/c);Selected/All",25,0.0,2.5);
 
       TH1D *h_DecayMuonMomentum_NDaughterTrack = new TH1D("h_TrueDecayMuonMomentum_NDaughterTrack","",60,0.3,1.5);
       TH1D *h_SelectedDecayMuonMomentum_NDaughterTrack = new TH1D("h_SelectedDecayMuonMomentum_NDaughterTrack","",60,0.3,1.5);
@@ -270,9 +271,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_SelectedMuonBeamPhi_DaughterFV = new TH1D("h_SelectedMuonBeamPhi_DaughterFV","",60,-3.1415,3.1415);
       TEfficiency* Efficiency_MuonBeamPhi_DaughterFV = new TEfficiency("MuonBeamPhi_eff_DaughterFV",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_KaonMomentum_DaughterFV = new TH1D("h_TrueKaonMomentum_DaughterFV","",20,0.0,2.0);
-      TH1D *h_SelectedKaonMomentum_DaughterFV = new TH1D("h_SelectedKaonMomentum_DaughterFV","",20,0.0,2.0);
-      TEfficiency* Efficiency_KaonMomentum_DaughterFV = new TEfficiency("KaonMomentum_eff_DaughterFV",";True K^{+} Momentum (GeV/c);Selected/All",20,0.0,2.0);
+      TH1D *h_KaonMomentum_DaughterFV = new TH1D("h_TrueKaonMomentum_DaughterFV","",25,0.0,2.5);
+      TH1D *h_SelectedKaonMomentum_DaughterFV = new TH1D("h_SelectedKaonMomentum_DaughterFV","",25,0.0,2.5);
+      TEfficiency* Efficiency_KaonMomentum_DaughterFV = new TEfficiency("KaonMomentum_eff_DaughterFV",";True K^{+} Momentum (GeV/c);Selected/All",25,0.0,2.5);
 
       TH1D *h_DecayMuonMomentum_DaughterFV = new TH1D("h_TrueDecayMuonMomentum_DaughterFV","",60,0.3,1.5);
       TH1D *h_SelectedDecayMuonMomentum_DaughterFV = new TH1D("h_SelectedDecayMuonMomentum_DaughterFV","",60,0.3,1.5);
@@ -285,56 +286,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_DaughterFV = new TH1D("h_DaughterFV","",1,0,1.0);
       TH1D *h_Selected_DaughterFV = new TH1D("h_Selected_DaughterFV","",1,0,1.0);
       TEfficiency* Efficiency_DaughterFV = new TEfficiency("eff_DaughterFV",";;Selected/All",1,0,1.0);
-
-      // BDT Cut //
-      /*
-      TH1D *h_Q2_BDTCut = new TH1D("h_Q2_BDTCut","",60,0,3.0);
-      TH1D *h_SelectedQ2_BDTCut = new TH1D("h_SelectedQ2_BDTCut","",60,0,3.0);
-      TEfficiency* Efficiency_Q2_BDTCut = new TEfficiency("Q2_eff_BDTCut",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
-
-      TH1D *h_NuE_BDTCut = new TH1D("h_TrueNuE_BDTCut","",60,0,4.0);
-      TH1D *h_SelectedNuE_BDTCut = new TH1D("h_SelectedNuE_BDTCut","",60,0,4.0);
-      TEfficiency* Efficiency_NuE_BDTCut = new TEfficiency("NuE_eff_BDTCut",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
-
-      TH1D *h_MuonKE_BDTCut = new TH1D("h_MuonKE_BDTCut","",60,0,3.0);
-      TH1D *h_SelectedMuonKE_BDTCut = new TH1D("h_SelectedMuonKE_BDTCut","",60,0,3.0);
-      TEfficiency* Efficiency_MuonKE_BDTCut = new TEfficiency("MuonKE_eff_BDTCut",";True Muon KE (GeV);Selected/All",60,0,3.0);
-
-      TH1D *h_MuonTrueTheta_BDTCut = new TH1D("h_MuonTrueTheta_BDTCut","",60,0,3.1415);
-      TH1D *h_SelectedMuonTrueTheta_BDTCut = new TH1D("h_SelectedMuonTrueTheta_BDTCut","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonTrueTheta_BDTCut = new TEfficiency("MuonTrueTheta_eff_BDTCut",";Muon True #theta;Selected/All",60,0,3.1415);
-
-      TH1D *h_MuonDetectorTheta_BDTCut = new TH1D("h_TrueMuonDetectorTheta_BDTCut","",60,0,3.1415);
-      TH1D *h_SelectedMuonDetectorTheta_BDTCut = new TH1D("h_SelectedMuonDetectorTheta_BDTCut","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonDetectorTheta_BDTCut = new TEfficiency("MuonDetectorTheta_eff_BDTCut",";Muon Detector #theta;Selected/All",60,0,3.1415);
-
-      TH1D *h_MuonDetectorPhi_BDTCut = new TH1D("h_TrueMuonDetectorPhi_BDTCut","",60,-3.1415,3.1415);
-      TH1D *h_SelectedMuonDetectorPhi_BDTCut = new TH1D("h_SelectedMuonDetectorPhi_BDTCut","",60,-3.1415,3.1415);
-      TEfficiency* Efficiency_MuonDetectorPhi_BDTCut = new TEfficiency("MuonDetectorPhi_eff_BDTCut",";Muon Detector #theta;Selected/All",60,-3.1415,3.1415);
-
-      TH1D *h_MuonBeamTheta_BDTCut = new TH1D("h_TrueMuonBeamTheta_BDTCut","",60,0,3.1415);
-      TH1D *h_SelectedMuonBeamTheta_BDTCut = new TH1D("h_SelectedMuonBeamTheta_BDTCut","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonBeamTheta_BDTCut = new TEfficiency("MuonBeamTheta_eff_BDTCut",";Muon Beam #theta;Selected/All",60,0,3.1415);
-
-      TH1D *h_MuonBeamPhi_BDTCut = new TH1D("h_TrueMuonBeamPhi_BDTCut","",60,-3.1415,3.1415);
-      TH1D *h_SelectedMuonBeamPhi_BDTCut = new TH1D("h_SelectedMuonBeamPhi_BDTCut","",60,-3.1415,3.1415);
-      TEfficiency* Efficiency_MuonBeamPhi_BDTCut = new TEfficiency("MuonBeamPhi_eff_BDTCut",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
-
-      TH1D *h_KaonMomentum_BDTCut = new TH1D("h_TrueKaonMomentum_BDTCut","",60,0.0,2.0);
-      TH1D *h_SelectedKaonMomentum_BDTCut = new TH1D("h_SelectedKaonMomentum_BDTCut","",60,0.0,2.0);
-      TEfficiency* Efficiency_KaonMomentum_BDTCut = new TEfficiency("KaonMomentum_eff_BDTCut",";True K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
-
-      TH1D *h_DecayMuonMomentum_BDTCut = new TH1D("h_TrueDecayMuonMomentum_BDTCut","",60,0.3,1.5);
-      TH1D *h_SelectedDecayMuonMomentum_BDTCut = new TH1D("h_SelectedDecayMuonMomentum_BDTCut","",60,0.3,1.5);
-      TEfficiency* Efficiency_DecayMuonMomentum_BDTCut = new TEfficiency("DecayMuonMomentum_eff_BDTCut",";True Decay Proton Momentum (GeV/c);Selected/All",60,0.3,1.5);
-
-      TH1D *h_DecayPionMomentum_BDTCut = new TH1D("h_TrueDecayPionMomentum_BDTCut","",60,0.1,0.8);
-      TH1D *h_SelectedDecayPionMomentum_BDTCut = new TH1D("h_SelectedDecayPionMomentum_BDTCut","",60,0.1,0.8);
-      TEfficiency* Efficiency_DecayPionMomentum_BDTCut = new TEfficiency("DecayPionMomentum_eff_BDTCut",";True Decay #pi^{+} Momentum (GeV/c);Selected/All",60,0.1,0.8);
-
-      TH1D *h_BDTCut = new TH1D("h_BDTCut","",1,0,1.0);
-      TH1D *h_Selected_BDTCut = new TH1D("h_Selected_BDTCut","",1,0,1.0);
-      TEfficiency* Efficiency_BDTCut = new TEfficiency("eff_BDTCut",";;Selected/All",1,0,1.0);
 
       // Daughter Track Length Cut //
 
@@ -370,9 +321,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_SelectedMuonBeamPhi_DaughterTrackLength = new TH1D("h_SelectedMuonBeamPhi_DaughterTrackLength","",60,-3.1415,3.1415);
       TEfficiency* Efficiency_MuonBeamPhi_DaughterTrackLength = new TEfficiency("MuonBeamPhi_eff_DaughterTrackLength",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_KaonMomentum_DaughterTrackLength = new TH1D("h_TrueKaonMomentum_DaughterTrackLength","",60,0.0,2.0);
-      TH1D *h_SelectedKaonMomentum_DaughterTrackLength = new TH1D("h_SelectedKaonMomentum_DaughterTrackLength","",60,0.0,2.0);
-      TEfficiency* Efficiency_KaonMomentum_DaughterTrackLength = new TEfficiency("KaonMomentum_eff_DaughterTrackLength",";True K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
+      TH1D *h_KaonMomentum_DaughterTrackLength = new TH1D("h_TrueKaonMomentum_DaughterTrackLength","",25,0.0,2.5);
+      TH1D *h_SelectedKaonMomentum_DaughterTrackLength = new TH1D("h_SelectedKaonMomentum_DaughterTrackLength","",25,0.0,2.5);
+      TEfficiency* Efficiency_KaonMomentum_DaughterTrackLength = new TEfficiency("KaonMomentum_eff_DaughterTrackLength",";True K^{+} Momentum (GeV/c);Selected/All",25,0.0,2.5);
 
       TH1D *h_DecayMuonMomentum_DaughterTrackLength = new TH1D("h_TrueDecayMuonMomentum_DaughterTrackLength","",60,0.3,1.5);
       TH1D *h_SelectedDecayMuonMomentum_DaughterTrackLength = new TH1D("h_SelectedDecayMuonMomentum_DaughterTrackLength","",60,0.3,1.5);
@@ -385,17 +336,70 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_DaughterTrackLength = new TH1D("h_DaughterTrackLength","",1,0,1.0);
       TH1D *h_Selected_DaughterTrackLength = new TH1D("h_Selected_DaughterTrackLength","",1,0,1.0);
       TEfficiency* Efficiency_DaughterTrackLength = new TEfficiency("eff_DaughterTrackLength",";;Selected/All",1,0,1.0);
-      */
 
-      TH1D *h_RecoKaonMomentum_NDaughterTrack = new TH1D("h_RecoKaonMomentum_NDaughterTrack","",60,0.0,2.0);
-      TH1D *h_SelectedRecoKaonMomentum_NDaughterTrack = new TH1D("h_SelectedRecoKaonMomentum_NDaughterTrack","",60,0.0,2.0);
-      TEfficiency* Efficiency_RecoKaonMomentum_NDaughterTrack = new TEfficiency("RecoKaonMomentum_eff_NDaughterTrack",";Reconstructed K^{+} Momentum (GeV/c);Selected/All",60,0.0,2.0);
+
+      // BDT Cut //
+      
+      TH1D *h_Q2_BDTCut = new TH1D("h_Q2_BDTCut","",60,0,3.0);
+      TH1D *h_SelectedQ2_BDTCut = new TH1D("h_SelectedQ2_BDTCut","",60,0,3.0);
+      TEfficiency* Efficiency_Q2_BDTCut = new TEfficiency("Q2_eff_BDTCut",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
+
+      TH1D *h_NuE_BDTCut = new TH1D("h_TrueNuE_BDTCut","",60,0,4.0);
+      TH1D *h_SelectedNuE_BDTCut = new TH1D("h_SelectedNuE_BDTCut","",60,0,4.0);
+      TEfficiency* Efficiency_NuE_BDTCut = new TEfficiency("NuE_eff_BDTCut",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
+
+      TH1D *h_MuonKE_BDTCut = new TH1D("h_MuonKE_BDTCut","",60,0,3.0);
+      TH1D *h_SelectedMuonKE_BDTCut = new TH1D("h_SelectedMuonKE_BDTCut","",60,0,3.0);
+      TEfficiency* Efficiency_MuonKE_BDTCut = new TEfficiency("MuonKE_eff_BDTCut",";True Muon KE (GeV);Selected/All",60,0,3.0);
+
+      TH1D *h_MuonTrueTheta_BDTCut = new TH1D("h_MuonTrueTheta_BDTCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonTrueTheta_BDTCut = new TH1D("h_SelectedMuonTrueTheta_BDTCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonTrueTheta_BDTCut = new TEfficiency("MuonTrueTheta_eff_BDTCut",";Muon True #theta;Selected/All",60,0,3.1415);
+
+      TH1D *h_MuonDetectorTheta_BDTCut = new TH1D("h_TrueMuonDetectorTheta_BDTCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonDetectorTheta_BDTCut = new TH1D("h_SelectedMuonDetectorTheta_BDTCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonDetectorTheta_BDTCut = new TEfficiency("MuonDetectorTheta_eff_BDTCut",";Muon Detector #theta;Selected/All",60,0,3.1415);
+
+      TH1D *h_MuonDetectorPhi_BDTCut = new TH1D("h_TrueMuonDetectorPhi_BDTCut","",60,-3.1415,3.1415);
+      TH1D *h_SelectedMuonDetectorPhi_BDTCut = new TH1D("h_SelectedMuonDetectorPhi_BDTCut","",60,-3.1415,3.1415);
+      TEfficiency* Efficiency_MuonDetectorPhi_BDTCut = new TEfficiency("MuonDetectorPhi_eff_BDTCut",";Muon Detector #theta;Selected/All",60,-3.1415,3.1415);
+
+      TH1D *h_MuonBeamTheta_BDTCut = new TH1D("h_TrueMuonBeamTheta_BDTCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonBeamTheta_BDTCut = new TH1D("h_SelectedMuonBeamTheta_BDTCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonBeamTheta_BDTCut = new TEfficiency("MuonBeamTheta_eff_BDTCut",";Muon Beam #theta;Selected/All",60,0,3.1415);
+
+      TH1D *h_MuonBeamPhi_BDTCut = new TH1D("h_TrueMuonBeamPhi_BDTCut","",60,-3.1415,3.1415);
+      TH1D *h_SelectedMuonBeamPhi_BDTCut = new TH1D("h_SelectedMuonBeamPhi_BDTCut","",60,-3.1415,3.1415);
+      TEfficiency* Efficiency_MuonBeamPhi_BDTCut = new TEfficiency("MuonBeamPhi_eff_BDTCut",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
+
+      TH1D *h_KaonMomentum_BDTCut = new TH1D("h_TrueKaonMomentum_BDTCut","",25,0.0,2.5);
+      TH1D *h_SelectedKaonMomentum_BDTCut = new TH1D("h_SelectedKaonMomentum_BDTCut","",25,0.0,2.5);
+      TEfficiency* Efficiency_KaonMomentum_BDTCut = new TEfficiency("KaonMomentum_eff_BDTCut",";True K^{+} Momentum (GeV/c);Selected/All",25,0.0,2.5);
+
+      TH1D *h_DecayMuonMomentum_BDTCut = new TH1D("h_TrueDecayMuonMomentum_BDTCut","",60,0.3,1.5);
+      TH1D *h_SelectedDecayMuonMomentum_BDTCut = new TH1D("h_SelectedDecayMuonMomentum_BDTCut","",60,0.3,1.5);
+      TEfficiency* Efficiency_DecayMuonMomentum_BDTCut = new TEfficiency("DecayMuonMomentum_eff_BDTCut",";True Decay Proton Momentum (GeV/c);Selected/All",60,0.3,1.5);
+
+      TH1D *h_DecayPionMomentum_BDTCut = new TH1D("h_TrueDecayPionMomentum_BDTCut","",60,0.1,0.8);
+      TH1D *h_SelectedDecayPionMomentum_BDTCut = new TH1D("h_SelectedDecayPionMomentum_BDTCut","",60,0.1,0.8);
+      TEfficiency* Efficiency_DecayPionMomentum_BDTCut = new TEfficiency("DecayPionMomentum_eff_BDTCut",";True Decay #pi^{+} Momentum (GeV/c);Selected/All",60,0.1,0.8);
+
+      TH1D *h_BDTCut = new TH1D("h_BDTCut","",1,0,1.0);
+      TH1D *h_Selected_BDTCut = new TH1D("h_Selected_BDTCut","",1,0,1.0);
+      TEfficiency* Efficiency_BDTCut = new TEfficiency("eff_BDTCut",";;Selected/All",1,0,1.0);
+
+      
+      TH1D *h_RecoKaonMomentum_All = new TH1D("h_RecoKaonMomentum_All","",25,0.0,2.5);
+      TH1D *h_SelectedRecoKaonMomentum_All = new TH1D("h_SelectedRecoKaonMomentum_All","",25,0.0,2.5);
+      TEfficiency* Efficiency_RecoKaonMomentum_All = new TEfficiency("RecoKaonMomentum_eff_All",";Reconstructed K^{+} Momentum (GeV/c);Selected/All",25,0.0,2.5);
 
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      E.SetFile("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root", "KAON");
-      M.AddSample("AssocKaon","AssocKaon",POT);//need to change
+      //E.SetFile("/exp/uboone/data/users/taniuchi/ntuple_testarea/assok_KaonTrees.root", "KAON");
+      //M.AddSample("AssocKaon","AssocKaon",POT);//need to change
+      E.SetFile("/exp/uboone/data/users/taniuchi/taniuchi/KaonNTuple/BDT/assocK_events_numi_run1_fhc_signal_nocosmic_resample_reco2_ReRunReco_ntuple_all.root", "KAON");
+      M.AddSample("AssocKaon","AssocKaon",E.GetPOT());//need to change
 
       M.UseFluxWeight(false);
       M.UseGenWeight(false);
@@ -411,7 +415,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          M.AddEvent(e);
          M.SetSignal(e);
 
-         if(!e.EventIsSignal) continue;
+         //if(!e.EventIsSignal) continue;
+         //if(!(e.EventIsSignal&&!e.EventHasKaonPScatter)) continue;
+         if(!(!e.EventIsSignal&&e.EventHasKaonPScatter)) continue;
          //if(!e.EventHasKaonPScatter) continue;
 
          // Calculate Q2
@@ -452,6 +458,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          double MuonBeamPhi = MuonTrueDirBeam.Phi();
          double KaonMomentum = e.PrimaryKaonP.at(0).ModMomentum;
          double DecayMuonMomentum,DecayPionMomentum=-1.0;
+	 double RecoKaonMomentum = -1;
 
 	 if(e.KaonPDecay_NuMuP.size() == 2){
 	   if(e.KaonPDecay_NuMuP.at(0).PDG == -13) DecayMuonMomentum = e.KaonPDecay_NuMuP.at(0).ModMomentum;
@@ -462,18 +469,41 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 	   if(e.KaonPDecay_PiPPi0.at(1).PDG == 211) DecayPionMomentum = e.KaonPDecay_PiPPi0.at(1).ModMomentum;
 	 }
 
-         bool passed_FV=false, passed_NuCCFilter=false, passed_NDaughterTrack=false, passed_DaughterFV=false, passed_BDTCut=false, passed_All=false;
-         //bool passed_DaughterTrackLength=false;
+         bool passed_FV=false, passed_NuCCFilter=false, passed_NDaughterTrack=false, passed_DaughterFV=false, passed_DaughterTrackLength=false, passed_BDTCut=false, passed_All=false;
 
          passed_FV = M.FiducialVolumeCut(e);
          if(passed_FV) passed_NuCCFilter = M.NuCCInclusiveFilter(e);
          if(passed_NuCCFilter) passed_NDaughterTrack = M.DaughterTrackCut(e);
          if(passed_NDaughterTrack) passed_DaughterFV = M.DaughterFiducialVolumeCut(e);
-         //if(passed_DaughterFV) passed_BDTCut = M.BDTCut(e);
-         //if(passed_BDTCut) passed_DaughterTrackLength = M.DaughterTrackLengthCut(e);
 
-	 passed_All = passed_DaughterFV;
-         //passed_All = passed_AngleCut;
+	 for (const auto& pair : M.VectorPair) {
+
+	   RecoParticle PrimaryKaonTrackParticle = pair.first;
+	   RecoParticle DaughterTrackParticle = pair.second;
+	   bool passed_BDTCut_pair = false;
+	   bool passed_DaughterTrackLength_pair = false;
+
+	   RecoKaonMomentum = PrimaryKaonTrackParticle.KaonMomentum;
+
+	   if(passed_DaughterFV){
+	     //passed_BDTCut_pair = M.BDTCut(e,PrimaryKaonTrackParticle,DaughterTrackParticle);
+	     //if(passed_BDTCut_pair) passed_DaughterTrackLength_pair = M.DaughterTrackLengthCut(e, DaughterTrackPaticle);
+	     passed_DaughterTrackLength_pair = M.DaughterTrackLengthCut(e, DaughterTrackParticle);
+	     if(passed_DaughterTrackLength_pair) passed_BDTCut_pair = M.BDTCut(e,PrimaryKaonTrackParticle,DaughterTrackParticle);
+	   }
+
+	   if(passed_BDTCut==false && passed_BDTCut_pair==true) passed_BDTCut = true;
+	   if(passed_DaughterTrackLength==false && passed_DaughterTrackLength_pair==true) passed_DaughterTrackLength = true;
+
+	 }
+
+	 passed_All = passed_BDTCut;
+
+	 //Reconstructed primary track momentum
+	 h_RecoKaonMomentum_All->Fill(RecoKaonMomentum,e.Weight); 
+	 Efficiency_RecoKaonMomentum_All->FillWeighted(passed_All,e.Weight,RecoKaonMomentum);
+	 if(passed_All) h_SelectedRecoKaonMomentum_All->Fill(RecoKaonMomentum,e.Weight);
+
 
          // Entire Selection
          h_Q2_All->Fill(Q2,e.Weight);
@@ -573,7 +603,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          Efficiency_FV->FillWeighted(passed_FV,e.Weight,0.5);
          if(passed_FV) h_Selected_FV->Fill(0.5,e.Weight);
 
-         // Track Cut
+         // NuCC Filter Cut
          h_Q2_NuCCFilter->Fill(Q2,e.Weight);
          Efficiency_Q2_NuCCFilter->FillWeighted(passed_NuCCFilter,e.Weight,Q2);
          if(Q2 > 0 && passed_NuCCFilter) h_SelectedQ2_NuCCFilter->Fill(Q2,e.Weight);
@@ -622,7 +652,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          Efficiency_NuCCFilter->FillWeighted(passed_NuCCFilter,e.Weight,0.5);
          if(passed_NuCCFilter) h_Selected_NuCCFilter->Fill(0.5,e.Weight);
 
-         // Shower Cut
+         // NDaughter Cut
          h_Q2_NDaughterTrack->Fill(Q2,e.Weight);
          Efficiency_Q2_NDaughterTrack->FillWeighted(passed_NDaughterTrack,e.Weight,Q2);
          if(Q2 > 0 && passed_NDaughterTrack) h_SelectedQ2_NDaughterTrack->Fill(Q2,e.Weight);
@@ -671,7 +701,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          Efficiency_NDaughterTrack->FillWeighted(passed_NDaughterTrack,e.Weight,0.5);
          if(passed_NDaughterTrack) h_Selected_NDaughterTrack->Fill(0.5,e.Weight);
 
-         // Muon ID
+         // Daughter FV ID
          h_Q2_DaughterFV->Fill(Q2,e.Weight);
          Efficiency_Q2_DaughterFV->FillWeighted(passed_DaughterFV,e.Weight,Q2);
          if(Q2 > 0 && passed_DaughterFV) h_SelectedQ2_DaughterFV->Fill(Q2,e.Weight);
@@ -720,8 +750,57 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          Efficiency_DaughterFV->FillWeighted(passed_DaughterFV,e.Weight,0.5);
          if(passed_DaughterFV) h_Selected_DaughterFV->Fill(0.5,e.Weight);
 
-	 /*
-         // Decay Selector
+         // Daughter Track length cut
+         h_Q2_DaughterTrackLength->Fill(Q2,e.Weight);
+         Efficiency_Q2_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,Q2);
+         if(Q2 > 0 && passed_DaughterTrackLength) h_SelectedQ2_DaughterTrackLength->Fill(Q2,e.Weight);
+
+         h_NuE_DaughterTrackLength->Fill(NuE,e.Weight); 
+         Efficiency_NuE_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,NuE);
+         if(NuE > 0 && passed_DaughterTrackLength)  h_SelectedNuE_DaughterTrackLength->Fill(NuE,e.Weight);
+
+         h_MuonKE_DaughterTrackLength->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_DaughterTrackLength)  h_SelectedMuonKE_DaughterTrackLength->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_DaughterTrackLength->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonTrueTheta);
+         if(passed_DaughterTrackLength)  h_SelectedMuonTrueTheta_DaughterTrackLength->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_DaughterTrackLength->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonDetectorTheta);
+         if(passed_DaughterTrackLength)  h_SelectedMuonDetectorTheta_DaughterTrackLength->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_DaughterTrackLength->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonDetectorPhi);
+         if(passed_DaughterTrackLength)  h_SelectedMuonDetectorPhi_DaughterTrackLength->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_DaughterTrackLength->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonBeamTheta);
+         if(passed_DaughterTrackLength)  h_SelectedMuonBeamTheta_DaughterTrackLength->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_DaughterTrackLength->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonBeamPhi);
+         if(passed_DaughterTrackLength)  h_SelectedMuonBeamPhi_DaughterTrackLength->Fill(MuonBeamPhi,e.Weight);
+
+         h_KaonMomentum_DaughterTrackLength->Fill(KaonMomentum,e.Weight); 
+         Efficiency_KaonMomentum_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,KaonMomentum);
+         if(passed_DaughterTrackLength)  h_SelectedKaonMomentum_DaughterTrackLength->Fill(KaonMomentum,e.Weight);
+
+         h_DecayMuonMomentum_DaughterTrackLength->Fill(DecayMuonMomentum,e.Weight); 
+         Efficiency_DecayMuonMomentum_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,DecayMuonMomentum);
+         if(passed_DaughterTrackLength)  h_SelectedDecayMuonMomentum_DaughterTrackLength->Fill(DecayMuonMomentum,e.Weight);
+
+         h_DecayPionMomentum_DaughterTrackLength->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,DecayPionMomentum);
+         if(passed_DaughterTrackLength)  h_SelectedDecayPionMomentum_DaughterTrackLength->Fill(DecayPionMomentum,e.Weight);
+
+         h_DaughterTrackLength->Fill(0.5,e.Weight);
+         Efficiency_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,0.5);
+         if(passed_DaughterTrackLength) h_Selected_DaughterTrackLength->Fill(0.5,e.Weight);
+
+	 
+         // BDT Cut
          h_Q2_BDTCut->Fill(Q2,e.Weight);
          Efficiency_Q2_BDTCut->FillWeighted(passed_BDTCut,e.Weight,Q2);
          if(Q2 > 0 && passed_BDTCut) h_SelectedQ2_BDTCut->Fill(Q2,e.Weight);
@@ -770,65 +849,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          Efficiency_BDTCut->FillWeighted(passed_BDTCut,e.Weight,0.5);
          if(passed_BDTCut) h_Selected_BDTCut->Fill(0.5,e.Weight);
 
-         // Connectedness
-         h_Q2_DaughterTrackLength->Fill(Q2,e.Weight);
-         Efficiency_Q2_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,Q2);
-         if(Q2 > 0 && passed_DaughterTrackLength) h_SelectedQ2_DaughterTrackLength->Fill(Q2,e.Weight);
+	 
 
-         h_NuE_DaughterTrackLength->Fill(NuE,e.Weight); 
-         Efficiency_NuE_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,NuE);
-         if(NuE > 0 && passed_DaughterTrackLength)  h_SelectedNuE_DaughterTrackLength->Fill(NuE,e.Weight);
-
-         h_MuonKE_DaughterTrackLength->Fill(MuonKE,e.Weight); 
-         Efficiency_MuonKE_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonKE);
-         if(MuonKE > 0 && passed_DaughterTrackLength)  h_SelectedMuonKE_DaughterTrackLength->Fill(MuonKE,e.Weight);
-
-         h_MuonTrueTheta_DaughterTrackLength->Fill(MuonTrueTheta,e.Weight); 
-         Efficiency_MuonTrueTheta_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonTrueTheta);
-         if(passed_DaughterTrackLength)  h_SelectedMuonTrueTheta_DaughterTrackLength->Fill(MuonTrueTheta,e.Weight);
-
-         h_MuonDetectorTheta_DaughterTrackLength->Fill(MuonDetectorTheta,e.Weight); 
-         Efficiency_MuonDetectorTheta_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonDetectorTheta);
-         if(passed_DaughterTrackLength)  h_SelectedMuonDetectorTheta_DaughterTrackLength->Fill(MuonDetectorTheta,e.Weight);
-
-         h_MuonDetectorPhi_DaughterTrackLength->Fill(MuonDetectorPhi,e.Weight); 
-         Efficiency_MuonDetectorPhi_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonDetectorPhi);
-         if(passed_DaughterTrackLength)  h_SelectedMuonDetectorPhi_DaughterTrackLength->Fill(MuonDetectorPhi,e.Weight);
-
-         h_MuonBeamTheta_DaughterTrackLength->Fill(MuonBeamTheta,e.Weight); 
-         Efficiency_MuonBeamTheta_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonBeamTheta);
-         if(passed_DaughterTrackLength)  h_SelectedMuonBeamTheta_DaughterTrackLength->Fill(MuonBeamTheta,e.Weight);
-
-         h_MuonBeamPhi_DaughterTrackLength->Fill(MuonBeamPhi,e.Weight); 
-         Efficiency_MuonBeamPhi_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,MuonBeamPhi);
-         if(passed_DaughterTrackLength)  h_SelectedMuonBeamPhi_DaughterTrackLength->Fill(MuonBeamPhi,e.Weight);
-
-         h_KaonMomentum_DaughterTrackLength->Fill(KaonMomentum,e.Weight); 
-         Efficiency_KaonMomentum_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,KaonMomentum);
-         if(passed_DaughterTrackLength)  h_SelectedKaonMomentum_DaughterTrackLength->Fill(KaonMomentum,e.Weight);
-
-         h_DecayMuonMomentum_DaughterTrackLength->Fill(DecayMuonMomentum,e.Weight); 
-         Efficiency_DecayMuonMomentum_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,DecayMuonMomentum);
-         if(passed_DaughterTrackLength)  h_SelectedDecayMuonMomentum_DaughterTrackLength->Fill(DecayMuonMomentum,e.Weight);
-
-         h_DecayPionMomentum_DaughterTrackLength->Fill(DecayPionMomentum,e.Weight); 
-         Efficiency_DecayPionMomentum_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,DecayPionMomentum);
-         if(passed_DaughterTrackLength)  h_SelectedDecayPionMomentum_DaughterTrackLength->Fill(DecayPionMomentum,e.Weight);
-
-         h_DaughterTrackLength->Fill(0.5,e.Weight);
-         Efficiency_DaughterTrackLength->FillWeighted(passed_DaughterTrackLength,e.Weight,0.5);
-         if(passed_DaughterTrackLength) h_Selected_DaughterTrackLength->Fill(0.5,e.Weight);
-	 */
-
-	 for (const auto& pair : M.VectorPair) {
-	   RecoParticle PrimaryKaonTrack = pair.first;
-	   double RecoKaonMomentum = PrimaryKaonTrack.KaonMomentum;
-	   
-	   h_RecoKaonMomentum_NDaughterTrack->Fill(RecoKaonMomentum,e.Weight); 
-	   Efficiency_RecoKaonMomentum_NDaughterTrack->FillWeighted(passed_All,e.Weight,RecoKaonMomentum);
-	   if(passed_All)  h_SelectedRecoKaonMomentum_NDaughterTrack->Fill(RecoKaonMomentum,e.Weight);
-
-	 }
 
       }
 
@@ -851,6 +873,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayPionMomentum_All,h_SelectedDecayPionMomentum_All,Efficiency_DecayPionMomentum_All,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_All",Mode,POT);
       DrawEfficiencyPlot(h_All,h_Selected_All,Efficiency_All,";;Events",label + "_All",Mode,POT);
 
+
       // Fiducial Volume Cut
       DrawEfficiencyPlot(h_Q2_FV,h_SelectedQ2_FV,Efficiency_Q2_FV,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_FV",Mode,POT);
       DrawEfficiencyPlot(h_NuE_FV,h_SelectedNuE_FV,Efficiency_NuE_FV,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_FV",Mode,POT);
@@ -866,7 +889,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_FV,h_Selected_FV,Efficiency_FV,";;Events",label + "_FV",Mode,POT);
 
 
-      // Track Cut
+      // NuCC Filter Cut
       DrawEfficiencyPlot(h_Q2_NuCCFilter,h_SelectedQ2_NuCCFilter,Efficiency_Q2_NuCCFilter,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_NuCCFilter",Mode,POT);
       DrawEfficiencyPlot(h_NuE_NuCCFilter,h_SelectedNuE_NuCCFilter,Efficiency_NuE_NuCCFilter,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_NuCCFilter",Mode,POT);
       DrawEfficiencyPlot(h_MuonKE_NuCCFilter,h_SelectedMuonKE_NuCCFilter,Efficiency_MuonKE_NuCCFilter,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_NuCCFilter",Mode,POT);
@@ -880,7 +903,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayPionMomentum_NuCCFilter,h_SelectedDecayPionMomentum_NuCCFilter,Efficiency_DecayPionMomentum_NuCCFilter,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_NuCCFilter",Mode,POT);
       DrawEfficiencyPlot(h_NuCCFilter,h_Selected_NuCCFilter,Efficiency_NuCCFilter,";;Events",label + "_NuCCFilter",Mode,POT);
 
-      // Shower Cut
+
+      // NDaughterTrack Cut
       DrawEfficiencyPlot(h_Q2_NDaughterTrack,h_SelectedQ2_NDaughterTrack,Efficiency_Q2_NDaughterTrack,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_NDaughterTrack",Mode,POT);
       DrawEfficiencyPlot(h_NuE_NDaughterTrack,h_SelectedNuE_NDaughterTrack,Efficiency_NuE_NDaughterTrack,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_NDaughterTrack",Mode,POT);
       DrawEfficiencyPlot(h_MuonKE_NDaughterTrack,h_SelectedMuonKE_NDaughterTrack,Efficiency_MuonKE_NDaughterTrack,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_NDaughterTrack",Mode,POT);
@@ -894,7 +918,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayPionMomentum_NDaughterTrack,h_SelectedDecayPionMomentum_NDaughterTrack,Efficiency_DecayPionMomentum_NDaughterTrack,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_NDaughterTrack",Mode,POT);
       DrawEfficiencyPlot(h_NDaughterTrack,h_Selected_NDaughterTrack,Efficiency_NDaughterTrack,";;Events",label + "_NDaughterTrack",Mode,POT);
 
-      // Muon ID
+
+      // DaughterFV
       DrawEfficiencyPlot(h_Q2_DaughterFV,h_SelectedQ2_DaughterFV,Efficiency_Q2_DaughterFV,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_DaughterFV",Mode,POT);
       DrawEfficiencyPlot(h_NuE_DaughterFV,h_SelectedNuE_DaughterFV,Efficiency_NuE_DaughterFV,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_DaughterFV",Mode,POT);
       DrawEfficiencyPlot(h_MuonKE_DaughterFV,h_SelectedMuonKE_DaughterFV,Efficiency_MuonKE_DaughterFV,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_DaughterFV",Mode,POT);
@@ -909,23 +934,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DaughterFV,h_Selected_DaughterFV,Efficiency_DaughterFV,";;Events",label + "_DaughterFV",Mode,POT);
       
 
-      /*
-      // Track Selector BDT
-      DrawEfficiencyPlot(h_Q2_BDTCut,h_SelectedQ2_BDTCut,Efficiency_Q2_BDTCut,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_NuE_BDTCut,h_SelectedNuE_BDTCut,Efficiency_NuE_BDTCut,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_MuonKE_BDTCut,h_SelectedMuonKE_BDTCut,Efficiency_MuonKE_BDTCut,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_MuonTrueTheta_BDTCut,h_SelectedMuonTrueTheta_BDTCut,Efficiency_MuonTrueTheta_BDTCut,";True Muon #theta;Events",label + "_MuonTrueTheta_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_MuonDetectorTheta_BDTCut,h_SelectedMuonDetectorTheta_BDTCut,Efficiency_MuonDetectorTheta_BDTCut,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_MuonDetectorPhi_BDTCut,h_SelectedMuonDetectorPhi_BDTCut,Efficiency_MuonDetectorPhi_BDTCut,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_MuonBeamTheta_BDTCut,h_SelectedMuonBeamTheta_BDTCut,Efficiency_MuonBeamTheta_BDTCut,";Beam Muon #theta;Events",label + "_MuonBeamTheta_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_MuonBeamPhi_BDTCut,h_SelectedMuonBeamPhi_BDTCut,Efficiency_MuonBeamPhi_BDTCut,";Beam Muon #phi;Events",label + "_MuonBeamPhi_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_KaonMomentum_BDTCut,h_SelectedKaonMomentum_BDTCut,Efficiency_KaonMomentum_BDTCut,";True K^{+} Momentum (GeV/c,Mode,POT);Events",label + "_KaonMomentum_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_DecayMuonMomentum_BDTCut,h_SelectedDecayMuonMomentum_BDTCut,Efficiency_DecayMuonMomentum_BDTCut,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayMuonMomentum_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_DecayPionMomentum_BDTCut,h_SelectedDecayPionMomentum_BDTCut,Efficiency_DecayPionMomentum_BDTCut,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_BDTCut",Mode,POT);
-      DrawEfficiencyPlot(h_BDTCut,h_Selected_BDTCut,Efficiency_BDTCut,";;Events",label + "_BDTCut",Mode,POT);
-
-
-      // CT
+      // Daughter Track Length Cut
       DrawEfficiencyPlot(h_Q2_DaughterTrackLength,h_SelectedQ2_DaughterTrackLength,Efficiency_Q2_DaughterTrackLength,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_DaughterTrackLength",Mode,POT);
       DrawEfficiencyPlot(h_NuE_DaughterTrackLength,h_SelectedNuE_DaughterTrackLength,Efficiency_NuE_DaughterTrackLength,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_DaughterTrackLength",Mode,POT);
       DrawEfficiencyPlot(h_MuonKE_DaughterTrackLength,h_SelectedMuonKE_DaughterTrackLength,Efficiency_MuonKE_DaughterTrackLength,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_DaughterTrackLength",Mode,POT);
@@ -938,10 +947,28 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_DecayMuonMomentum_DaughterTrackLength,h_SelectedDecayMuonMomentum_DaughterTrackLength,Efficiency_DecayMuonMomentum_DaughterTrackLength,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayMuonMomentum_DaughterTrackLength",Mode,POT);
       DrawEfficiencyPlot(h_DecayPionMomentum_DaughterTrackLength,h_SelectedDecayPionMomentum_DaughterTrackLength,Efficiency_DecayPionMomentum_DaughterTrackLength,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_DaughterTrackLength",Mode,POT);
       DrawEfficiencyPlot(h_DaughterTrackLength,h_Selected_DaughterTrackLength,Efficiency_DaughterTrackLength,";;Events",label + "_DaughterTrackLength",Mode,POT);
-      */
 
-      DrawEfficiencyPlot(h_RecoKaonMomentum_NDaughterTrack,h_SelectedRecoKaonMomentum_NDaughterTrack,Efficiency_RecoKaonMomentum_NDaughterTrack,";Reconstructed K^{+} Momentum (GeV/c,Mode,POT);Events",label + "_RecoKaonMomentum_NDaughterTrack",Mode,POT);
+
+      
+      // BDT Cut
+      DrawEfficiencyPlot(h_Q2_BDTCut,h_SelectedQ2_BDTCut,Efficiency_Q2_BDTCut,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_BDTCut,h_SelectedNuE_BDTCut,Efficiency_NuE_BDTCut,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_BDTCut,h_SelectedMuonKE_BDTCut,Efficiency_MuonKE_BDTCut,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_BDTCut,h_SelectedMuonTrueTheta_BDTCut,Efficiency_MuonTrueTheta_BDTCut,";True Muon #theta;Events",label + "_MuonTrueTheta_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_BDTCut,h_SelectedMuonDetectorTheta_BDTCut,Efficiency_MuonDetectorTheta_BDTCut,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_BDTCut,h_SelectedMuonDetectorPhi_BDTCut,Efficiency_MuonDetectorPhi_BDTCut,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_BDTCut,h_SelectedMuonBeamTheta_BDTCut,Efficiency_MuonBeamTheta_BDTCut,";Beam Muon #theta;Events",label + "_MuonBeamTheta_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_BDTCut,h_SelectedMuonBeamPhi_BDTCut,Efficiency_MuonBeamPhi_BDTCut,";Beam Muon #phi;Events",label + "_MuonBeamPhi_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_KaonMomentum_BDTCut,h_SelectedKaonMomentum_BDTCut,Efficiency_KaonMomentum_BDTCut,";True K^{+} Momentum (GeV/c,Mode,POT);Events",label + "_KaonMomentum_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_DecayMuonMomentum_BDTCut,h_SelectedDecayMuonMomentum_BDTCut,Efficiency_DecayMuonMomentum_BDTCut,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayMuonMomentum_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_BDTCut,h_SelectedDecayPionMomentum_BDTCut,Efficiency_DecayPionMomentum_BDTCut,";True Decay #pi^{+} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_BDTCut",Mode,POT);
+      DrawEfficiencyPlot(h_BDTCut,h_Selected_BDTCut,Efficiency_BDTCut,";;Events",label + "_BDTCut",Mode,POT);
+     
+
+      DrawEfficiencyPlot(h_RecoKaonMomentum_All,h_SelectedRecoKaonMomentum_All,Efficiency_RecoKaonMomentum_All,";Reconstructed K^{+} Momentum (GeV/c,Mode,POT);Events",label + "_RecoKaonMomentum_All",Mode,POT);
 
 
    }
+
+
 
