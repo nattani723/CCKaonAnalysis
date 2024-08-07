@@ -123,14 +123,18 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 
 void SelectionManager::AddEvent(Event &e){
 
-   // Sample Orthogonality
+  // Sample Orthogonality
+  //if( ( thisSampleType != "AssocKaonSig" && thisSampleType != "SingleKaonSig" && thisSampleType != "AssocKaonBG" && thisSampleType != "SingleKaonBG" )  &&   e.EventHasKaonP){ e.Weight = 0.0; return; }
+  //if( ( thisSampleType == "AssocKaonSig" || thisSampleType == "SingleKaonSig" || thisSampleType == "AssocKaonBG" || thisSampleType == "SingleKaonBG")  &&  !e.EventHasKaonP){ e.Weight = 0.0; return; }
 
-  if( ( thisSampleType != "AssocKaon" && thisSampleType != "SingleKaon" )  &&   e.EventHasKaonP){ e.Weight = 0.0; return; }
-  if( ( thisSampleType == "AssocKaon" || thisSampleType == "SingleKaon" )  &&  !e.EventHasKaonP){ e.Weight = 0.0; return; }
+  //if( ( thisSampleType != "AssocKaonSig" && thisSampleType != "SingleKaonSig" && thisSampleType != "AssocKaonBG" && thisSampleType != "SingleKaonBG" )  &&   ( e.EventHasKaonP || e.EventHasKaonPScatter || e.EventHasProtonScatter || e.EventHasPionScatter) ){ e.Weight = 0.0; return; }
+  //if( ( thisSampleType == "AssocKaonSig" || thisSampleType == "SingleKaonSig")  &&  !e.EventHasKaonP){ e.Weight = 0.0; return; }
+  //if( ( thisSampleType == "AssocKaonBG"  || thisSampleType == "SingleKaonBG" )  && ( !e.EventHasKaonPScatter && !e.EventHasProtonScatter && !e.EventHasPionScatter) ){ e.Weight = 0.0; return; }
+
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
-      if(fUseFluxWeight) e.Weight *= a_FluxWeightCalc.GetFluxWeight(e);        
+      if(fUseFluxWeight) e.Weight *= a_FluxWeightCalc.GetFluxWeightCV(e);        
       if(fUseGenWeight) {
          a_GenG4WeightCalc.LoadEvent(e);
          e.Weight *= a_GenG4WeightCalc.GetCVWeight();
@@ -179,7 +183,6 @@ void SelectionManager::UseGenWeight(bool usegenweight){
 
 void SelectionManager::SetSignal(Event &e){
 
-
    e.EventIsSignal = false;
    e.EventIsSignal_NuMuP = false;
    e.EventIsSignal_PiPPi0 = false;
@@ -203,27 +206,50 @@ void SelectionManager::SetSignal(Event &e){
       e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume_MCC9(e.TruePrimaryVertex.at(i_tr)); 
 
       if(e.IsSignal.at(i_tr) || e.IsSignal_NuMuP.at(i_tr) || e.IsSignal_PiPPi0.at(i_tr) ){
+      //if( e.IsSignal_NuMuP_CC.at(i_tr) || e.IsSignal_PiPPi0_CC.at(i_tr) ){
 
-	//bool found_proton=false, found_pion=false;
-	bool found_pion, found_muon;
+	bool found_pion = false;
+	bool found_muon = false;
 
          for(size_t i_d=0;i_d<e.KaonPDecay.size();i_d++){
 
 	   //std::cout << "i_tr: " << i_tr << ", e.KaonPDecay.at(i_d).MCTruthIndex: " << e.KaonPDecay.at(i_d).MCTruthIndex << ", e.KaonPDecay.at(i_d).PDG: " << e.KaonPDecay.at(i_d).PDG << ", e.KaonPDecay.at(i_d).ModMomentum: " << e.KaonPDecay.at(i_d).ModMomentum << std::endl;
-	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == -13 && e.KaonPDecay.at(i_d).ModMomentum > 0.1) 
+	   //if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == -13 && e.KaonPDecay.at(i_d).ModMomentum > 0.1) 
+	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == -13) 
 	     found_muon = true;
 
 	   if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == 211 && e.KaonPDecay.at(i_d).ModMomentum > 0.1)
+	   //if(e.KaonPDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPDecay.at(i_d).PDG == 211)
 	     found_pion = true;
 
          }
 
-	 IsSignal_tmp.at(i_tr) = (found_muon || found_pion) && e.InActiveTPC.at(i_tr) && e.IsSignal.at(i_tr);
+
+	 /*	 
+	 for(size_t i_d=0;i_d<e.KaonPInelasticDecay.size();i_d++){
+
+           //if(e.KaonPInelasticDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPInelasticDecay.at(i_d).PDG == -13 && e.KaonPInelasticDecay.at(i_d).ModMomentum > 0.1)
+           if(e.KaonPInelasticDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPInelasticDecay.at(i_d).PDG == -13)
+             found_muon = true;
+
+           if(e.KaonPInelasticDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPInelasticDecay.at(i_d).PDG == 211 && e.KaonPInelasticDecay.at(i_d).ModMomentum > 0.1)
+           //if(e.KaonPInelasticDecay.at(i_d).MCTruthIndex == i_tr && e.KaonPInelasticDecay.at(i_d).PDG == 211)
+             found_pion = true;
+	 }
+	 */	 
+	 
+
+	 IsSignal_tmp.at(i_tr) = ( found_muon || found_pion ) && e.InActiveTPC.at(i_tr) && ( e.IsSignal_NuMuP.at(i_tr) || e.IsSignal_PiPPi0.at(i_tr) );
 	 IsSignal_NuMuP_tmp.at(i_tr) = found_muon && e.InActiveTPC.at(i_tr) && e.IsSignal_NuMuP.at(i_tr);
 	 IsSignal_PiPPi0_tmp.at(i_tr) = found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal_PiPPi0.at(i_tr);
+	 
+	 /*
+	 IsSignal_tmp.at(i_tr) = ( found_muon || found_pion ) && e.InActiveTPC.at(i_tr) && ( e.IsSignal_NuMuP_CC.at(i_tr) || e.IsSignal_PiPPi0_CC.at(i_tr) );
+	 IsSignal_NuMuP_tmp.at(i_tr) = found_muon && e.InActiveTPC.at(i_tr) && e.IsSignal_NuMuP_CC.at(i_tr);
+	 IsSignal_PiPPi0_tmp.at(i_tr) = found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal_PiPPi0_CC.at(i_tr);
+	 */
 
       }
-      //std::cout << "e.IsSignal after assessment: " << IsSignal_tmp.at(i_tr) << std::endl; 
 
    }
 
@@ -291,7 +317,7 @@ void SelectionManager::SetSignal(Event &e){
        e.TrueDecayRebuiltMuonIndex = i_tr;
      }
 
-     if(e.TrackOthers.at(i_tr).HasTruth && e.TrackOthers.at(i_tr).TrackTruePDG == 211){
+     if(e.TrackRebuiltOthers.at(i_tr).HasTruth && e.TrackRebuiltOthers.at(i_tr).TrackTruePDG == 211){
        found_decay_pion = true;
        e.TrueDecayRebuiltPionIndex = i_tr;
      }
@@ -484,6 +510,42 @@ void SelectionManager::StorePrimaryDaughterTracksPair(const Event &e){
     const RecoParticle* bestDaughterRebuiltTrack = nullptr;
     bool addedPairForThisPrimary = false;
 
+    int n_dautrk = 0;
+
+    for (const auto& DaughterTrack : e.TrackOthers) {
+      TVector3 DaughterStart(DaughterTrack.X, DaughterTrack.Y, DaughterTrack.Z);
+      if (!IsWithinDistance(PrimaryEnd, DaughterStart, 10.0)) continue;
+
+	bestDaughterTrack = &DaughterTrack; 
+	n_dautrk++;
+    }
+    
+    for (const auto& DaughterRebuiltTrack : e.TrackRebuiltOthers) {
+
+      TVector3 DaughterStart(DaughterRebuiltTrack.X, DaughterRebuiltTrack.Y, DaughterRebuiltTrack.Z);
+      if (!IsWithinDistance(PrimaryEnd, DaughterStart, 10.0)) continue;
+
+      if (DaughterRebuiltTrack.TrackLength > maxLength) {
+	maxLength = DaughterRebuiltTrack.TrackLength;
+	bestDaughterRebuiltTrack = &DaughterRebuiltTrack;
+      }
+    }
+    
+    //if (bestDaughterRebuiltTrack && (!bestDaughterTrack || bestDaughterTrack->TrackLength < 40 || bestDaughterTrack->TrackLength > 65 || n_dautrk!=1)) {
+    if (bestDaughterRebuiltTrack && (!bestDaughterTrack || bestDaughterTrack->TrackLength < 40 || n_dautrk!=1)) {
+      if(bestDaughterRebuiltTrack->TrackLength < 70) VectorPair.emplace_back(PrimaryTrack, *bestDaughterRebuiltTrack);
+      else if(bestDaughterTrack && n_dautrk==1){
+	VectorPair.emplace_back(PrimaryTrack, *bestDaughterTrack);
+      }
+    }
+    else if(bestDaughterTrack && n_dautrk==1){
+      VectorPair.emplace_back(PrimaryTrack, *bestDaughterTrack);
+    }
+    
+    //if(bestDaughterTrack && n_dautrk==1) VectorPair.emplace_back(PrimaryTrack, *bestDaughterTrack);
+
+ 
+    /*
     for (const auto& DaughterTrack : e.TrackOthers) {
       TVector3 DaughterStart(DaughterTrack.X, DaughterTrack.Y, DaughterTrack.Z);
 
@@ -507,6 +569,7 @@ void SelectionManager::StorePrimaryDaughterTracksPair(const Event &e){
 	VectorPair.pop_back();
       VectorPair.emplace_back(PrimaryTrack, *bestDaughterRebuiltTrack);
     }
+    */
 
   }
 
@@ -556,10 +619,10 @@ bool SelectionManager::ChooseMuonCandidate(Event &e){
 
 // Apply the secondary track length cut
 
-bool SelectionManager::DaughterTrackLengthCut(const Event &e){
+bool SelectionManager::DaughterTrackLengthCut(const Event &e, const RecoParticle &DaughterTrackParticle){
 
-  RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
-  bool passed = DaughterTrackParticle.TrackLength > 20.f;
+  //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
+  bool passed = DaughterTrackParticle.TrackLength > 25.f;
 
    UpdateCut(e,passed,"DaughterTrackLength");
 
@@ -586,11 +649,23 @@ bool SelectionManager::BDTCut(Event &e){
 
 bool SelectionManager::BDTCut(Event &e, const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle){
 
+  //std::cout << "Score: " << a_BDTManager.CalculateScore(e,PrimaryKaonTrackParticle,DaughterTrackParticle) << ", TheParams.p_BDT_Cut: " << TheParams.p_BDT_Cut << std::endl;
   bool passed = a_BDTManager.CalculateScore(e,PrimaryKaonTrackParticle,DaughterTrackParticle) > TheParams.p_BDT_Cut; 
 
    UpdateCut(e,passed,"BDT");
 
    return passed;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Calculate decay analysis BDT score and apply cut. This also stores BDT score for each Event.
+
+double SelectionManager::BDTScore(Event &e, const RecoParticle &PrimaryKaonTrackParticle, const RecoParticle &DaughterTrackParticle){
+
+  double score = a_BDTManager.CalculateScore(e,PrimaryKaonTrackParticle,DaughterTrackParticle);
+  return score;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -685,12 +760,34 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
 void SelectionManager::SetupHistogramsEtoP(){
 
    Hist_BDT_Signal = new TH1D("BDT_Signal",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
+   Hist_BDT_Signal_All = new TH1D("BDT_Signal_All",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
    Hist_BDT_All = new TH1D("BDT_All",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
    Hist_Efficiency = new TH1D("BDT_Efficiency",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
    Hist_Purity = new TH1D("BDT_Purity",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
    Hist_EtoP = new TH1D("BDT_EtoP",fTitle.c_str(),fHistNBins,fHistLow,fHistHigh);
 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+/*
+void SelectionManager::SetupHistogramsEtoPTwoBox(int nx,double lowx,double highx,int ny,double lowy,double highy){
+
+  fHistNBinsX = nx; 
+  fHistLowX = lowx;
+  fHistHighX = highx;
+  fHistNBinsY = ny;
+  fHistLowY = lowy;
+  fHistHighY = highy;
+  
+  Hist2D_BDT_Signal = new TH2D("BDT_Signal",fTitle.c_str(),fHistNBinsX,fHistLowX,fHistHighX,fHistNBinsY,fHistLowY,fHistHighY);
+  Hist2D_BDT_Signal_All = new TH2D("BDT_Signal_All",fTitle.c_str(),fHistNBinsX,fHistLowX,fHistHighX,fHistNBinsY,fHistLowY,fHistHighY);
+  Hist2D_BDT_All = new TH2D("BDT_All",fTitle.c_str(),fHistNBinsX,fHistLowX,fHistHighX,fHistNBinsY,fHistLowY,fHistHighY);
+  Hist2D_Efficiency = new TH2D("BDT_Efficiency",fTitle.c_str(),fHistNBinsX,fHistLowX,fHistHighX,fHistNBinsY,fHistLowY,fHistHighY);
+  Hist2D_Purity = new TH2D("BDT_Purity",fTitle.c_str(),fHistNBinsX,fHistLowX,fHistHighX,fHistNBinsY,fHistLowY,fHistHighY);
+  Hist2D_EtoP = new TH2D("BDT_EtoP",fTitle.c_str(),fHistNBinsX,fHistLowX,fHistHighX,fHistNBinsY,fHistLowY,fHistHighY);
+   
+}
+*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -757,7 +854,7 @@ void SelectionManager::Setup2DHistograms(std::vector<double> boundariesx, std::v
    fHist2DNXBins = boundariesx.size()-1;
    fHist2DNYBins = boundariesy.size()-1;
    fHist2DLowX = boundariesx.front();
-   fHist2DLowX = boundariesy.front();
+   fHist2DLowY = boundariesy.front();
    fHist2DHighX = boundariesx.back();
    fHist2DHighY = boundariesy.back();
    fHist2DBoundariesX = boundariesx;
@@ -769,6 +866,7 @@ void SelectionManager::Setup2DHistograms(std::vector<double> boundariesx, std::v
    Double_t arr_boundaries_y[arr_n_y];
 	
    for(size_t i=0;i<arr_n_x;i++) arr_boundaries_x[i] = boundariesx.at(i);
+   for(size_t i=0;i<arr_n_y;i++) arr_boundaries_y[i] = boundariesy.at(i);
 
    for(size_t i_h=0;i_h<EventType::SigBG.size();i_h++){
       std::string histname = "h_" + EventType::SigBG.at(i_h);
@@ -916,17 +1014,57 @@ void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,RecoPar
   Hist_BDT_All->Fill(variable,weight*e.Weight);
   
   //if(e.GoodReco && PrimaryKaonTrackParticle.Index == e.TrueKaonIndex && ( DaughterTrackParticle.Index == e.TrueDecayMuonIndex ||  DaughterTrackParticle.Index == e.TrueDecayPionIndex ))
-  if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) ) 
+  //if(e.GoodReco && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) )
+  if(e.EventIsSignal && PrimaryKaonTrackParticle.TrackTruePDG == 321 && (DaughterTrackParticle.TrackTruePDG == -13 || DaughterTrackParticle.TrackTruePDG == 211) )
+  //if(e.EventIsSignal) 
     Hist_BDT_Signal->Fill(variable,weight*e.Weight);
   
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Fill the histograms for EtP calculation
+
+void SelectionManager::FillHistogramsEtoP(const Event &e,double variable,double weight,bool withprecut){
+
+  std::string mode = EventType::GetType(e);
+  if(mode == "Data") return;
+
+  if(withprecut==false)
+    if(e.EventIsSignal) Hist_BDT_Signal_All->Fill(variable,weight*e.Weight);
+  
+  if(withprecut==true) {
+    Hist_BDT_All->Fill(variable,weight*e.Weight);
+    if(e.EventIsSignal) Hist_BDT_Signal->Fill(variable,weight*e.Weight);
+  }
+  
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Fill the histograms for EtP calculation
+/*
+void SelectionManager::FillHistogramsEtoPTwoBox(const Event &e,double variable1,double variable2,double weight,bool withprecut){
+
+  std::string mode = EventType::GetType(e);
+  if(mode == "Data") return;
+
+  if(withprecut==false)
+    if(e.EventIsSignal) Hist2D_BDT_Signal_All->Fill(variable,weight*e.Weight);
+  
+  if(withprecut==true) {
+    Hist2D_BDT_All->Fill(variable,weight*e.Weight);
+    if(e.EventIsSignal) Hist2D_BDT_Signal->Fill(variable,weight*e.Weight);
+  }
+  
+}
+*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void SelectionManager::FillEtoPCurve(){
 
   int nbin = Hist_BDT_All->GetNbinsX();
-  double denominator = Hist_BDT_All->Integral(1,nbin+1);
+  //double denominator = Hist_BDT_All->Integral(1,nbin+1);
+  double denominator = Hist_BDT_Signal_All->Integral(1,nbin+1);
 
   for (int bin=1; bin<=nbin+1; bin++) {
     double signal = Hist_BDT_Signal->Integral(bin,nbin+1);
@@ -944,8 +1082,40 @@ void SelectionManager::FillEtoPCurve(){
   std::cout << "Efficiency of " << Hist_Efficiency->GetBinContent(binmax) << std::endl;
   std::cout << "Purity of " << Hist_Purity->GetBinContent(binmax) << std::endl;
   std::cout << "E*P of " << Hist_EtoP->GetBinContent(binmax) << std::endl;
+  std::cout << "all entries: " << Hist_BDT_All->GetEntries() << std::endl;
+  std::cout << "signal entries: " << Hist_BDT_Signal->GetEntries() << ", after cut: " << Hist_BDT_Signal->GetBinContent(binmax) << std::endl;;
 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+/*
+void SelectionManager::FillEtoPBoxes(double box1x1, double box1x2, double box1y1, double box1y2, double box2x1, double box2x2, double box2y1, double box2y2){
+
+  int nbinx = Hist2D_BDT_All->GetNbinsX();
+  int nbiny = Hist2D_BDT_All->GetNbinsY();
+  double denominator = Hist2D_BDT_Signal_All->Integral(1,nbin+1);
+
+  for (int bin=1; bin<=nbin+1; bin++) {
+    double signal = Hist_BDT_Signal->Integral(bin,nbin+1);
+    double all = Hist_BDT_All->Integral(bin,nbin+1);
+    double efficiency = denominator>0 ? signal/denominator : 0;
+    double purity = all>0 ? signal/all : 0;
+
+    Hist_Efficiency->SetBinContent(bin,efficiency);
+    Hist_Purity->SetBinContent(bin,purity);
+    Hist_EtoP->SetBinContent(bin, efficiency*purity);
+  }
+
+  int binmax = Hist_EtoP->GetMaximumBin();
+  std::cout << "Cut at " << Hist_EtoP->GetXaxis()->GetBinCenter(binmax) << " gives " << std::endl;
+  std::cout << "Efficiency of " << Hist_Efficiency->GetBinContent(binmax) << std::endl;
+  std::cout << "Purity of " << Hist_Purity->GetBinContent(binmax) << std::endl;
+  std::cout << "E*P of " << Hist_EtoP->GetBinContent(binmax) << std::endl;
+  std::cout << "all entries: " << Hist_BDT_All->GetEntries() << std::endl;
+  std::cout << "signal entries: " << Hist_BDT_Signal->GetEntries() << ", after cut: " << Hist_BDT_Signal->GetBinContent(binmax) << std::endl;;
+
+}
+*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////                                                                                                                 
 
@@ -984,16 +1154,26 @@ void SelectionManager::PlotEtoPCurve(){
 
 // Fill the 2D histograms
 
-void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double variable_y,RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle,double weight){
+void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double variable_y,double weight){
 
   std::string mode, sigbg;
 
-  //RecoParticle PrimaryKaonTrackParticle = GetPrimaryKaonTrackParticle();
-  //RecoParticle DaughterTrackParticle = GetDaughterTrackParticle();
-  
   mode = EventType::GetType(e);
   sigbg = EventType::GetSigBG(e);
-  //sigbg = EventType::GetSigBG(PrimaryKaonTrackParticle, DaughterTrackParticle);
+  if(mode == "Data") return;
+  Hists2D_BySigBG[sigbg]->Fill(variable_x,variable_y,weight*e.Weight);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Fill the 2D histograms
+
+void SelectionManager::Fill2DHistograms(const Event &e,double variable_x,double variable_y,RecoParticle PrimaryKaonTrackParticle, RecoParticle DaughterTrackParticle,double weight){
+
+  std::string mode, sigbg;
+  
+  mode = EventType::GetType(e);
+  sigbg = EventType::GetSigBG(e,PrimaryKaonTrackParticle, DaughterTrackParticle);
   if(mode == "Data") return;
   Hists2D_BySigBG[sigbg]->Fill(variable_x,variable_y,weight*e.Weight);
 
@@ -1134,7 +1314,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
 // Draw the 2D histograms
 
-void SelectionManager::Draw2DHistograms(std::string label,double Scale,double SignalScale){
+void SelectionManager::Draw2DHistograms(std::string label,double Scale,double SignalScale,std::vector<std::string> binlabels){
 
    OpenHistFile(label);
 
@@ -1149,7 +1329,7 @@ void SelectionManager::Draw2DHistograms(std::string label,double Scale,double Si
       //std::cout << Hists2D_BySigBG[EventType::SigBG.at(i_t)]->GetEntries() << std::endl;
    }
 
-   HypPlot::Draw2DHistogram(Hists2D_BySigBG_v,EventType::Captions,PlotDir,label+"_BySigBG",{BeamMode},{Run},{POT},SignalScale);
+   HypPlot::Draw2DHistogram(Hists2D_BySigBG_v,EventType::Captions,PlotDir,label+"_BySigBG",{BeamMode},{Run},{POT},SignalScale,binlabels);
    
    std::map<std::string,TH2D*>::iterator it;
    for (it = Hists2D_BySigBG.begin(); it != Hists2D_BySigBG.end(); it++)
