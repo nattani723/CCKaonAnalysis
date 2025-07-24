@@ -1,5 +1,11 @@
-This is a toolkit for performing the hyperon selection over samples of 
-data and MC. The code consists of two main folders: Core/ containig objects
+This is a toolkit for performing the kaon-plus selection over samples of 
+data and MC, which was originally developed by Chris Thorpe for hyperon xsec analysis.
+
+The instuction below is copied from README in the toolkit for hyperon xsec analysis:
+https://github.com/cthorpe123/HyperonAnalysis
+
+
+The code consists of two main folders: Core/ containig objects
 that handle importing and manipulating events, recording metadata and management 
 of the other algs and Alg/ storing the individual selection algorithms.
 
